@@ -277,6 +277,34 @@
       background: #e2e8f0;
     }
 
+    /* STUDENT TABS */
+
+    .student-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .student-tab {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 11px 28px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #334155;
+    }
+
+    .student-tab:hover {
+      background: #f1f5f9;
+    }
+
+    .student-tab.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
     /* RETURN BUTTON */
 
     .return-button {
@@ -376,6 +404,15 @@
 
       .stat-card .number {
         font-size: 25px;
+      }
+
+      .student-tabs {
+        gap: 6px;
+      }
+
+      .student-tab {
+        flex: 1;
+        padding: 11px 15px;
       }
     }
   </style>
@@ -555,11 +592,27 @@
       <section id="students" class="page">
         <h2>Students</h2>
 
+        <div class="student-tabs">
+          <button
+            class="student-tab active"
+            data-class="7S"
+          >
+            7S
+          </button>
+
+          <button
+            class="student-tab"
+            data-class="7K"
+          >
+            7K
+          </button>
+        </div>
+
         <div class="search-box">
           <input
             type="text"
             id="studentSearch"
-            placeholder="Search by class or student number..."
+            placeholder="Search student number..."
           />
         </div>
 
@@ -704,6 +757,9 @@
     let students = [];
     let classes = [];
     let checkouts = [];
+
+    /* Currently selected student class tab */
+    let selectedStudentClass = "7S";
 
 
     /* ============================================================
@@ -1548,31 +1604,72 @@
       tbody.innerHTML = "";
 
 
-      students.forEach(
+      /*
+        Only show students belonging to
+        the currently selected class tab.
+      */
+
+      const filteredStudents =
+        students.filter(
+          student => {
+
+            const className =
+              getClassName(
+                student.class_id
+              );
+
+
+            if (
+              className.toLowerCase() !==
+              selectedStudentClass.toLowerCase()
+            ) {
+              return false;
+            }
+
+
+            const studentNumber =
+              String(
+                student.student_number
+              );
+
+
+            if (
+              search &&
+              !studentNumber.includes(search)
+            ) {
+              return false;
+            }
+
+
+            return true;
+          }
+        );
+
+
+      if (
+        filteredStudents.length ===
+        0
+      ) {
+
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="3">
+              No students found.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+
+      filteredStudents.forEach(
         student => {
 
           const className =
             getClassName(
               student.class_id
             );
-
-
-          const studentNumber =
-            String(
-              student.student_number
-            );
-
-
-          if (
-            search &&
-            !className
-              .toLowerCase()
-              .includes(search) &&
-            !studentNumber
-              .includes(search)
-          ) {
-            return;
-          }
 
 
           const borrowed =
@@ -1591,10 +1688,11 @@
               "tr"
             );
 
-          /* Make the entire student row clickable */
+
           row.classList.add(
             "clickable-row"
           );
+
 
           row.addEventListener(
             "click",
@@ -1622,6 +1720,27 @@
           );
         }
       );
+
+
+      /*
+        Keep the correct tab highlighted.
+      */
+
+      document
+        .querySelectorAll(
+          ".student-tab"
+        )
+        .forEach(
+          tab => {
+
+            tab.classList.toggle(
+              "active",
+              tab.dataset.class.toLowerCase() ===
+              selectedStudentClass.toLowerCase()
+            );
+
+          }
+        );
     }
 
 
@@ -2448,6 +2567,37 @@
       .addEventListener(
         "input",
         renderHistory
+      );
+
+
+    /*
+      7S / 7K STUDENT TABS
+    */
+
+    document
+      .querySelectorAll(
+        ".student-tab"
+      )
+      .forEach(
+        tab => {
+
+          tab.addEventListener(
+            "click",
+            () => {
+
+              selectedStudentClass =
+                tab.dataset.class;
+
+              document.getElementById(
+                "studentSearch"
+              ).value = "";
+
+              renderStudents();
+
+            }
+          );
+
+        }
       );
 
 
