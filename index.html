@@ -86,6 +86,16 @@ tr:hover td{background:#f8fafc}
 .delete-button{background:#dc2626;color:white;border:none;padding:7px 11px;border-radius:5px;cursor:pointer}
 .delete-button:hover{background:#b91c1c}
 
+/* SEARCHABLE BOOK DROPDOWN */
+.book-dropdown{position:relative}
+.book-dropdown-input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;background:white;cursor:pointer}
+.book-dropdown-input:disabled{background:#f1f5f9;cursor:not-allowed}
+.book-dropdown-list{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:white;border:1px solid #cbd5e1;border-radius:7px;max-height:300px;overflow-y:auto;z-index:100;box-shadow:0 5px 15px rgba(0,0,0,.12)}
+.book-dropdown-option{padding:11px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9}
+.book-dropdown-option:last-child{border-bottom:none}
+.book-dropdown-option:hover{background:#f1f5f9}
+.book-dropdown-empty{padding:12px;color:#64748b}
+
 /* EDIT MODAL */
 .modal-overlay{
   position:fixed;
@@ -201,15 +211,19 @@ nav{padding:8px}
       <label for="studentSelect">Student</label>
       <select id="studentSelect" disabled><option value="">Select a student...</option></select>
     </div>
-
-    <div class="form-group">
-      <label for="bookSearch">Book Search (optional)</label>
-      <input type="text" id="bookSearch" placeholder="Search by title or author...">
-    </div>
-
     <div class="form-group">
       <label for="bookSelect">Book</label>
-      <select id="bookSelect" disabled><option value="">Select an available book...</option></select>
+      <div class="book-dropdown">
+        <input
+          type="text"
+          id="bookSelect"
+          class="book-dropdown-input"
+          placeholder="Click to choose a book..."
+          autocomplete="off"
+          disabled
+        >
+        <div id="bookDropdownList" class="book-dropdown-list hidden"></div>
+      </div>
     </div>
     <button id="checkoutButton" class="primary-button" disabled>Check Out</button>
   </div>
@@ -361,6 +375,7 @@ let checkouts=[];
 let selectedStudentClass="7S";
 let currentStudentHistoryStudentId=null;
 let editingCheckoutId=null;
+let selectedBookId="";
 
 function getTodayEastern(){
   const now=new Date();
@@ -492,6 +507,8 @@ function populateStudents(){
 
   if(!classId){
     studentSelect.disabled=true;
+    clearBookSelection();
+    document.getElementById("bookSelect").disabled=true;
     return;
   }
 
@@ -510,26 +527,37 @@ function populateStudents(){
   populateBooks();
 }
 
-function populateBooks(){
-  const bookSelect=document.getElementById("bookSelect");
-  const bookSearch=document.getElementById("bookSearch").value.toLowerCase().trim();
+function getFilteredBooks(){
+  const search=document.getElementById("bookSelect").value.toLowerCase().trim();
 
-  bookSelect.innerHTML='<option value="">Select an available book...</option>';
-
-  const availableBooks=books.filter(book=>{
+  return books.filter(book=>{
     if(getAvailableCopies(book)<=0)return false;
 
-    if(!bookSearch)return true;
+    if(!search)return true;
 
     const title=String(book.Title||"").toLowerCase();
     const author=String(book.Author||"").toLowerCase();
 
-    return title.includes(bookSearch)||author.includes(bookSearch);
+    return title.includes(search)||author.includes(search);
   });
+}
+
+function populateBooks(){
+  const input=document.getElementById("bookSelect");
+  const list=document.getElementById("bookDropdownList");
+
+  const availableBooks=getFilteredBooks();
+
+  list.innerHTML="";
+
+  if(availableBooks.length===0){
+    list.innerHTML='<div class="book-dropdown-empty">No available books found.</div>';
+    return;
+  }
 
   availableBooks.forEach(book=>{
-    const option=document.createElement("option");
-    option.value=book.id;
+    const option=document.createElement("div");
+    option.className="book-dropdown-option";
 
     let text=book.Title;
     if(book.Author)text+=` — ${book.Author}`;
@@ -537,21 +565,28 @@ function populateBooks(){
     text+=` (${getAvailableCopies(book)} available)`;
     option.textContent=text;
 
-    bookSelect.appendChild(option);
+    option.addEventListener("click",()=>{
+      selectedBookId=book.id;
+      input.value=text;
+      list.classList.add("hidden");
+      updateCheckoutButton();
+    });
+
+    list.appendChild(option);
   });
+}
 
-  if(availableBooks.length===0&&bookSearch){
-    bookSelect.innerHTML='<option value="">No matching available books...</option>';
-  }
-
-  bookSelect.disabled=availableBooks.length===0;
+function clearBookSelection(){
+  selectedBookId="";
+  document.getElementById("bookSelect").value="";
+  document.getElementById("bookDropdownList").classList.add("hidden");
   updateCheckoutButton();
 }
 
 function updateCheckoutButton(){
   const classValue=document.getElementById("classSelect").value;
   const studentValue=document.getElementById("studentSelect").value;
-  const bookValue=document.getElementById("bookSelect").value;
+  const bookValue=selectedBookId;
 
   document.getElementById("checkoutButton").disabled=
     !classValue||!studentValue||!bookValue;
@@ -559,7 +594,7 @@ function updateCheckoutButton(){
 
 async function checkoutBook(){
   const studentId=document.getElementById("studentSelect").value;
-  const bookId=document.getElementById("bookSelect").value;
+  const bookId=selectedBookId;
 
   if(!studentId||!bookId)return;
 
@@ -586,8 +621,7 @@ async function checkoutBook(){
     document.getElementById("classSelect").value="";
     document.getElementById("studentSelect").innerHTML='<option value="">Select a student...</option>';
     document.getElementById("studentSelect").disabled=true;
-    document.getElementById("bookSearch").value="";
-    document.getElementById("bookSelect").innerHTML='<option value="">Select an available book...</option>';
+    clearBookSelection();
     document.getElementById("bookSelect").disabled=true;
 
     await loadData();
@@ -1185,9 +1219,17 @@ document.getElementById("studentSelect").addEventListener("change",()=>{
   updateCheckoutButton();
 });
 
-document.getElementById("bookSearch").addEventListener("input",populateBooks);
+document.getElementById("bookSelect").addEventListener("focus",()=>{
+  populateBooks();
+  document.getElementById("bookDropdownList").classList.remove("hidden");
+});
 
-document.getElementById("bookSelect").addEventListener("change",updateCheckoutButton);
+document.getElementById("bookSelect").addEventListener("input",()=>{
+  selectedBookId="";
+  populateBooks();
+  document.getElementById("bookDropdownList").classList.remove("hidden");
+  updateCheckoutButton();
+});
 
 document.getElementById("checkoutButton").addEventListener("click",checkoutBook);
 
@@ -1196,6 +1238,14 @@ document.getElementById("librarySearch").addEventListener("input",renderLibrary)
 document.getElementById("studentSearch").addEventListener("input",renderStudents);
 
 document.getElementById("historySearch").addEventListener("input",renderHistory);
+
+document.addEventListener("click",event=>{
+  const dropdown=document.querySelector(".book-dropdown");
+
+  if(dropdown&&!dropdown.contains(event.target)){
+    document.getElementById("bookDropdownList").classList.add("hidden");
+  }
+});
 
 document.querySelectorAll(".student-tab").forEach(tab=>{
   tab.addEventListener("click",()=>{
