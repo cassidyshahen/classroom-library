@@ -602,6 +602,51 @@ tr:hover td{background:#f8fafc}
   grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
   gap:16px;
 }
+.series-option-image-wrap{
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:9px;
+  overflow:hidden;
+  background:#eef2f7;
+  margin-bottom:12px;
+}
+.series-option-image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.series-option-placeholder{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  background:linear-gradient(145deg,#f8fafc,#e2e8f0);
+}
+.series-card-main{
+  width:100%;
+  border:none;
+  background:transparent;
+  padding:0;
+  text-align:left;
+  cursor:pointer;
+  color:inherit;
+}
+.series-image-button{
+  width:100%;
+  margin-top:12px;
+  padding:8px 10px;
+  border:1px solid #cbd5e1;
+  border-radius:7px;
+  background:#f8fafc;
+  color:#475569;
+  font-weight:700;
+  cursor:pointer;
+}
+.series-image-button:hover{background:#eef2f7}
+
 .series-option-card{
   background:white;
   border:1px solid #e2e8f0;
@@ -3401,12 +3446,25 @@ function renderSeriesBrowser(){
     optionsGrid.classList.remove("hidden");
     const names=[...new Set(books.map(b=>String(b.Series||"").trim()).filter(Boolean))].sort();
     optionsGrid.innerHTML=names.map(name=>{
-      const count=books.filter(b=>String(b.Series||"").trim()===name).length;
-      return `<button class="series-option-card" type="button" onclick="openBrowseSeries('${name.replace(/\\/g,"\\\\").replace(/'/g,"\\'")}')">
-        <div class="series-option-icon">📚</div>
-        <div class="series-option-name">${name}</div>
-        <div class="series-option-count">${count} ${count===1 ? "book" : "books"}</div>
-      </button>`;
+      const seriesBooks=books.filter(b=>String(b.Series||"").trim()===name);
+      const count=seriesBooks.length;
+      const storageKey="classroomSeriesImage:"+name;
+      const savedImage=localStorage.getItem(storageKey)||"";
+      const safeName=name.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+      const imageHtml=savedImage
+        ? `<img class="series-option-image" src="${savedImage}" alt="${name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="series-option-placeholder" style="display:none;">📚</div>`
+        : `<div class="series-option-placeholder">📚</div>`;
+
+      return `<div class="series-option-card">
+        <button class="series-card-main" type="button" onclick="openBrowseSeries('${safeName}')">
+          <div class="series-option-image-wrap">${imageHtml}</div>
+          <div class="series-option-name">${name}</div>
+          <div class="series-option-count">${count} ${count===1 ? "book" : "books"}</div>
+        </button>
+        <button class="series-image-button" type="button" onclick="event.stopPropagation();setSeriesImage('${safeName}')">
+          ${savedImage ? "Change Image" : "+ Add Image"}
+        </button>
+      </div>`;
     }).join("");
     return;
   }
@@ -3427,6 +3485,24 @@ function renderSeriesBrowser(){
     card.innerHTML=getOnlineBookCardHtml(book);
     booksGrid.appendChild(card);
   });
+}
+
+function setSeriesImage(name){
+  const key="classroomSeriesImage:"+name;
+  const current=localStorage.getItem(key)||"";
+  const url=prompt("Paste an image URL for "+name+":",current);
+
+  if(url===null)return;
+
+  const clean=String(url).trim();
+
+  if(clean){
+    localStorage.setItem(key,clean);
+  }else{
+    localStorage.removeItem(key);
+  }
+
+  renderSeriesBrowser();
 }
 
 function openBrowseSeries(name){
