@@ -538,8 +538,11 @@ function getFilteredBooks(){
 
     const title=String(book.Title||"").toLowerCase();
     const author=String(book.Author||"").toLowerCase();
+    const series=String(book.Series||"").toLowerCase();
 
-    return title.includes(search)||author.includes(search);
+    return title.includes(search)||
+      author.includes(search)||
+      series.includes(search);
   });
 }
 
