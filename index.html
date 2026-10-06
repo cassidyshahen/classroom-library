@@ -348,6 +348,7 @@ main {
 /* RESPONSIVE */
 
 @media (max-width: 700px) {
+
   .stats {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -368,6 +369,7 @@ main {
   .login-card {
     padding: 25px;
   }
+
 }
 </style>
 </head>
@@ -398,8 +400,12 @@ main {
       autocomplete="current-password"
     >
 
-    <button class="login-button" onclick="login()">
+    <button
+      class="login-button"
+      onclick="login()">
+
       Log In
+
     </button>
 
     <div id="errorMessage"></div>
@@ -417,8 +423,12 @@ main {
 
   <h1>📚 Classroom Library</h1>
 
-  <button class="logout-button" onclick="logout()">
+  <button
+    class="logout-button"
+    onclick="logout()">
+
     Log Out
+
   </button>
 
 </header>
@@ -426,25 +436,40 @@ main {
 
 <nav>
 
-  <button class="active"
-          onclick="showPage('dashboard', this)">
+  <button
+    class="active"
+    onclick="showPage('dashboard', this)">
+
     Dashboard
+
   </button>
 
-  <button onclick="showPage('checkout', this)">
+  <button
+    onclick="showPage('checkout', this)">
+
     📕 Check Out
+
   </button>
 
-  <button onclick="showPage('library', this)">
+  <button
+    onclick="showPage('library', this)">
+
     📚 Library
+
   </button>
 
-  <button onclick="showPage('students', this)">
+  <button
+    onclick="showPage('students', this)">
+
     👥 Students
+
   </button>
 
-  <button onclick="showPage('checkedout', this)">
+  <button
+    onclick="showPage('checkedout', this)">
+
     📖 Checked Out
+
   </button>
 
 </nav>
@@ -455,30 +480,71 @@ main {
 
 <!-- DASHBOARD -->
 
-<section id="dashboard" class="page active">
+<section
+  id="dashboard"
+  class="page active">
 
   <h2>Dashboard</h2>
 
   <div class="stats">
 
     <div class="stat">
+
       <div>Total Books</div>
-      <div class="stat-number" id="totalBooks">—</div>
+
+      <div
+        class="stat-number"
+        id="totalBooks">
+
+        —
+
+      </div>
+
     </div>
 
+
     <div class="stat">
+
       <div>Students</div>
-      <div class="stat-number" id="totalStudents">—</div>
+
+      <div
+        class="stat-number"
+        id="totalStudents">
+
+        —
+
+      </div>
+
     </div>
 
+
     <div class="stat">
+
       <div>Checked Out</div>
-      <div class="stat-number" id="checkedOut">—</div>
+
+      <div
+        class="stat-number"
+        id="checkedOut">
+
+        —
+
+      </div>
+
     </div>
 
+
     <div class="stat">
+
       <div>Available</div>
-      <div class="stat-number" id="available">—</div>
+
+      <div
+        class="stat-number"
+        id="available">
+
+        —
+
+      </div>
+
     </div>
 
   </div>
@@ -499,7 +565,9 @@ main {
 
 <!-- CHECKOUT -->
 
-<section id="checkout" class="page">
+<section
+  id="checkout"
+  class="page">
 
   <h2>Check Out a Book</h2>
 
@@ -511,8 +579,9 @@ main {
         Class
       </label>
 
-      <select id="classSelect"
-              onchange="loadStudentOptions()">
+      <select
+        id="classSelect"
+        onchange="loadStudentOptions()">
 
         <option value="">
           Select a class
@@ -567,8 +636,10 @@ main {
     </button>
 
 
-    <div id="checkoutMessage"
-         class="message">
+    <div
+      id="checkoutMessage"
+      class="message">
+
     </div>
 
   </div>
@@ -578,7 +649,9 @@ main {
 
 <!-- LIBRARY -->
 
-<section id="library" class="page">
+<section
+  id="library"
+  class="page">
 
   <h2>Library</h2>
 
@@ -591,8 +664,10 @@ main {
       oninput="displayBooks()"
     >
 
-    <div id="bookList"
-         class="book-list">
+    <div
+      id="bookList"
+      class="book-list">
+
     </div>
 
   </div>
@@ -602,14 +677,18 @@ main {
 
 <!-- STUDENTS -->
 
-<section id="students" class="page">
+<section
+  id="students"
+  class="page">
 
   <h2>Students</h2>
 
   <div class="card">
 
-    <div id="studentList"
-         class="student-grid">
+    <div
+      id="studentList"
+      class="student-grid">
+
     </div>
 
   </div>
@@ -619,13 +698,16 @@ main {
 
 <!-- CHECKED OUT -->
 
-<section id="checkedout" class="page">
+<section
+  id="checkedout"
+  class="page">
 
   <h2>Currently Checked Out</h2>
 
   <div class="card">
 
     <div id="checkoutList">
+
     </div>
 
   </div>
@@ -668,17 +750,25 @@ let checkouts = [];
 async function login() {
 
   const email =
-    document.getElementById("email")
-      .value.trim();
+    document.getElementById(
+      "email"
+    ).value.trim();
+
 
   const password =
-    document.getElementById("password")
-      .value;
+    document.getElementById(
+      "password"
+    ).value;
+
 
   const error =
-    document.getElementById("errorMessage");
+    document.getElementById(
+      "errorMessage"
+    );
+
 
   error.textContent = "";
+
 
   if (!email || !password) {
 
@@ -686,14 +776,21 @@ async function login() {
       "Please enter your email and password.";
 
     return;
+
   }
 
-  const { error: loginError } =
+
+  const {
+    error: loginError
+  } =
     await supabaseClient.auth
       .signInWithPassword({
+
         email,
         password
+
       });
+
 
   if (loginError) {
 
@@ -701,9 +798,12 @@ async function login() {
       loginError.message;
 
     return;
+
   }
 
+
   showApp();
+
 }
 
 
@@ -711,16 +811,24 @@ async function login() {
 
 async function logout() {
 
-  await supabaseClient.auth.signOut();
+  await supabaseClient
+    .auth
+    .signOut();
 
-  document.getElementById("app")
-    .style.display = "none";
 
-  document.getElementById("loginScreen")
-    .style.display = "flex";
+  document.getElementById(
+    "app"
+  ).style.display = "none";
 
-  document.getElementById("password")
-    .value = "";
+
+  document.getElementById(
+    "loginScreen"
+  ).style.display = "flex";
+
+
+  document.getElementById(
+    "password"
+  ).value = "";
 
 }
 
@@ -729,11 +837,15 @@ async function logout() {
 
 function showApp() {
 
-  document.getElementById("loginScreen")
-    .style.display = "none";
+  document.getElementById(
+    "loginScreen"
+  ).style.display = "none";
 
-  document.getElementById("app")
-    .style.display = "block";
+
+  document.getElementById(
+    "app"
+  ).style.display = "block";
+
 
   loadData();
 
@@ -745,7 +857,10 @@ function showApp() {
 async function checkLogin() {
 
   const { data } =
-    await supabaseClient.auth.getSession();
+    await supabaseClient
+      .auth
+      .getSession();
+
 
   if (data.session) {
 
@@ -775,6 +890,7 @@ async function loadData() {
     );
 
     return;
+
   }
 
 
@@ -831,7 +947,10 @@ async function loadData() {
     await supabaseClient
       .from("Checkouts")
       .select("*")
-      .is("Return Date", null);
+      .is(
+        "Return Date",
+        null
+      );
 
 
   if (checkoutsResult.error) {
@@ -870,9 +989,16 @@ function updateDashboard() {
 
   const totalCopies =
     books.reduce(
+
       (sum, book) =>
-        sum + Number(book["Copies"] || 1),
+
+        sum +
+        Number(
+          book["Copies"] || 1
+        ),
+
       0
+
     );
 
 
@@ -903,7 +1029,8 @@ function updateDashboard() {
   ).textContent =
     Math.max(
       0,
-      totalCopies - checkedOutCopies
+      totalCopies -
+      checkedOutCopies
     );
 
 }
@@ -920,18 +1047,24 @@ function populateClassSelect() {
 
 
   select.innerHTML =
-    `<option value="">
-       Select a class
-     </option>`;
+    `
+      <option value="">
+        Select a class
+      </option>
+    `;
 
 
   classes.forEach(cls => {
 
     const option =
-      document.createElement("option");
+      document.createElement(
+        "option"
+      );
+
 
     option.value =
       cls.id;
+
 
     option.textContent =
       cls.name ||
@@ -940,7 +1073,10 @@ function populateClassSelect() {
       cls["Class Name"] ||
       cls.id;
 
-    select.appendChild(option);
+
+    select.appendChild(
+      option
+    );
 
   });
 
@@ -964,9 +1100,11 @@ function loadStudentOptions() {
 
 
   studentSelect.innerHTML =
-    `<option value="">
-       Select a student
-     </option>`;
+    `
+      <option value="">
+        Select a student
+      </option>
+    `;
 
 
   if (!classId) {
@@ -978,26 +1116,40 @@ function loadStudentOptions() {
 
   const classStudents =
     students.filter(
+
       student =>
-        String(student.class_id) ===
+
+        String(
+          student.class_id
+        ) ===
         String(classId)
+
     );
 
 
-  classStudents.forEach(student => {
+  classStudents.forEach(
+    student => {
 
-    const option =
-      document.createElement("option");
+      const option =
+        document.createElement(
+          "option"
+        );
 
-    option.value =
-      student.id;
 
-    option.textContent =
-      `#${student.student_number}`;
+      option.value =
+        student.id;
 
-    studentSelect.appendChild(option);
 
-  });
+      option.textContent =
+        `#${student.student_number}`;
+
+
+      studentSelect.appendChild(
+        option
+      );
+
+    }
+  );
 
 }
 
@@ -1013,36 +1165,50 @@ function populateBookSelect() {
 
 
   select.innerHTML =
-    `<option value="">
-       Select a book
-     </option>`;
+    `
+      <option value="">
+        Select a book
+      </option>
+    `;
 
 
   books.forEach(book => {
 
     const copies =
-      Number(book["Copies"] || 1);
+      Number(
+        book["Copies"] || 1
+      );
 
 
     const checkedOutCount =
       checkouts.filter(
+
         checkout =>
-          String(checkout.book_id) ===
+
+          String(
+            checkout.book_id
+          ) ===
           String(book.id)
+
       ).length;
 
 
     const available =
-      copies - checkedOutCount;
+      copies -
+      checkedOutCount;
 
 
     if (available > 0) {
 
       const option =
-        document.createElement("option");
+        document.createElement(
+          "option"
+        );
+
 
       option.value =
         book.id;
+
 
       let label =
         book["Title"] || "";
@@ -1060,7 +1226,9 @@ function populateBookSelect() {
         label;
 
 
-      select.appendChild(option);
+      select.appendChild(
+        option
+      );
 
     }
 
@@ -1091,18 +1259,24 @@ async function checkoutBook() {
     );
 
 
-  message.style.display = "none";
+  message.style.display =
+    "none";
 
 
   if (!studentId || !bookId) {
 
     showMessage(
+
       message,
+
       "Please select a student and a book.",
+
       false
+
     );
 
     return;
+
   }
 
 
@@ -1112,16 +1286,48 @@ async function checkoutBook() {
     );
 
 
-  button.disabled = true;
+  button.disabled =
+    true;
+
 
   button.textContent =
     "Checking Out...";
 
 
+  /*
+    Use a date-only value.
+    This prevents the browser from
+    shifting the date because of UTC.
+  */
+
+  const now =
+    new Date();
+
+
+  const year =
+    now.getFullYear();
+
+
+  const month =
+    String(
+      now.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  const day =
+    String(
+      now.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
   const today =
-    new Date()
-      .toISOString()
-      .split("T")[0];
+    `${year}-${month}-${day}`;
 
 
   const { error } =
@@ -1144,7 +1350,9 @@ async function checkoutBook() {
       });
 
 
-  button.disabled = false;
+  button.disabled =
+    false;
+
 
   button.textContent =
     "Check Out Book";
@@ -1159,9 +1367,13 @@ async function checkoutBook() {
 
 
     showMessage(
+
       message,
+
       "There was a problem checking out the book.",
+
       false
+
     );
 
 
@@ -1171,9 +1383,13 @@ async function checkoutBook() {
 
 
   showMessage(
+
     message,
+
     "Book checked out successfully!",
+
     true
+
   );
 
 
@@ -1192,9 +1408,80 @@ async function checkoutBook() {
 }
 
 
+/* FORMAT DATE */
+
+function formatDate(value) {
+
+  if (!value) {
+
+    return "";
+
+  }
+
+
+  /*
+    If Supabase gives us a timestamp,
+    take only the YYYY-MM-DD portion.
+    This prevents UTC from changing
+    the displayed day.
+  */
+
+  const datePart =
+    String(value)
+      .substring(
+        0,
+        10
+      );
+
+
+  const parts =
+    datePart.split("-");
+
+
+  if (parts.length !== 3) {
+
+    return value;
+
+  }
+
+
+  const year =
+    Number(parts[0]);
+
+
+  const month =
+    Number(parts[1]);
+
+
+  const day =
+    Number(parts[2]);
+
+
+  const date =
+    new Date(
+      year,
+      month - 1,
+      day
+    );
+
+
+  return date.toLocaleDateString(
+    "en-US",
+    {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
+
+}
+
+
 /* RETURN BOOK */
 
-async function returnBook(checkoutId) {
+async function returnBook(
+  checkoutId
+) {
 
   if (
     !confirm(
@@ -1207,10 +1494,34 @@ async function returnBook(checkoutId) {
   }
 
 
+  const now =
+    new Date();
+
+
+  const year =
+    now.getFullYear();
+
+
+  const month =
+    String(
+      now.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  const day =
+    String(
+      now.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
   const today =
-    new Date()
-      .toISOString()
-      .split("T")[0];
+    `${year}-${month}-${day}`;
 
 
   const { error } =
@@ -1262,11 +1573,15 @@ function showMessage(
   element.textContent =
     text;
 
+
   element.className =
     "message " +
-    (success
-      ? "success"
-      : "error");
+    (
+      success
+        ? "success"
+        : "error"
+    );
+
 
   element.style.display =
     "block";
@@ -1312,9 +1627,19 @@ function displayBooks() {
 
 
       return (
-        title.includes(search) ||
-        author.includes(search) ||
-        series.includes(search)
+
+        title.includes(
+          search
+        ) ||
+
+        author.includes(
+          search
+        ) ||
+
+        series.includes(
+          search
+        )
+
       );
 
     });
@@ -1331,91 +1656,109 @@ function displayBooks() {
 
 
   container.innerHTML =
-    filtered.map(book => {
+    filtered.map(
+      book => {
 
-      const copies =
-        Number(
-          book["Copies"] || 1
-        );
-
-
-      const checkedOutCount =
-        checkouts.filter(
-          checkout =>
-            String(
-              checkout.book_id
-            ) ===
-            String(book.id)
-        ).length;
+        const copies =
+          Number(
+            book["Copies"] || 1
+          );
 
 
-      const available =
-        Math.max(
-          0,
-          copies - checkedOutCount
-        );
+        const checkedOutCount =
+          checkouts.filter(
+
+            checkout =>
+
+              String(
+                checkout.book_id
+              ) ===
+              String(book.id)
+
+          ).length;
 
 
-      return `
+        const available =
+          Math.max(
 
-        <div class="book">
+            0,
 
-          <h3>
-            ${escapeHtml(
-              book["Title"] || ""
-            )}
-          </h3>
+            copies -
+            checkedOutCount
 
-          <p>
-            <strong>Author:</strong>
-            ${escapeHtml(
-              book["Author"] || ""
-            )}
-          </p>
+          );
 
-          ${
-            book["Series"]
-              ? `
-                <p>
-                  <strong>Series:</strong>
-                  ${escapeHtml(
-                    book["Series"]
-                  )}
-                </p>
-              `
-              : ""
-          }
 
-          ${
-            book["Series #"]
-              ? `
-                <p>
-                  <strong>Book #:</strong>
-                  ${book["Series #"]}
-                </p>
-              `
-              : ""
-          }
+        return `
 
-          <span class="badge ${
-            available > 0
-              ? "available"
-              : "checked"
-          }">
+          <div class="book">
+
+            <h3>
+              ${escapeHtml(
+                book["Title"] || ""
+              )}
+            </h3>
+
+            <p>
+              <strong>Author:</strong>
+              ${escapeHtml(
+                book["Author"] || ""
+              )}
+            </p>
 
             ${
-              available
-            } of ${
-              copies
-            } available
+              book["Series"]
 
-          </span>
+                ? `
 
-        </div>
+                  <p>
+                    <strong>Series:</strong>
+                    ${escapeHtml(
+                      book["Series"]
+                    )}
+                  </p>
 
-      `;
+                `
 
-    }).join("");
+                : ""
+            }
+
+            ${
+              book["Series #"]
+
+                ? `
+
+                  <p>
+                    <strong>Book #:</strong>
+                    ${book["Series #"]}
+                  </p>
+
+                `
+
+                : ""
+            }
+
+            <span
+              class="badge ${
+                available > 0
+                  ? "available"
+                  : "checked"
+              }">
+
+              ${
+                available
+              } of ${
+                copies
+              } available
+
+            </span>
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
 
 }
 
@@ -1441,47 +1784,56 @@ function displayStudents() {
 
 
   container.innerHTML =
-    students.map(student => {
+    students.map(
+      student => {
 
-      const className =
-        classes.find(
-          c =>
-            String(c.id) ===
-            String(student.class_id)
-        );
+        const className =
+          classes.find(
 
+            c =>
 
-      const classText =
-        className
-          ? className.name ||
-            className.Name ||
-            className.class_name ||
-            className["Class Name"] ||
-            className.id
-          : "";
+              String(c.id) ===
+              String(
+                student.class_id
+              )
+
+          );
 
 
-      return `
+        const classText =
+          className
 
-        <div class="student-card">
+            ? className.name ||
+              className.Name ||
+              className.class_name ||
+              className["Class Name"] ||
+              className.id
 
-          <strong>
-            ${escapeHtml(
-              String(classText)
-            )}
-          </strong>
+            : "";
 
-          <br>
 
-          Student #${
-            student.student_number
-          }
+        return `
 
-        </div>
+          <div class="student-card">
 
-      `;
+            <strong>
+              ${escapeHtml(
+                String(classText)
+              )}
+            </strong>
 
-    }).join("");
+            <br>
+
+            Student #${
+              student.student_number
+            }
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
 
 }
 
@@ -1507,96 +1859,135 @@ function displayCheckouts() {
 
 
   container.innerHTML =
-    checkouts.map(checkout => {
+    checkouts.map(
+      checkout => {
 
-      const book =
-        books.find(
-          b =>
-            String(b.id) ===
-            String(checkout.book_id)
-        );
+        const book =
+          books.find(
 
+            b =>
 
-      const student =
-        students.find(
-          s =>
-            String(s.id) ===
-            String(checkout.student_id)
-        );
+              String(b.id) ===
+              String(
+                checkout.book_id
+              )
+
+          );
 
 
-      const className =
-        student
-          ? classes.find(
-              c =>
-                String(c.id) ===
-                String(student.class_id)
-            )
-          : null;
+        const student =
+          students.find(
+
+            s =>
+
+              String(s.id) ===
+              String(
+                checkout.student_id
+              )
+
+          );
 
 
-      const classText =
-        className
-          ? className.name ||
-            className.Name ||
-            className.class_name ||
-            className["Class Name"] ||
-            className.id
-          : "";
+        const className =
+          student
+
+            ? classes.find(
+
+                c =>
+
+                  String(c.id) ===
+                  String(
+                    student.class_id
+                  )
+
+              )
+
+            : null;
 
 
-      return `
+        const classText =
+          className
 
-        <div class="checkout-item">
+            ? className.name ||
+              className.Name ||
+              className.class_name ||
+              className["Class Name"] ||
+              className.id
 
-          <div class="checkout-info">
+            : "";
 
-            <h3>
-              ${escapeHtml(
-                book
-                  ? book["Title"]
-                  : "Unknown Book"
-              )}
-            </h3>
 
-            <p>
-              <strong>Student:</strong>
-              ${escapeHtml(
-                String(classText)
-              )}
-              #${
-                student
-                  ? student.student_number
-                  : "?"
-              }
-            </p>
+        return `
 
-            <p>
-              <strong>Checked out:</strong>
-              ${escapeHtml(
-                checkout["Check Out Date"] ||
-                ""
-              )}
-            </p>
+          <div class="checkout-item">
+
+            <div class="checkout-info">
+
+              <h3>
+
+                ${escapeHtml(
+
+                  book
+
+                    ? book["Title"]
+
+                    : "Unknown Book"
+
+                )}
+
+              </h3>
+
+
+              <p>
+
+                <strong>Student:</strong>
+
+                ${escapeHtml(
+                  String(
+                    classText
+                  )
+                )}
+
+                #${
+                  student
+                    ? student.student_number
+                    : "?"
+                }
+
+              </p>
+
+
+              <p>
+
+                <strong>Checked out:</strong>
+
+                ${formatDate(
+                  checkout[
+                    "Check Out Date"
+                  ]
+                )}
+
+              </p>
+
+            </div>
+
+
+            <button
+              class="return-button"
+              onclick="returnBook('${
+                checkout.id
+              }')">
+
+              ↩️ Return
+
+            </button>
 
           </div>
 
+        `;
 
-          <button
-            class="return-button"
-            onclick="returnBook('${
-              checkout.id
-            }')">
-
-            ↩️ Return
-
-          </button>
-
-        </div>
-
-      `;
-
-    }).join("");
+      }
+    ).join("");
 
 }
 
@@ -1609,30 +2000,42 @@ function showPage(
 ) {
 
   document
-    .querySelectorAll(".page")
-    .forEach(page => {
+    .querySelectorAll(
+      ".page"
+    )
+    .forEach(
+      page => {
 
-      page.classList.remove(
-        "active"
-      );
+        page.classList.remove(
+          "active"
+        );
 
-    });
+      }
+    );
 
 
   document
-    .getElementById(pageId)
-    .classList.add("active");
+    .getElementById(
+      pageId
+    )
+    .classList.add(
+      "active"
+    );
 
 
   document
-    .querySelectorAll("nav button")
-    .forEach(btn => {
+    .querySelectorAll(
+      "nav button"
+    )
+    .forEach(
+      btn => {
 
-      btn.classList.remove(
-        "active"
-      );
+        btn.classList.remove(
+          "active"
+        );
 
-    });
+      }
+    );
 
 
   button.classList.add(
@@ -1644,7 +2047,9 @@ function showPage(
 
 /* ESCAPE HTML */
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
   return String(value)
 
