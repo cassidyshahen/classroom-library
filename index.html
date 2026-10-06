@@ -1,2091 +1,1826 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Classroom Library</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f4f6f8;
-  color: #1f2937;
-}
-
-button, input, select {
-  font: inherit;
-}
-
-/* LOGIN */
-
-#loginScreen {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 420px;
-  background: white;
-  padding: 40px;
-  border-radius: 18px;
-  box-shadow: 0 10px 35px rgba(0,0,0,.12);
-}
-
-.login-card h1 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.login-card p {
-  text-align: center;
-  color: #6b7280;
-  margin-bottom: 30px;
-}
-
-.login-card input {
-  width: 100%;
-  padding: 13px;
-  margin-bottom: 15px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-}
-
-.login-button {
-  width: 100%;
-  padding: 13px;
-  border: none;
-  border-radius: 8px;
-  background: #2563eb;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.login-button:hover {
-  background: #1d4ed8;
-}
-
-#errorMessage {
-  color: #dc2626;
-  margin-top: 15px;
-  text-align: center;
-}
-
-/* APP */
-
-#app {
-  display: none;
-}
-
-header {
-  background: #1e293b;
-  color: white;
-  padding: 18px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 22px;
-}
-
-.logout-button {
-  background: #475569;
-  color: white;
-  border: none;
-  padding: 9px 15px;
-  border-radius: 7px;
-  cursor: pointer;
-}
-
-nav {
-  background: white;
-  border-bottom: 1px solid #ddd;
-  padding: 10px 20px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-nav button {
-  border: none;
-  background: transparent;
-  padding: 10px 15px;
-  border-radius: 7px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-nav button:hover,
-nav button.active {
-  background: #e8eefc;
-  color: #2563eb;
-}
-
-main {
-  max-width: 1200px;
-  margin: auto;
-  padding: 25px;
-}
-
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
-
-/* DASHBOARD */
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.stat {
-  background: white;
-  padding: 22px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.05);
-}
-
-.stat-number {
-  font-size: 32px;
-  font-weight: bold;
-  margin-top: 8px;
-}
-
-/* CARDS */
-
-.card {
-  background: white;
-  padding: 22px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.05);
-  margin-bottom: 20px;
-}
-
-.card h2 {
-  margin-top: 0;
-}
-
-/* FORMS */
-
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 7px;
-}
-
-.form-group select,
-.form-group input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: white;
-}
-
-.primary-button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #2563eb;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.primary-button:hover {
-  background: #1d4ed8;
-}
-
-.primary-button:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
-}
-
-.return-button {
-  padding: 9px 14px;
-  border: none;
-  border-radius: 7px;
-  background: #16a34a;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.return-button:hover {
-  background: #15803d;
-}
-
-.message {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 8px;
-  display: none;
-}
-
-.success {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.error {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-/* LIBRARY */
-
-.search {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-.book-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 15px;
-}
-
-.book {
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 16px;
-  background: #fff;
-}
-
-.book h3 {
-  margin: 0 0 7px;
-  font-size: 17px;
-}
-
-.book p {
-  margin: 5px 0;
-  color: #6b7280;
-}
-
-.badge {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 5px 9px;
-  border-radius: 20px;
-  background: #e5e7eb;
-  font-size: 12px;
-}
-
-.available {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.checked {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-/* CHECKOUT LIST */
-
-.checkout-item {
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  align-items: center;
-}
-
-.checkout-info h3 {
-  margin: 0 0 7px;
-}
-
-.checkout-info p {
-  margin: 4px 0;
-  color: #6b7280;
-}
-
-/* STUDENTS */
-
-.student-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
-}
-
-.student-card {
-  padding: 14px;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 700px) {
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .checkout-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  header {
-    padding: 15px;
-  }
-
-  main {
-    padding: 15px;
-  }
-
-  .login-card {
-    padding: 25px;
-  }
-
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classroom Library</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    button,
+    select,
+    input {
+      font: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* LOGIN */
+
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      padding: 35px;
+      border-radius: 14px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-box h1 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .login-box p {
+      text-align: center;
+      color: #666;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 7px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .login-box button:hover {
+      background: #1d4ed8;
+    }
+
+    #loginError {
+      color: #dc2626;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    /* APP */
+
+    #app {
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1e293b;
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    #logoutButton {
+      background: #475569;
+      color: white;
+      border: none;
+      padding: 9px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #logoutButton:hover {
+      background: #64748b;
+    }
+
+    nav {
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      gap: 5px;
+      padding: 10px 20px;
+      overflow-x: auto;
+    }
+
+    nav button {
+      background: transparent;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    nav button:hover,
+    nav button.active {
+      background: #e2e8f0;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 25px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page h2 {
+      margin-top: 0;
+    }
+
+    /* DASHBOARD */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 22px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .stat-card .label {
+      color: #64748b;
+    }
+
+    /* CARDS */
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      margin-bottom: 20px;
+    }
+
+    /* FORMS */
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    .form-group select,
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      background: white;
+    }
+
+    .primary-button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .primary-button:hover {
+      background: #1d4ed8;
+    }
+
+    .primary-button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    /* TABLES */
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: bold;
+    }
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    .return-button {
+      background: #16a34a;
+      color: white;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .return-button:hover {
+      background: #15803d;
+    }
+
+    /* SEARCH */
+
+    .search-box {
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+    }
+
+    /* MESSAGES */
+
+    .message {
+      padding: 12px 15px;
+      border-radius: 7px;
+      margin-bottom: 15px;
+    }
+
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 800px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 13px 15px;
+      }
+
+      header h1 {
+        font-size: 20px;
+      }
+
+      main {
+        padding: 15px;
+      }
+
+      nav {
+        padding: 8px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-card .number {
+        font-size: 25px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+  <!-- LOGIN SCREEN -->
 
-<div id="loginScreen">
+  <div id="loginScreen">
+    <div class="login-box">
+      <h1>📚 Classroom Library</h1>
+      <p>Teacher Login</p>
 
-  <div class="login-card">
+      <input
+        type="email"
+        id="email"
+        placeholder="Email"
+        autocomplete="email"
+      />
 
-    <h1>📚 Classroom Library</h1>
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      />
 
-    <p>Teacher Login</p>
+      <button id="loginButton">Log In</button>
 
-    <input
-      type="email"
-      id="email"
-      placeholder="Email address"
-      autocomplete="email"
-    >
-
-    <input
-      type="password"
-      id="password"
-      placeholder="Password"
-      autocomplete="current-password"
-    >
-
-    <button
-      class="login-button"
-      onclick="login()">
-
-      Log In
-
-    </button>
-
-    <div id="errorMessage"></div>
-
-  </div>
-
-</div>
-
-
-<!-- APP -->
-
-<div id="app">
-
-<header>
-
-  <h1>📚 Classroom Library</h1>
-
-  <button
-    class="logout-button"
-    onclick="logout()">
-
-    Log Out
-
-  </button>
-
-</header>
-
-
-<nav>
-
-  <button
-    class="active"
-    onclick="showPage('dashboard', this)">
-
-    Dashboard
-
-  </button>
-
-  <button
-    onclick="showPage('checkout', this)">
-
-    📕 Check Out
-
-  </button>
-
-  <button
-    onclick="showPage('library', this)">
-
-    📚 Library
-
-  </button>
-
-  <button
-    onclick="showPage('students', this)">
-
-    👥 Students
-
-  </button>
-
-  <button
-    onclick="showPage('checkedout', this)">
-
-    📖 Checked Out
-
-  </button>
-
-</nav>
-
-
-<main>
-
-
-<!-- DASHBOARD -->
-
-<section
-  id="dashboard"
-  class="page active">
-
-  <h2>Dashboard</h2>
-
-  <div class="stats">
-
-    <div class="stat">
-
-      <div>Total Books</div>
-
-      <div
-        class="stat-number"
-        id="totalBooks">
-
-        —
-
-      </div>
-
+      <div id="loginError"></div>
     </div>
-
-
-    <div class="stat">
-
-      <div>Students</div>
-
-      <div
-        class="stat-number"
-        id="totalStudents">
-
-        —
-
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div>Checked Out</div>
-
-      <div
-        class="stat-number"
-        id="checkedOut">
-
-        —
-
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div>Available</div>
-
-      <div
-        class="stat-number"
-        id="available">
-
-        —
-
-      </div>
-
-    </div>
-
   </div>
 
 
-  <div class="card">
+  <!-- MAIN APP -->
 
-    <h2>Welcome!</h2>
+  <div id="app" class="hidden">
 
-    <p>
-      Your classroom library is ready to manage.
-    </p>
+    <header>
+      <h1>📚 Classroom Library</h1>
+      <button id="logoutButton">Log Out</button>
+    </header>
 
+    <nav>
+      <button class="nav-button active" data-page="dashboard">Dashboard</button>
+      <button class="nav-button" data-page="checkout">Check Out</button>
+      <button class="nav-button" data-page="library">Library</button>
+      <button class="nav-button" data-page="students">Students</button>
+      <button class="nav-button" data-page="checkedout">Checked Out</button>
+    </nav>
+
+    <main>
+
+      <!-- DASHBOARD -->
+
+      <section id="dashboard" class="page active">
+        <h2>Dashboard</h2>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="number" id="totalBooks">0</div>
+            <div class="label">Total Books</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="number" id="availableBooks">0</div>
+            <div class="label">Available</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="number" id="checkedOutBooks">0</div>
+            <div class="label">Checked Out</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="number" id="totalStudents">0</div>
+            <div class="label">Students</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Welcome!</h3>
+          <p>
+            Use <strong>Check Out</strong> to lend a book to a student.
+            Use <strong>Checked Out</strong> to see currently borrowed books
+            and return them.
+          </p>
+        </div>
+      </section>
+
+
+      <!-- CHECK OUT -->
+
+      <section id="checkout" class="page">
+        <h2>Check Out a Book</h2>
+
+        <div id="checkoutMessage"></div>
+
+        <div class="card">
+
+          <div class="form-group">
+            <label for="classSelect">Class</label>
+
+            <select id="classSelect">
+              <option value="">Select a class...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="studentSelect">Student</label>
+
+            <select id="studentSelect" disabled>
+              <option value="">Select a student...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bookSelect">Book</label>
+
+            <select id="bookSelect" disabled>
+              <option value="">Select an available book...</option>
+            </select>
+          </div>
+
+          <button
+            id="checkoutButton"
+            class="primary-button"
+            disabled
+          >
+            Check Out
+          </button>
+
+        </div>
+      </section>
+
+
+      <!-- LIBRARY -->
+
+      <section id="library" class="page">
+        <h2>Library</h2>
+
+        <div class="search-box">
+          <input
+            type="text"
+            id="librarySearch"
+            placeholder="Search by title, author, series, or category..."
+          />
+        </div>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Author</th>
+                  <th>Category</th>
+                  <th>Series</th>
+                  <th>Series #</th>
+                  <th>Copies</th>
+                  <th>Available</th>
+                </tr>
+              </thead>
+
+              <tbody id="libraryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- STUDENTS -->
+
+      <section id="students" class="page">
+        <h2>Students</h2>
+
+        <div class="search-box">
+          <input
+            type="text"
+            id="studentSearch"
+            placeholder="Search by class or student number..."
+          />
+        </div>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Class</th>
+                  <th>Student #</th>
+                  <th>Books Checked Out</th>
+                </tr>
+              </thead>
+
+              <tbody id="studentsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- CHECKED OUT -->
+
+      <section id="checkedout" class="page">
+        <h2>Checked Out Books</h2>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Book</th>
+                  <th>Student</th>
+                  <th>Class</th>
+                  <th>Checked Out</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody id="checkedOutTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
 
-</section>
 
+  <script>
 
-<!-- CHECKOUT -->
+    /* ============================================================
+       SUPABASE
+    ============================================================ */
 
-<section
-  id="checkout"
-  class="page">
+    const SUPABASE_URL =
+      "https://wwkcacypzjoojonmfaui.supabase.co";
 
-  <h2>Check Out a Book</h2>
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
 
-  <div class="card">
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
-    <div class="form-group">
 
-      <label for="classSelect">
-        Class
-      </label>
+    /* ============================================================
+       DATA
+    ============================================================ */
 
-      <select
-        id="classSelect"
-        onchange="loadStudentOptions()">
+    let books = [];
+    let students = [];
+    let classes = [];
+    let checkouts = [];
 
-        <option value="">
-          Select a class
-        </option>
 
-      </select>
+    /* ============================================================
+       DATE FUNCTIONS
+       Uses Connecticut / Eastern Time.
+    ============================================================ */
 
-    </div>
+    function getTodayEastern() {
+      const now = new Date();
 
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(now);
 
-    <div class="form-group">
+      let year = "";
+      let month = "";
+      let day = "";
 
-      <label for="studentSelect">
-        Student
-      </label>
+      parts.forEach(part => {
+        if (part.type === "year") {
+          year = part.value;
+        }
 
-      <select id="studentSelect">
+        if (part.type === "month") {
+          month = part.value;
+        }
 
-        <option value="">
-          Select a student
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="bookSelect">
-        Book
-      </label>
-
-      <select id="bookSelect">
-
-        <option value="">
-          Select a book
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <button
-      class="primary-button"
-      id="checkoutButton"
-      onclick="checkoutBook()">
-
-      Check Out Book
-
-    </button>
-
-
-    <div
-      id="checkoutMessage"
-      class="message">
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- LIBRARY -->
-
-<section
-  id="library"
-  class="page">
-
-  <h2>Library</h2>
-
-  <div class="card">
-
-    <input
-      class="search"
-      id="bookSearch"
-      placeholder="Search by title, author, or series..."
-      oninput="displayBooks()"
-    >
-
-    <div
-      id="bookList"
-      class="book-list">
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- STUDENTS -->
-
-<section
-  id="students"
-  class="page">
-
-  <h2>Students</h2>
-
-  <div class="card">
-
-    <div
-      id="studentList"
-      class="student-grid">
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- CHECKED OUT -->
-
-<section
-  id="checkedout"
-  class="page">
-
-  <h2>Currently Checked Out</h2>
-
-  <div class="card">
-
-    <div id="checkoutList">
-
-    </div>
-
-  </div>
-
-</section>
-
-
-</main>
-
-</div>
-
-
-<script>
-
-/* SUPABASE */
-
-const SUPABASE_URL =
-  "https://wwkcacypzjoojonmfaui.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-/* DATA */
-
-let books = [];
-let students = [];
-let classes = [];
-let checkouts = [];
-
-
-/* LOGIN */
-
-async function login() {
-
-  const email =
-    document.getElementById(
-      "email"
-    ).value.trim();
-
-
-  const password =
-    document.getElementById(
-      "password"
-    ).value;
-
-
-  const error =
-    document.getElementById(
-      "errorMessage"
-    );
-
-
-  error.textContent = "";
-
-
-  if (!email || !password) {
-
-    error.textContent =
-      "Please enter your email and password.";
-
-    return;
-
-  }
-
-
-  const {
-    error: loginError
-  } =
-    await supabaseClient.auth
-      .signInWithPassword({
-
-        email,
-        password
-
+        if (part.type === "day") {
+          day = part.value;
+        }
       });
 
-
-  if (loginError) {
-
-    error.textContent =
-      loginError.message;
-
-    return;
-
-  }
-
-
-  showApp();
-
-}
-
-
-/* LOGOUT */
-
-async function logout() {
-
-  await supabaseClient
-    .auth
-    .signOut();
-
-
-  document.getElementById(
-    "app"
-  ).style.display = "none";
-
-
-  document.getElementById(
-    "loginScreen"
-  ).style.display = "flex";
-
-
-  document.getElementById(
-    "password"
-  ).value = "";
-
-}
-
-
-/* SHOW APP */
-
-function showApp() {
-
-  document.getElementById(
-    "loginScreen"
-  ).style.display = "none";
-
-
-  document.getElementById(
-    "app"
-  ).style.display = "block";
-
-
-  loadData();
-
-}
-
-
-/* CHECK EXISTING SESSION */
-
-async function checkLogin() {
-
-  const { data } =
-    await supabaseClient
-      .auth
-      .getSession();
-
-
-  if (data.session) {
-
-    showApp();
-
-  }
-
-}
-
-
-/* LOAD DATABASE */
-
-async function loadData() {
-
-  const booksResult =
-    await supabaseClient
-      .from("Books")
-      .select("*")
-      .order("Title");
-
-
-  if (booksResult.error) {
-
-    console.error(
-      "Books error:",
-      booksResult.error
-    );
-
-    return;
-
-  }
-
-
-  books =
-    booksResult.data || [];
-
-
-  const studentsResult =
-    await supabaseClient
-      .from("Students")
-      .select("*")
-      .order("class_id")
-      .order("student_number");
-
-
-  if (studentsResult.error) {
-
-    console.error(
-      "Students error:",
-      studentsResult.error
-    );
-
-  } else {
-
-    students =
-      studentsResult.data || [];
-
-  }
-
-
-  const classesResult =
-    await supabaseClient
-      .from("Classes")
-      .select("*")
-      .order("id");
-
-
-  if (classesResult.error) {
-
-    console.error(
-      "Classes error:",
-      classesResult.error
-    );
-
-  } else {
-
-    classes =
-      classesResult.data || [];
-
-  }
-
-
-  const checkoutsResult =
-    await supabaseClient
-      .from("Checkouts")
-      .select("*")
-      .is(
-        "Return Date",
-        null
-      );
-
-
-  if (checkoutsResult.error) {
-
-    console.error(
-      "Checkouts error:",
-      checkoutsResult.error
-    );
-
-  } else {
-
-    checkouts =
-      checkoutsResult.data || [];
-
-  }
-
-
-  updateDashboard();
-
-  populateClassSelect();
-
-  populateBookSelect();
-
-  displayBooks();
-
-  displayStudents();
-
-  displayCheckouts();
-
-}
-
-
-/* DASHBOARD */
-
-function updateDashboard() {
-
-  const totalCopies =
-    books.reduce(
-
-      (sum, book) =>
-
-        sum +
-        Number(
-          book["Copies"] || 1
-        ),
-
-      0
-
-    );
-
-
-  const checkedOutCopies =
-    checkouts.length;
-
-
-  document.getElementById(
-    "totalBooks"
-  ).textContent =
-    totalCopies;
-
-
-  document.getElementById(
-    "totalStudents"
-  ).textContent =
-    students.length;
-
-
-  document.getElementById(
-    "checkedOut"
-  ).textContent =
-    checkedOutCopies;
-
-
-  document.getElementById(
-    "available"
-  ).textContent =
-    Math.max(
-      0,
-      totalCopies -
-      checkedOutCopies
-    );
-
-}
-
-
-/* CLASS DROPDOWN */
-
-function populateClassSelect() {
-
-  const select =
-    document.getElementById(
-      "classSelect"
-    );
-
-
-  select.innerHTML =
-    `
-      <option value="">
-        Select a class
-      </option>
-    `;
-
-
-  classes.forEach(cls => {
-
-    const option =
-      document.createElement(
-        "option"
-      );
-
-
-    option.value =
-      cls.id;
-
-
-    option.textContent =
-      cls.name ||
-      cls.Name ||
-      cls.class_name ||
-      cls["Class Name"] ||
-      cls.id;
-
-
-    select.appendChild(
-      option
-    );
-
-  });
-
-}
-
-
-/* STUDENT DROPDOWN */
-
-function loadStudentOptions() {
-
-  const classId =
-    document.getElementById(
-      "classSelect"
-    ).value;
-
-
-  const studentSelect =
-    document.getElementById(
-      "studentSelect"
-    );
-
-
-  studentSelect.innerHTML =
-    `
-      <option value="">
-        Select a student
-      </option>
-    `;
-
-
-  if (!classId) {
-
-    return;
-
-  }
-
-
-  const classStudents =
-    students.filter(
-
-      student =>
-
-        String(
-          student.class_id
-        ) ===
-        String(classId)
-
-    );
-
-
-  classStudents.forEach(
-    student => {
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-
-      option.value =
-        student.id;
-
-
-      option.textContent =
-        `#${student.student_number}`;
-
-
-      studentSelect.appendChild(
-        option
-      );
-
+      return `${year}-${month}-${day}`;
     }
-  );
-
-}
 
 
-/* AVAILABLE BOOKS */
+    function formatDate(value) {
+      if (!value) {
+        return "";
+      }
 
-function populateBookSelect() {
+      const dateString = String(value).substring(0, 10);
 
-  const select =
-    document.getElementById(
-      "bookSelect"
-    );
+      const parts = dateString.split("-");
+
+      if (parts.length !== 3) {
+        return value;
+      }
+
+      const year = Number(parts[0]);
+      const month = Number(parts[1]);
+      const day = Number(parts[2]);
+
+      if (!year || !month || !day) {
+        return value;
+      }
+
+      return new Intl.DateTimeFormat("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      }).format(
+        new Date(year, month - 1, day)
+      );
+    }
 
 
-  select.innerHTML =
-    `
-      <option value="">
-        Select a book
-      </option>
-    `;
+    /* ============================================================
+       HELPERS
+    ============================================================ */
 
-
-  books.forEach(book => {
-
-    const copies =
-      Number(
-        book["Copies"] || 1
+    function getClassName(classId) {
+      const found = classes.find(
+        c => String(c.id) === String(classId)
       );
 
+      if (!found) {
+        return "";
+      }
 
-    const checkedOutCount =
-      checkouts.filter(
+      return (
+        found.name ||
+        found.Name ||
+        found.class_name ||
+        found["Class Name"] ||
+        ""
+      );
+    }
 
-        checkout =>
 
-          String(
-            checkout.book_id
-          ) ===
-          String(book.id)
+    function getBookTitle(bookId) {
+      const book = books.find(
+        b => String(b.id) === String(bookId)
+      );
 
+      return book ? book.Title : "Unknown Book";
+    }
+
+
+    function getStudent(studentId) {
+      return students.find(
+        s => String(s.id) === String(studentId)
+      );
+    }
+
+
+    function getAvailableCopies(book) {
+      const activeCheckouts = checkouts.filter(
+        c =>
+          String(c.book_id) === String(book.id) &&
+          !c["Return Date"]
       ).length;
 
+      const copies = Number(book.Copies || 0);
 
-    const available =
-      copies -
-      checkedOutCount;
+      return Math.max(
+        0,
+        copies - activeCheckouts
+      );
+    }
 
 
-    if (available > 0) {
+    function showMessage(elementId, message, type) {
+      const element = document.getElementById(elementId);
 
-      const option =
-        document.createElement(
-          "option"
+      element.innerHTML = `
+        <div class="message ${type}">
+          ${message}
+        </div>
+      `;
+
+      setTimeout(() => {
+        element.innerHTML = "";
+      }, 4000);
+    }
+
+
+    /* ============================================================
+       LOAD DATA
+    ============================================================ */
+
+    async function loadData() {
+
+      try {
+
+        const [
+          booksResult,
+          studentsResult,
+          classesResult,
+          checkoutsResult
+        ] = await Promise.all([
+
+          supabaseClient
+            .from("Books")
+            .select("*")
+            .order("Title"),
+
+          supabaseClient
+            .from("Students")
+            .select("*")
+            .order("class_id")
+            .order("student_number"),
+
+          supabaseClient
+            .from("Classes")
+            .select("*")
+            .order("id"),
+
+          supabaseClient
+            .from("Checkouts")
+            .select("*")
+            .order("Check Out Date", {
+              ascending: false
+            })
+
+        ]);
+
+
+        if (booksResult.error) {
+          throw booksResult.error;
+        }
+
+        if (studentsResult.error) {
+          throw studentsResult.error;
+        }
+
+        if (classesResult.error) {
+          throw classesResult.error;
+        }
+
+        if (checkoutsResult.error) {
+          throw checkoutsResult.error;
+        }
+
+
+        books = booksResult.data || [];
+        students = studentsResult.data || [];
+        classes = classesResult.data || [];
+        checkouts = checkoutsResult.data || [];
+
+
+        updateDashboard();
+        populateClasses();
+        renderLibrary();
+        renderStudents();
+        renderCheckedOut();
+
+      } catch (error) {
+
+        console.error("Error loading data:", error);
+
+        alert(
+          "There was a problem loading your library data. " +
+          "Please refresh the page and try again."
+        );
+      }
+    }
+
+
+    /* ============================================================
+       DASHBOARD
+    ============================================================ */
+
+    function updateDashboard() {
+
+      const totalBooks = books.reduce(
+        (total, book) =>
+          total + Number(book.Copies || 0),
+        0
+      );
+
+      const checkedOut = checkouts.filter(
+        checkout => !checkout["Return Date"]
+      ).length;
+
+      const available =
+        totalBooks - checkedOut;
+
+
+      document.getElementById(
+        "totalBooks"
+      ).textContent = totalBooks;
+
+
+      document.getElementById(
+        "availableBooks"
+      ).textContent = available;
+
+
+      document.getElementById(
+        "checkedOutBooks"
+      ).textContent = checkedOut;
+
+
+      document.getElementById(
+        "totalStudents"
+      ).textContent = students.length;
+    }
+
+
+    /* ============================================================
+       CHECKOUT DROPDOWNS
+    ============================================================ */
+
+    function populateClasses() {
+
+      const select =
+        document.getElementById("classSelect");
+
+      select.innerHTML =
+        `<option value="">Select a class...</option>`;
+
+
+      classes.forEach(classItem => {
+
+        const name =
+          getClassName(classItem.id);
+
+        const option =
+          document.createElement("option");
+
+        option.value = classItem.id;
+        option.textContent = name;
+
+        select.appendChild(option);
+      });
+    }
+
+
+    function populateStudents() {
+
+      const classId =
+        document.getElementById(
+          "classSelect"
+        ).value;
+
+      const studentSelect =
+        document.getElementById(
+          "studentSelect"
         );
 
 
-      option.value =
-        book.id;
+      studentSelect.innerHTML =
+        `<option value="">Select a student...</option>`;
 
 
-      let label =
-        book["Title"] || "";
+      if (!classId) {
 
+        studentSelect.disabled = true;
 
-      if (book["Series"]) {
-
-        label +=
-          ` — ${book["Series"]}`;
-
+        return;
       }
 
 
-      option.textContent =
-        label;
+      const classStudents =
+        students.filter(
+          student =>
+            String(student.class_id) ===
+            String(classId)
+        );
 
 
-      select.appendChild(
-        option
-      );
+      classStudents.forEach(student => {
 
-    }
+        const option =
+          document.createElement("option");
 
-  });
+        option.value = student.id;
 
-}
+        option.textContent =
+          `Student #${student.student_number}`;
 
-
-/* CHECK OUT */
-
-async function checkoutBook() {
-
-  const studentId =
-    document.getElementById(
-      "studentSelect"
-    ).value;
-
-
-  const bookId =
-    document.getElementById(
-      "bookSelect"
-    ).value;
-
-
-  const message =
-    document.getElementById(
-      "checkoutMessage"
-    );
-
-
-  message.style.display =
-    "none";
-
-
-  if (!studentId || !bookId) {
-
-    showMessage(
-
-      message,
-
-      "Please select a student and a book.",
-
-      false
-
-    );
-
-    return;
-
-  }
-
-
-  const button =
-    document.getElementById(
-      "checkoutButton"
-    );
-
-
-  button.disabled =
-    true;
-
-
-  button.textContent =
-    "Checking Out...";
-
-
-  /*
-    Use a date-only value.
-    This prevents the browser from
-    shifting the date because of UTC.
-  */
-
-  const now =
-    new Date();
-
-
-  const year =
-    now.getFullYear();
-
-
-  const month =
-    String(
-      now.getMonth() + 1
-    ).padStart(
-      2,
-      "0"
-    );
-
-
-  const day =
-    String(
-      now.getDate()
-    ).padStart(
-      2,
-      "0"
-    );
-
-
-  const today =
-    `${year}-${month}-${day}`;
-
-
-  const { error } =
-    await supabaseClient
-      .from("Checkouts")
-      .insert({
-
-        "Check Out Date":
-          today,
-
-        "Return Date":
-          null,
-
-        student_id:
-          studentId,
-
-        book_id:
-          bookId
-
+        studentSelect.appendChild(option);
       });
 
 
-  button.disabled =
-    false;
+      studentSelect.disabled = false;
 
-
-  button.textContent =
-    "Check Out Book";
-
-
-  if (error) {
-
-    console.error(
-      "Checkout error:",
-      error
-    );
-
-
-    showMessage(
-
-      message,
-
-      "There was a problem checking out the book.",
-
-      false
-
-    );
-
-
-    return;
-
-  }
-
-
-  showMessage(
-
-    message,
-
-    "Book checked out successfully!",
-
-    true
-
-  );
-
-
-  document.getElementById(
-    "studentSelect"
-  ).value = "";
-
-
-  document.getElementById(
-    "bookSelect"
-  ).value = "";
-
-
-  await loadData();
-
-}
-
-
-/* FORMAT DATE */
-
-function formatDate(value) {
-
-  if (!value) {
-
-    return "";
-
-  }
-
-
-  /*
-    If Supabase gives us a timestamp,
-    take only the YYYY-MM-DD portion.
-    This prevents UTC from changing
-    the displayed day.
-  */
-
-  const datePart =
-    String(value)
-      .substring(
-        0,
-        10
-      );
-
-
-  const parts =
-    datePart.split("-");
-
-
-  if (parts.length !== 3) {
-
-    return value;
-
-  }
-
-
-  const year =
-    Number(parts[0]);
-
-
-  const month =
-    Number(parts[1]);
-
-
-  const day =
-    Number(parts[2]);
-
-
-  const date =
-    new Date(
-      year,
-      month - 1,
-      day
-    );
-
-
-  return date.toLocaleDateString(
-    "en-US",
-    {
-      month: "long",
-      day: "numeric",
-      year: "numeric"
+      populateBooks();
     }
-  );
 
-}
 
+    function populateBooks() {
 
-/* RETURN BOOK */
+      const bookSelect =
+        document.getElementById(
+          "bookSelect"
+        );
 
-async function returnBook(
-  checkoutId
-) {
 
-  if (
-    !confirm(
-      "Are you sure you want to return this book?"
-    )
-  ) {
+      bookSelect.innerHTML =
+        `<option value="">Select an available book...</option>`;
 
-    return;
 
-  }
+      const availableBooks =
+        books.filter(
+          book =>
+            getAvailableCopies(book) > 0
+        );
 
 
-  const now =
-    new Date();
+      availableBooks.forEach(book => {
 
+        const option =
+          document.createElement("option");
 
-  const year =
-    now.getFullYear();
+        option.value = book.id;
 
+        let text = book.Title;
 
-  const month =
-    String(
-      now.getMonth() + 1
-    ).padStart(
-      2,
-      "0"
-    );
+        if (book.Author) {
+          text += ` — ${book.Author}`;
+        }
 
+        const available =
+          getAvailableCopies(book);
 
-  const day =
-    String(
-      now.getDate()
-    ).padStart(
-      2,
-      "0"
-    );
+        text += ` (${available} available)`;
 
+        option.textContent = text;
 
-  const today =
-    `${year}-${month}-${day}`;
+        bookSelect.appendChild(option);
+      });
 
 
-  const { error } =
-    await supabaseClient
-      .from("Checkouts")
-      .update({
+      bookSelect.disabled =
+        availableBooks.length === 0;
 
-        "Return Date":
-          today
+      updateCheckoutButton();
+    }
 
-      })
-      .eq(
-        "id",
-        checkoutId
-      );
 
+    function updateCheckoutButton() {
 
-  if (error) {
+      const classValue =
+        document.getElementById(
+          "classSelect"
+        ).value;
 
-    console.error(
-      "Return error:",
-      error
-    );
+      const studentValue =
+        document.getElementById(
+          "studentSelect"
+        ).value;
 
+      const bookValue =
+        document.getElementById(
+          "bookSelect"
+        ).value;
 
-    alert(
-      "There was a problem returning the book."
-    );
 
+      document.getElementById(
+        "checkoutButton"
+      ).disabled =
+        !classValue ||
+        !studentValue ||
+        !bookValue;
+    }
 
-    return;
 
-  }
+    /* ============================================================
+       CHECK OUT A BOOK
+    ============================================================ */
 
+    async function checkoutBook() {
 
-  await loadData();
+      const studentId =
+        document.getElementById(
+          "studentSelect"
+        ).value;
 
-}
+      const bookId =
+        document.getElementById(
+          "bookSelect"
+        ).value;
 
 
-/* MESSAGE */
+      if (!studentId || !bookId) {
+        return;
+      }
 
-function showMessage(
-  element,
-  text,
-  success
-) {
 
-  element.textContent =
-    text;
+      const button =
+        document.getElementById(
+          "checkoutButton"
+        );
 
 
-  element.className =
-    "message " +
-    (
-      success
-        ? "success"
-        : "error"
-    );
+      button.disabled = true;
 
+      button.textContent = "Checking Out...";
 
-  element.style.display =
-    "block";
 
-}
+      try {
 
+        /*
+          IMPORTANT:
+          This gets the current date in Connecticut,
+          not UTC.
+        */
 
-/* LIBRARY */
+        const today =
+          getTodayEastern();
 
-function displayBooks() {
 
-  const container =
-    document.getElementById(
-      "bookList"
-    );
+        const { error } =
+          await supabaseClient
+            .from("Checkouts")
+            .insert({
 
+              "Check Out Date":
+                `${today}T12:00:00`,
 
-  const search =
-    document.getElementById(
-      "bookSearch"
-    ).value.toLowerCase();
+              "Return Date":
+                null,
 
+              student_id:
+                Number(studentId),
 
-  const filtered =
-    books.filter(book => {
+              book_id:
+                Number(bookId)
 
-      const title =
-        String(
-          book["Title"] || ""
-        ).toLowerCase();
+            });
 
 
-      const author =
-        String(
-          book["Author"] || ""
-        ).toLowerCase();
+        if (error) {
+          throw error;
+        }
 
 
-      const series =
-        String(
-          book["Series"] || ""
-        ).toLowerCase();
+        showMessage(
+          "checkoutMessage",
+          "Book successfully checked out!",
+          "success"
+        );
 
 
-      return (
+        document.getElementById(
+          "classSelect"
+        ).value = "";
 
-        title.includes(
-          search
-        ) ||
 
-        author.includes(
-          search
-        ) ||
+        document.getElementById(
+          "studentSelect"
+        ).innerHTML =
+          `<option value="">Select a student...</option>`;
 
-        series.includes(
-          search
-        )
 
-      );
+        document.getElementById(
+          "studentSelect"
+        ).disabled = true;
 
-    });
 
+        document.getElementById(
+          "bookSelect"
+        ).innerHTML =
+          `<option value="">Select an available book...</option>`;
 
-  if (!filtered.length) {
 
-    container.innerHTML =
-      "<p>No books found.</p>";
+        document.getElementById(
+          "bookSelect"
+        ).disabled = true;
 
-    return;
 
-  }
+        await loadData();
 
 
-  container.innerHTML =
-    filtered.map(
-      book => {
+      } catch (error) {
 
-        const copies =
-          Number(
-            book["Copies"] || 1
+        console.error(
+          "Checkout error:",
+          error
+        );
+
+
+        showMessage(
+          "checkoutMessage",
+          "Could not check out the book. Please try again.",
+          "error"
+        );
+
+      } finally {
+
+        button.textContent =
+          "Check Out";
+
+        updateCheckoutButton();
+      }
+    }
+
+
+    /* ============================================================
+       RETURN BOOK
+    ============================================================ */
+
+    async function returnBook(checkoutId) {
+
+      const confirmed =
+        confirm(
+          "Are you sure you want to mark this book as returned?"
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      try {
+
+        const today =
+          getTodayEastern();
+
+
+        const { error } =
+          await supabaseClient
+            .from("Checkouts")
+            .update({
+
+              "Return Date":
+                `${today}T12:00:00`
+
+            })
+            .eq("id", checkoutId);
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        await loadData();
+
+
+      } catch (error) {
+
+        console.error(
+          "Return error:",
+          error
+        );
+
+
+        alert(
+          "Could not return the book. Please try again."
+        );
+      }
+    }
+
+
+    /* ============================================================
+       LIBRARY
+    ============================================================ */
+
+    function renderLibrary() {
+
+      const tbody =
+        document.getElementById(
+          "libraryTableBody"
+        );
+
+
+      const search =
+        document.getElementById(
+          "librarySearch"
+        ).value
+        .toLowerCase()
+        .trim();
+
+
+      const filteredBooks =
+        books.filter(book => {
+
+          if (!search) {
+            return true;
+          }
+
+
+          return (
+
+            String(book.Title || "")
+              .toLowerCase()
+              .includes(search)
+
+            ||
+
+            String(book.Author || "")
+              .toLowerCase()
+              .includes(search)
+
+            ||
+
+            String(book.Category || "")
+              .toLowerCase()
+              .includes(search)
+
+            ||
+
+            String(book.Series || "")
+              .toLowerCase()
+              .includes(search)
+
+          );
+        });
+
+
+      tbody.innerHTML = "";
+
+
+      filteredBooks.forEach(book => {
+
+        const row =
+          document.createElement("tr");
+
+
+        row.innerHTML = `
+
+          <td>${book.Title || ""}</td>
+
+          <td>${book.Author || ""}</td>
+
+          <td>${book.Category || ""}</td>
+
+          <td>${book.Series || ""}</td>
+
+          <td>${book["Series #"] || ""}</td>
+
+          <td>${book.Copies || 0}</td>
+
+          <td>${getAvailableCopies(book)}</td>
+
+        `;
+
+
+        tbody.appendChild(row);
+      });
+    }
+
+
+    /* ============================================================
+       STUDENTS
+    ============================================================ */
+
+    function renderStudents() {
+
+      const tbody =
+        document.getElementById(
+          "studentsTableBody"
+        );
+
+
+      const search =
+        document.getElementById(
+          "studentSearch"
+        ).value
+        .toLowerCase()
+        .trim();
+
+
+      tbody.innerHTML = "";
+
+
+      students.forEach(student => {
+
+        const className =
+          getClassName(
+            student.class_id
           );
 
 
-        const checkedOutCount =
+        const studentNumber =
+          String(
+            student.student_number
+          );
+
+
+        if (
+          search &&
+          !className
+            .toLowerCase()
+            .includes(search) &&
+          !studentNumber
+            .includes(search)
+        ) {
+          return;
+        }
+
+
+        const borrowed =
           checkouts.filter(
-
             checkout =>
-
-              String(
-                checkout.book_id
-              ) ===
-              String(book.id)
-
+              String(checkout.student_id) ===
+              String(student.id) &&
+              !checkout["Return Date"]
           ).length;
 
 
-        const available =
-          Math.max(
-
-            0,
-
-            copies -
-            checkedOutCount
-
-          );
+        const row =
+          document.createElement("tr");
 
 
-        return `
+        row.innerHTML = `
 
-          <div class="book">
+          <td>${className}</td>
 
-            <h3>
-              ${escapeHtml(
-                book["Title"] || ""
-              )}
-            </h3>
+          <td>Student #${student.student_number}</td>
 
-            <p>
-              <strong>Author:</strong>
-              ${escapeHtml(
-                book["Author"] || ""
-              )}
-            </p>
-
-            ${
-              book["Series"]
-
-                ? `
-
-                  <p>
-                    <strong>Series:</strong>
-                    ${escapeHtml(
-                      book["Series"]
-                    )}
-                  </p>
-
-                `
-
-                : ""
-            }
-
-            ${
-              book["Series #"]
-
-                ? `
-
-                  <p>
-                    <strong>Book #:</strong>
-                    ${book["Series #"]}
-                  </p>
-
-                `
-
-                : ""
-            }
-
-            <span
-              class="badge ${
-                available > 0
-                  ? "available"
-                  : "checked"
-              }">
-
-              ${
-                available
-              } of ${
-                copies
-              } available
-
-            </span>
-
-          </div>
+          <td>${borrowed}</td>
 
         `;
 
-      }
-    ).join("");
 
-}
-
-
-/* STUDENTS */
-
-function displayStudents() {
-
-  const container =
-    document.getElementById(
-      "studentList"
-    );
+        tbody.appendChild(row);
+      });
+    }
 
 
-  if (!students.length) {
+    /* ============================================================
+       CHECKED OUT
+    ============================================================ */
 
-    container.innerHTML =
-      "<p>No students found.</p>";
+    function renderCheckedOut() {
 
-    return;
-
-  }
-
-
-  container.innerHTML =
-    students.map(
-      student => {
-
-        const className =
-          classes.find(
-
-            c =>
-
-              String(c.id) ===
-              String(
-                student.class_id
-              )
-
-          );
+      const tbody =
+        document.getElementById(
+          "checkedOutTableBody"
+        );
 
 
-        const classText =
-          className
-
-            ? className.name ||
-              className.Name ||
-              className.class_name ||
-              className["Class Name"] ||
-              className.id
-
-            : "";
+      tbody.innerHTML = "";
 
 
-        return `
+      const activeCheckouts =
+        checkouts.filter(
+          checkout =>
+            !checkout["Return Date"]
+        );
 
-          <div class="student-card">
 
-            <strong>
-              ${escapeHtml(
-                String(classText)
-              )}
-            </strong>
+      if (activeCheckouts.length === 0) {
 
-            <br>
+        tbody.innerHTML = `
 
-            Student #${
-              student.student_number
-            }
+          <tr>
 
-          </div>
+            <td colspan="5">
+              No books are currently checked out.
+            </td>
+
+          </tr>
 
         `;
 
+        return;
       }
-    ).join("");
-
-}
 
 
-/* CHECKED OUT */
+      activeCheckouts.forEach(checkout => {
 
-function displayCheckouts() {
+        const student =
+          getStudent(
+            checkout.student_id
+          );
 
-  const container =
-    document.getElementById(
-      "checkoutList"
-    );
-
-
-  if (!checkouts.length) {
-
-    container.innerHTML =
-      "<p>Nothing is currently checked out.</p>";
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    checkouts.map(
-      checkout => {
 
         const book =
           books.find(
-
             b =>
-
               String(b.id) ===
-              String(
-                checkout.book_id
-              )
-
-          );
-
-
-        const student =
-          students.find(
-
-            s =>
-
-              String(s.id) ===
-              String(
-                checkout.student_id
-              )
-
+              String(checkout.book_id)
           );
 
 
         const className =
           student
-
-            ? classes.find(
-
-                c =>
-
-                  String(c.id) ===
-                  String(
-                    student.class_id
-                  )
-
-              )
-
-            : null;
-
-
-        const classText =
-          className
-
-            ? className.name ||
-              className.Name ||
-              className.class_name ||
-              className["Class Name"] ||
-              className.id
-
+            ? getClassName(student.class_id)
             : "";
 
 
-        return `
-
-          <div class="checkout-item">
-
-            <div class="checkout-info">
-
-              <h3>
-
-                ${escapeHtml(
-
-                  book
-
-                    ? book["Title"]
-
-                    : "Unknown Book"
-
-                )}
-
-              </h3>
+        const row =
+          document.createElement("tr");
 
 
-              <p>
+        row.innerHTML = `
 
-                <strong>Student:</strong>
+          <td>
+            ${book ? book.Title : "Unknown Book"}
+          </td>
 
-                ${escapeHtml(
-                  String(
-                    classText
-                  )
-                )}
+          <td>
+            ${
+              student
+                ? `Student #${student.student_number}`
+                : "Unknown Student"
+            }
+          </td>
 
-                #${
-                  student
-                    ? student.student_number
-                    : "?"
-                }
+          <td>
+            ${className}
+          </td>
 
-              </p>
+          <td>
+            ${formatDate(checkout["Check Out Date"])}
+          </td>
 
-
-              <p>
-
-                <strong>Checked out:</strong>
-
-                ${formatDate(
-                  checkout[
-                    "Check Out Date"
-                  ]
-                )}
-
-              </p>
-
-            </div>
-
-
+          <td>
             <button
               class="return-button"
-              onclick="returnBook('${
-                checkout.id
-              }')">
-
-              ↩️ Return
-
+              onclick="returnBook(${checkout.id})"
+            >
+              Return
             </button>
-
-          </div>
+          </td>
 
         `;
 
-      }
-    ).join("");
 
-}
+        tbody.appendChild(row);
+      });
+    }
 
 
-/* NAVIGATION */
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
 
-function showPage(
-  pageId,
-  button
-) {
+    function showPage(pageId) {
 
-  document
-    .querySelectorAll(
-      ".page"
-    )
-    .forEach(
-      page => {
+      document
+        .querySelectorAll(".page")
+        .forEach(page => {
 
-        page.classList.remove(
-          "active"
+          page.classList.remove(
+            "active"
+          );
+
+        });
+
+
+      document
+        .querySelectorAll(".nav-button")
+        .forEach(button => {
+
+          button.classList.remove(
+            "active"
+          );
+
+        });
+
+
+      const page =
+        document.getElementById(
+          pageId
         );
 
+
+      if (page) {
+        page.classList.add("active");
       }
-    );
 
 
-  document
-    .getElementById(
-      pageId
-    )
-    .classList.add(
-      "active"
-    );
-
-
-  document
-    .querySelectorAll(
-      "nav button"
-    )
-    .forEach(
-      btn => {
-
-        btn.classList.remove(
-          "active"
+      const activeButton =
+        document.querySelector(
+          `.nav-button[data-page="${pageId}"]`
         );
 
+
+      if (activeButton) {
+        activeButton.classList.add(
+          "active"
+        );
       }
-    );
 
 
-  button.classList.add(
-    "active"
-  );
+      if (pageId === "checkout") {
+        populateBooks();
+      }
 
-}
+      if (pageId === "library") {
+        renderLibrary();
+      }
 
+      if (pageId === "students") {
+        renderStudents();
+      }
 
-/* ESCAPE HTML */
-
-function escapeHtml(
-  value
-) {
-
-  return String(value)
-
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
-}
+      if (pageId === "checkedout") {
+        renderCheckedOut();
+      }
+    }
 
 
-/* START */
+    /* ============================================================
+       LOGIN
+    ============================================================ */
 
-checkLogin();
+    async function login() {
 
-</script>
+      const email =
+        document.getElementById(
+          "email"
+        ).value.trim();
+
+
+      const password =
+        document.getElementById(
+          "password"
+        ).value;
+
+
+      const errorElement =
+        document.getElementById(
+          "loginError"
+        );
+
+
+      errorElement.textContent = "";
+
+
+      if (!email || !password) {
+
+        errorElement.textContent =
+          "Please enter your email and password.";
+
+        return;
+      }
+
+
+      const button =
+        document.getElementById(
+          "loginButton"
+        );
+
+
+      button.disabled = true;
+
+      button.textContent = "Logging in...";
+
+
+      const { error } =
+        await supabaseClient.auth
+          .signInWithPassword({
+            email,
+            password
+          });
+
+
+      if (error) {
+
+        console.error(
+          "Login error:",
+          error
+        );
+
+
+        errorElement.textContent =
+          "Incorrect email or password.";
+
+        button.disabled = false;
+
+        button.textContent = "Log In";
+
+        return;
+      }
+
+
+      await showApp();
+    }
+
+
+    async function showApp() {
+
+      document
+        .getElementById(
+          "loginScreen"
+        )
+        .classList.add("hidden");
+
+
+      document
+        .getElementById(
+          "app"
+        )
+        .classList.remove("hidden");
+
+
+      await loadData();
+    }
+
+
+    async function logout() {
+
+      await supabaseClient.auth.signOut();
+
+
+      document
+        .getElementById(
+          "app"
+        )
+        .classList.add("hidden");
+
+
+      document
+        .getElementById(
+          "loginScreen"
+        )
+        .classList.remove("hidden");
+
+
+      document.getElementById(
+        "password"
+      ).value = "";
+    }
+
+
+    /* ============================================================
+       EVENT LISTENERS
+    ============================================================ */
+
+    document
+      .getElementById("loginButton")
+      .addEventListener(
+        "click",
+        login
+      );
+
+
+    document
+      .getElementById("password")
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if (event.key === "Enter") {
+            login();
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById("logoutButton")
+      .addEventListener(
+        "click",
+        logout
+      );
+
+
+    document
+      .querySelectorAll(".nav-button")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            showPage(
+              button.dataset.page
+            );
+
+          }
+        );
+
+      });
+
+
+    document
+      .getElementById("classSelect")
+      .addEventListener(
+        "change",
+        populateStudents
+      );
+
+
+    document
+      .getElementById("studentSelect")
+      .addEventListener(
+        "change",
+        () => {
+
+          populateBooks();
+          updateCheckoutButton();
+
+        }
+      );
+
+
+    document
+      .getElementById("bookSelect")
+      .addEventListener(
+        "change",
+        updateCheckoutButton
+      );
+
+
+    document
+      .getElementById("checkoutButton")
+      .addEventListener(
+        "click",
+        checkoutBook
+      );
+
+
+    document
+      .getElementById("librarySearch")
+      .addEventListener(
+        "input",
+        renderLibrary
+      );
+
+
+    document
+      .getElementById("studentSearch")
+      .addEventListener(
+        "input",
+        renderStudents
+      );
+
+
+    /* ============================================================
+       CHECK EXISTING LOGIN SESSION
+    ============================================================ */
+
+    async function checkExistingSession() {
+
+      const {
+        data: {
+          session
+        }
+      } =
+        await supabaseClient.auth
+          .getSession();
+
+
+      if (session) {
+        await showApp();
+      }
+    }
+
+
+    checkExistingSession();
+
+  </script>
 
 </body>
 </html>
