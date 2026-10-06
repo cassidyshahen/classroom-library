@@ -953,6 +953,13 @@ tr:hover td{background:#f8fafc}
       </p>
 
 
+      <!-- EDIT BOOK TITLE -->
+
+      <div class="form-group hidden" id="editBookTitleGroup">
+        <label for="editBookTitleInput">Book Title</label>
+        <input type="text" id="editBookTitleInput" placeholder="Book title">
+      </div>
+
       <!-- COVER -->
 
       <div class="form-group">
@@ -3248,7 +3255,11 @@ function openEditBook(bookId){
     "Update the information for this book.";
 
   document.getElementById(
-    "bookTitleInput"
+    "editBookTitleGroup"
+  ).classList.remove("hidden");
+
+  document.getElementById(
+    "editBookTitleInput"
   ).value=
     book.Title||"";
 
@@ -3335,7 +3346,7 @@ async function saveEditedBook(){
 
   const title=
     document.getElementById(
-      "bookTitleInput"
+      "editBookTitleInput"
     ).value.trim();
 
   const coverUrl=
