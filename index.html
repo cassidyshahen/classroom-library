@@ -1577,7 +1577,6 @@ tr:hover td{background:#f8fafc}
           <label><input type="checkbox" value="Fantasy"> Fantasy</label>
           <label><input type="checkbox" value="Science Fiction"> Science Fiction</label>
           <label><input type="checkbox" value="Mystery"> Mystery</label>
-          <label><input type="checkbox" value="Thriller / Suspense"> Thriller / Suspense</label>
           <label><input type="checkbox" value="Horror"> Horror</label>
           <label><input type="checkbox" value="Historical Fiction"> Historical Fiction</label>
           <label><input type="checkbox" value="Realistic Fiction"> Realistic Fiction</label>
@@ -2974,7 +2973,7 @@ async function insertNewBook(data){
    LOAD DATA
 ============================================================ */
 
-const GENRE_MIGRATION_VERSION="2026-10-06-v1";
+const GENRE_MIGRATION_VERSION="2026-10-06-v2";
 const GENRE_MIGRATION_KEY="classroomLibraryGenreMigration";
 
 function getCorrectGenresForBook(book){
@@ -3032,7 +3031,7 @@ function getCorrectGenresForBook(book){
     "The Secret Life of Bees":["Historical Fiction","Realistic Fiction"],"The Thief Lord":["Fantasy","Action & Adventure"],
     "The Underdogs":["Realistic Fiction","Sports"],"The Whipping Boy":["Realistic Fiction"],"Thor":["Action & Adventure","Fantasy"],
     "Top Dogs- UCONN Huskies":["Sports","Nonfiction"],"Tracker":["Action & Adventure"],"Treasure Island":["Action & Adventure","Classics"],
-    "We are the Scribes":["Historical Fiction"],"What If?":["Nonfiction"],"What Waits in the Water":["Horror","Thriller / Suspense"],
+    "We are the Scribes":["Historical Fiction"],"What If?":["Nonfiction"],"What Waits in the Water":["Horror"],
     "Where is Easter Island?":["Nonfiction"],"Wonder":["Realistic Fiction"],"Wonder (Spanish)":["Realistic Fiction"],"Year in Sports 2016":["Sports","Nonfiction"]
   };
   return titleMap[title]||seriesMap[series]||null;
@@ -3042,6 +3041,17 @@ async function applyCorrectGenresOnce(){
   if(localStorage.getItem(GENRE_MIGRATION_KEY)===GENRE_MIGRATION_VERSION)return;
   const updates=[];
   const unmatched=[];
+  for(const book of books){
+    const currentGenres=getBookGenres(book);
+    if(currentGenres.includes("Thriller / Suspense")){
+      const cleaned=currentGenres.filter(genre=>genre!=="Thriller / Suspense");
+      const fallback=cleaned.length?cleaned:["Other"];
+      const {error}=await supabaseClient.from("Books").update({"Genres":fallback,"Genre":fallback[0]}).eq("id",book.id);
+      if(error){console.error("Genre cleanup failed:",book.Title,error);return;}
+      book.Genres=fallback;
+      book.Genre=fallback[0];
+    }
+  }
   for(const book of books){
     const genres=getCorrectGenresForBook(book);
     if(!genres){unmatched.push(book.Title);continue;}
@@ -3883,7 +3893,7 @@ function renderGenreBrowser(){
     optionsGrid.innerHTML=genres.map(genre=>{
       const count=books.filter(book=>getBookGenres(book).includes(genre)).length;
       const safeGenre=genre.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
-      const icons={"Action & Adventure":"🧭","Fantasy":"🐉","Science Fiction":"🚀","Mystery":"🔎","Thriller / Suspense":"⚡","Horror":"👻","Historical Fiction":"🏛️","Realistic Fiction":"🏡","Sports":"🏆","Graphic Novel":"💥","Humor":"😄","Romance":"💗","Classics":"📜","Nonfiction":"🌎","Memoir / Biography":"👤","Poetry":"✒️","Other":"📚"};
+      const icons={"Action & Adventure":"🧭","Fantasy":"🐉","Science Fiction":"🚀","Mystery":"🔎","Horror":"👻","Historical Fiction":"🏛️","Realistic Fiction":"🏡","Sports":"🏆","Graphic Novel":"💥","Humor":"😄","Romance":"💗","Classics":"📜","Nonfiction":"🌎","Memoir / Biography":"👤","Poetry":"✒️","Other":"📚"};
       return `<button class="genre-option-card" type="button" onclick="openBrowseGenre('${safeGenre}')"><div class="genre-option-icon">${icons[genre]||"📚"}</div><div class="genre-option-name">${genre}</div><div class="genre-option-count">${count} ${count===1 ? "book" : "books"}</div></button>`;
     }).join("");
     return;
