@@ -1313,7 +1313,7 @@ tbody tr{transition:background .12s ease}
     ← Back to Students
   </button>
 
-  <h2 id="studentHistoryTitle">Student History</h2>
+  <h2 id="studentHistoryTitle">Library Card</h2>
 
   <div class="card">
 
@@ -5046,7 +5046,7 @@ function showStudentHistory(studentId){
   document.getElementById(
     "studentHistoryTitle"
   ).textContent=
-    `Student #${student.student_number} — ${className}`;
+    `Library Card — Student #${student.student_number} · ${className}`;
 
   const tbody=
     document.getElementById(
