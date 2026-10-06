@@ -388,6 +388,85 @@ tr:hover td{background:#f8fafc}
   padding:4px;
 }
 
+.library-view-toggle{
+  display:flex;
+  gap:4px;
+  padding:4px;
+  background:#e2e8f0;
+  border-radius:9px;
+}
+
+.library-view-button{
+  border:none;
+  background:transparent;
+  color:#475569;
+  padding:8px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.library-view-button:hover{background:#f8fafc}
+.library-view-button.active{background:white;color:#1e293b;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+.online-library-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:22px;
+}
+
+.online-book-card{
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+.online-book-cover-wrap{
+  aspect-ratio:2/3;
+  background:#e2e8f0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.online-book-cover{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.online-book-no-cover{
+  width:100%;
+  height:100%;
+  min-height:230px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:8px;
+  padding:18px;
+  text-align:center;
+  color:#64748b;
+  background:linear-gradient(145deg,#f8fafc,#e2e8f0);
+}
+
+.online-book-no-cover-icon{font-size:42px}
+.online-book-info{padding:15px;display:flex;flex-direction:column;flex:1}
+.online-book-title{font-size:16px;font-weight:bold;line-height:1.3;color:#1e293b;margin-bottom:5px}
+.online-book-author{font-size:13px;color:#64748b;margin-bottom:9px}
+.online-book-series{font-size:12px;color:#475569;margin-bottom:10px}
+.online-book-bottom{margin-top:auto}
+.online-book-availability{font-size:13px;font-weight:bold;margin-bottom:11px}
+.online-book-actions{display:flex;gap:7px}
+.online-book-actions button{flex:1}
+.online-library-empty{background:white;border-radius:10px;padding:30px;text-align:center;color:#64748b}
+
 @media(max-width:800px){
   .stats{grid-template-columns:repeat(2,1fr)}
 
@@ -561,6 +640,15 @@ tr:hover td{background:#f8fafc}
 
     <div class="library-actions">
 
+      <div class="library-view-toggle" aria-label="Library view">
+        <button id="tableViewButton" class="library-view-button active" type="button">
+          ☰ Table
+        </button>
+        <button id="onlineLibraryViewButton" class="library-view-button" type="button">
+          📚 Online Library
+        </button>
+      </div>
+
       <button id="addBookButton" class="add-button">
         + Add Book
       </button>
@@ -579,7 +667,7 @@ tr:hover td{background:#f8fafc}
 
   </div>
 
-  <div class="card">
+  <div id="libraryTableView" class="card">
 
     <div class="table-container">
 
@@ -607,6 +695,10 @@ tr:hover td{background:#f8fafc}
 
     </div>
 
+  </div>
+
+  <div id="onlineLibraryView" class="hidden">
+    <div id="onlineLibraryGrid" class="online-library-grid"></div>
   </div>
 
 </section>
@@ -2945,6 +3037,11 @@ function renderLibrary(){
       "libraryTableBody"
     );
 
+  const grid=
+    document.getElementById(
+      "onlineLibraryGrid"
+    );
+
   const search=
     document.getElementById(
       "librarySearch"
@@ -2978,11 +3075,17 @@ function renderLibrary(){
     );
 
   tbody.innerHTML="";
+  if(grid)grid.innerHTML="";
 
   if(filteredBooks.length===0){
 
     tbody.innerHTML=
       '<tr><td colspan="9">No books found.</td></tr>';
+
+    if(grid){
+      grid.innerHTML=
+        '<div class="online-library-empty">No books found.</div>';
+    }
 
     return;
   }
@@ -3070,6 +3173,64 @@ function renderLibrary(){
       `;
 
       tbody.appendChild(row);
+
+      if(grid){
+        const card=
+          document.createElement("div");
+
+        card.className=
+          "online-book-card";
+
+        const seriesText=
+          book.Series
+            ? `${book.Series}${book["Series #"] ? ` • Book ${book["Series #"]}` : ""}`
+            : (book.Category||"Standalone");
+
+        const onlineCover=
+          coverUrl
+            ? `
+              <img
+                class="online-book-cover"
+                src="${coverUrl}"
+                alt="${book.Title||"Book cover"}"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="online-book-no-cover" style="display:none;">
+                <div class="online-book-no-cover-icon">📖</div>
+                <div>${book.Title||"No Cover"}</div>
+              </div>
+            `
+            : `
+              <div class="online-book-no-cover">
+                <div class="online-book-no-cover-icon">📖</div>
+                <div>${book.Title||"No Cover"}</div>
+              </div>
+            `;
+
+        card.innerHTML=`
+          <div class="online-book-cover-wrap">
+            ${onlineCover}
+          </div>
+          <div class="online-book-info">
+            <div class="online-book-title">${book.Title||""}</div>
+            <div class="online-book-author">${book.Author||""}</div>
+            <div class="online-book-series">${seriesText}</div>
+            <div class="online-book-bottom">
+              <div class="online-book-availability ${available>0 ? "available-good" : "available-none"}">
+                ${available>0
+                  ? `${available} of ${book.Copies||0} available`
+                  : "Checked out"}
+              </div>
+              <div class="online-book-actions">
+                <button class="edit-button" onclick="openEditBook(${book.id})">Edit</button>
+                <button class="delete-button" onclick="deleteBook(${book.id})">Delete</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      }
     }
   );
 }
@@ -4891,6 +5052,30 @@ document.getElementById(
   "input",
   renderLibrary
 );
+
+function setLibraryView(view){
+  const tableView=document.getElementById("libraryTableView");
+  const onlineView=document.getElementById("onlineLibraryView");
+  const tableButton=document.getElementById("tableViewButton");
+  const onlineButton=document.getElementById("onlineLibraryViewButton");
+
+  const online=view==="online";
+
+  tableView.classList.toggle("hidden",online);
+  onlineView.classList.toggle("hidden",!online);
+  tableButton.classList.toggle("active",!online);
+  onlineButton.classList.toggle("active",online);
+
+  localStorage.setItem("classroomLibraryView",online ? "online" : "table");
+  renderLibrary();
+}
+
+document.getElementById("tableViewButton").addEventListener("click",()=>setLibraryView("table"));
+document.getElementById("onlineLibraryViewButton").addEventListener("click",()=>setLibraryView("online"));
+
+if(localStorage.getItem("classroomLibraryView")==="online"){
+  setLibraryView("online");
+}
 
 
 document.getElementById(
