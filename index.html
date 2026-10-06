@@ -96,7 +96,6 @@ tr:hover td{background:#f8fafc}
 }
 .small-button:hover{background:#475569}
 
-/* SEARCHABLE BOOK DROPDOWN */
 .book-dropdown{position:relative}
 .book-dropdown-input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;background:white;cursor:pointer}
 .book-dropdown-input:disabled{background:#f1f5f9;cursor:not-allowed}
@@ -106,7 +105,6 @@ tr:hover td{background:#f8fafc}
 .book-dropdown-option:hover{background:#f1f5f9}
 .book-dropdown-empty{padding:12px;color:#64748b}
 
-/* MODALS */
 .modal-overlay{
   position:fixed;
   inset:0;
@@ -159,14 +157,9 @@ tr:hover td{background:#f8fafc}
   margin-bottom:20px;
 }
 
-.library-header h2{
-  margin:0;
-}
+.library-header h2{margin:0}
 
-.library-actions{
-  display:flex;
-  gap:10px;
-}
+.library-actions{display:flex;gap:10px}
 
 .book-action-buttons{
   display:flex;
@@ -186,26 +179,14 @@ tr:hover td{background:#f8fafc}
 
 .add-button:hover{background:#15803d}
 
-.available-good{
-  color:#166534;
-  font-weight:bold;
-}
-
-.available-none{
-  color:#b91c1c;
-  font-weight:bold;
-}
+.available-good{color:#166534;font-weight:bold}
+.available-none{color:#b91c1c;font-weight:bold}
 
 .copy-note{
   color:#64748b;
   font-size:14px;
   margin-top:5px;
 }
-
-
-/* ============================================================
-   ADD BOOK SEARCH / MATCHING
-============================================================ */
 
 .add-book-intro{
   color:#475569;
@@ -304,9 +285,7 @@ tr:hover td{background:#f8fafc}
   font-weight:bold;
 }
 
-.add-copies-button:hover{
-  background:#15803d;
-}
+.add-copies-button:hover{background:#15803d}
 
 .change-book-button{
   background:#64748b;
@@ -318,9 +297,7 @@ tr:hover td{background:#f8fafc}
   font-weight:bold;
 }
 
-.change-book-button:hover{
-  background:#475569;
-}
+.change-book-button:hover{background:#475569}
 
 .new-book-choice{
   border-top:1px solid #e2e8f0;
@@ -344,9 +321,7 @@ tr:hover td{background:#f8fafc}
   font-weight:bold;
 }
 
-.add-new-book-button:hover{
-  background:#1d4ed8;
-}
+.add-new-book-button:hover{background:#1d4ed8}
 
 .back-to-book-search{
   background:#64748b;
@@ -359,9 +334,7 @@ tr:hover td{background:#f8fafc}
   margin-bottom:18px;
 }
 
-.back-to-book-search:hover{
-  background:#475569;
-}
+.back-to-book-search:hover{background:#475569}
 
 .new-book-section{
   border-top:1px solid #e2e8f0;
@@ -392,11 +365,6 @@ tr:hover td{background:#f8fafc}
   margin-left:6px;
 }
 
-
-/* ============================================================
-   MOBILE
-============================================================ */
-
 @media(max-width:800px){
 .stats{grid-template-columns:repeat(2,1fr)}
 
@@ -405,13 +373,8 @@ tr:hover td{background:#f8fafc}
   flex-direction:column;
 }
 
-.library-actions{
-  width:100%;
-}
-
-.library-actions button{
-  flex:1;
-}
+.library-actions{width:100%}
+.library-actions button{flex:1}
 }
 
 @media(max-width:600px){
@@ -497,7 +460,6 @@ nav{padding:8px}
   </div>
 </section>
 
-
 <section id="checkout" class="page">
   <h2>Check Out a Book</h2>
 
@@ -544,7 +506,6 @@ nav{padding:8px}
 
   </div>
 </section>
-
 
 <section id="library" class="page">
 
@@ -595,7 +556,6 @@ nav{padding:8px}
 
 </section>
 
-
 <section id="students" class="page">
 
   <h2>Students</h2>
@@ -637,7 +597,6 @@ nav{padding:8px}
 
 </section>
 
-
 <section id="studentHistory" class="page">
 
   <button
@@ -676,7 +635,6 @@ nav{padding:8px}
 
 </section>
 
-
 <section id="checkedout" class="page">
 
   <h2>Checked Out Books</h2>
@@ -706,7 +664,6 @@ nav{padding:8px}
   </div>
 
 </section>
-
 
 <section id="history" class="page">
 
@@ -752,7 +709,6 @@ nav{padding:8px}
 </main>
 </div>
 
-
 <!-- EDIT CHECKOUT MODAL -->
 
 <div id="editModal" class="modal-overlay hidden">
@@ -775,7 +731,6 @@ nav{padding:8px}
         <option value="out">Checked Out</option>
         <option value="returned">Returned</option>
       </select>
-
     </div>
 
     <div class="form-group" id="editReturnDateGroup">
@@ -802,7 +757,6 @@ nav{padding:8px}
 
 </div>
 
-
 <!-- ADD / EDIT BOOK MODAL -->
 
 <div id="bookModal" class="modal-overlay hidden">
@@ -813,9 +767,7 @@ nav{padding:8px}
 
     <div id="bookModalMessage"></div>
 
-    <!-- =====================================================
-         QUICK ADD MODE
-    ====================================================== -->
+    <!-- QUICK ADD MODE -->
 
     <div id="quickAddSection">
 
@@ -880,10 +832,7 @@ nav{padding:8px}
 
     </div>
 
-
-    <!-- =====================================================
-         NEW BOOK DETAILS
-    ====================================================== -->
+    <!-- NEW BOOK DETAILS / EDIT BOOK DETAILS -->
 
     <div id="newBookDetailsSection" class="new-book-section hidden">
 
@@ -902,26 +851,78 @@ nav{padding:8px}
         information below to add it.
       </p>
 
-      <div class="form-group">
-  <label for="newBookCoverInput">Book Cover Image URL (Optional)</label>
-  <input
-    type="url"
-    id="newBookCoverInput"
-    placeholder="Paste a cover image URL"
-  >
-  <div class="copy-note">
-    Optional. Add a direct link to the book cover image.
-  </div>
-</div>
+      <!-- COVER -->
 
-<div class="form-group">
-  <label for="newBookCategoryInput">Category</label>
-  <select id="newBookCategoryInput">
-    <option value="">Select a category...</option>
-    <option value="Series">Series</option>
-    <option value="Standalone">Standalone</option>
-  </select>
-</div>
+      <div class="form-group">
+
+        <label for="newBookCoverInput">
+          Book Cover Image URL (Optional)
+        </label>
+
+        <input
+          type="url"
+          id="newBookCoverInput"
+          placeholder="Paste a cover image URL"
+        >
+
+        <div class="copy-note">
+          Optional. Add a direct link to the book cover image.
+        </div>
+
+      </div>
+
+      <!-- AUTHOR -->
+
+      <div class="form-group">
+
+        <label for="newBookAuthorInput">
+          Author
+        </label>
+
+        <input
+          type="text"
+          id="newBookAuthorInput"
+          placeholder="Author name"
+        >
+
+      </div>
+
+      <!-- CATEGORY -->
+
+      <div class="form-group">
+
+        <label for="newBookCategoryInput">
+          Category
+        </label>
+
+        <select id="newBookCategoryInput">
+
+          <option value="">
+            Select a category...
+          </option>
+
+          <option value="Series">
+            Series
+          </option>
+
+          <option value="Standalone">
+            Standalone
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- SERIES -->
+
+      <div
+        class="form-group hidden"
+        id="newBookSeriesGroup"
+      >
+
+        <label for="newBookSeriesInput">
+          Series
+        </label>
 
         <input
           type="text"
@@ -934,10 +935,16 @@ nav{padding:8px}
 
       </div>
 
+      <!-- SERIES NUMBER -->
 
-      <div class="form-group hidden" id="newBookSeriesNumberGroup">
+      <div
+        class="form-group hidden"
+        id="newBookSeriesNumberGroup"
+      >
 
-        <label for="newBookSeriesNumberInput">Series #</label>
+        <label for="newBookSeriesNumberInput">
+          Series #
+        </label>
 
         <input
           type="number"
@@ -949,6 +956,7 @@ nav{padding:8px}
 
       </div>
 
+      <!-- BUTTONS -->
 
       <div class="modal-buttons">
 
@@ -976,8 +984,11 @@ nav{padding:8px}
 
 </div>
 
-
 <script>
+
+/* ============================================================
+   SUPABASE
+============================================================ */
 
 const SUPABASE_URL="https://wwkcacypzjoojonmfaui.supabase.co";
 const SUPABASE_ANON_KEY="sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
@@ -999,10 +1010,7 @@ let selectedStudentClass="7S";
 let currentStudentHistoryStudentId=null;
 let editingCheckoutId=null;
 let selectedBookId="";
-
 let editingBookId=null;
-
-/* Book currently selected during quick-add */
 let selectedExistingBookId=null;
 
 
@@ -1026,11 +1034,9 @@ function getTodayEastern(){
   let day="";
 
   parts.forEach(part=>{
-
     if(part.type==="year")year=part.value;
     if(part.type==="month")month=part.value;
     if(part.type==="day")day=part.value;
-
   });
 
   return `${year}-${month}-${day}`;
@@ -1042,7 +1048,6 @@ function formatDate(value){
   if(!value)return "";
 
   const dateString=String(value).substring(0,10);
-
   const parts=dateString.split("-");
 
   if(parts.length!==3)return value;
@@ -1058,12 +1063,11 @@ function formatDate(value){
     day:"numeric",
     year:"numeric"
   }).format(new Date(year,month-1,day));
-
 }
 
 
 /* ============================================================
-   HELPER FUNCTIONS
+   HELPERS
 ============================================================ */
 
 function getClassName(classId){
@@ -1079,7 +1083,6 @@ function getClassName(classId){
     found.class_name||
     found["Class Name"]||
     "";
-
 }
 
 
@@ -1090,7 +1093,6 @@ function getBookTitle(bookId){
   );
 
   return book?book.Title:"Unknown Book";
-
 }
 
 
@@ -1099,7 +1101,6 @@ function getStudent(studentId){
   return students.find(
     s=>String(s.id)===String(studentId)
   );
-
 }
 
 
@@ -1114,7 +1115,6 @@ function getAvailableCopies(book){
     0,
     Number(book.Copies||0)-activeCheckouts
   );
-
 }
 
 
@@ -1124,7 +1124,6 @@ function getActiveCheckoutCount(bookId){
     String(c.book_id)===String(bookId)&&
     !c["Return Date"]
   ).length;
-
 }
 
 
@@ -1132,13 +1131,14 @@ function showMessage(elementId,message,type){
 
   const element=document.getElementById(elementId);
 
+  if(!element)return;
+
   element.innerHTML=
     `<div class="message ${type}">${message}</div>`;
 
   setTimeout(()=>{
     element.innerHTML="";
   },4000);
-
 }
 
 
@@ -1155,24 +1155,13 @@ function normalizeBookText(value){
     .replace(/[^a-z0-9\s]/g," ")
     .replace(/\s+/g," ")
     .trim();
-
 }
 
 
 function getBookWords(value){
 
   const ignoredWords=new Set([
-    "the",
-    "a",
-    "an",
-    "and",
-    "of",
-    "in",
-    "on",
-    "to",
-    "for",
-    "book",
-    "novel"
+    "the","a","an","and","of","in","on","to","for","book","novel"
   ]);
 
   return new Set(
@@ -1180,7 +1169,6 @@ function getBookWords(value){
       .split(" ")
       .filter(word=>word&&!ignoredWords.has(word))
   );
-
 }
 
 
@@ -1189,25 +1177,17 @@ function stringSimilarity(first,second){
   const a=normalizeBookText(first);
   const b=normalizeBookText(second);
 
-  if(!a&&!b)
-    return 1;
-
-  if(!a||!b)
-    return 0;
-
-  if(a===b)
-    return 1;
+  if(!a&&!b)return 1;
+  if(!a||!b)return 0;
+  if(a===b)return 1;
 
   const rows=a.length+1;
   const columns=b.length+1;
-
   const matrix=[];
 
   for(let i=0;i<rows;i++){
-
     matrix[i]=new Array(columns).fill(0);
     matrix[i][0]=i;
-
   }
 
   for(let j=0;j<columns;j++){
@@ -1218,100 +1198,67 @@ function stringSimilarity(first,second){
 
     for(let j=1;j<columns;j++){
 
-      const cost=
-        a[i-1]===b[j-1]
-          ? 0
-          : 1;
+      const cost=a[i-1]===b[j-1]?0:1;
 
       matrix[i][j]=Math.min(
-
         matrix[i-1][j]+1,
-
         matrix[i][j-1]+1,
-
         matrix[i-1][j-1]+cost
-
       );
-
     }
-
   }
 
-  const distance=
-    matrix[rows-1][columns-1];
+  const distance=matrix[rows-1][columns-1];
 
   return 1-
     distance/
     Math.max(a.length,b.length);
-
 }
 
 
 function titleSimilarity(first,second){
 
-  const firstText=
-    normalizeBookText(first);
+  const firstText=normalizeBookText(first);
+  const secondText=normalizeBookText(second);
 
-  const secondText=
-    normalizeBookText(second);
-
-  if(!firstText||!secondText)
-    return 0;
-
-  if(firstText===secondText)
-    return 1;
+  if(!firstText||!secondText)return 0;
+  if(firstText===secondText)return 1;
 
   if(
     firstText.includes(secondText)||
     secondText.includes(firstText)
   ){
 
-    const shorter=
-      Math.min(
-        firstText.length,
-        secondText.length
-      );
+    const shorter=Math.min(
+      firstText.length,
+      secondText.length
+    );
 
-    const longer=
-      Math.max(
-        firstText.length,
-        secondText.length
-      );
+    const longer=Math.max(
+      firstText.length,
+      secondText.length
+    );
 
-    return .82+
-      .18*(shorter/longer);
-
+    return .82+.18*(shorter/longer);
   }
 
-
-  const firstWords=
-    getBookWords(first);
-
-  const secondWords=
-    getBookWords(second);
+  const firstWords=getBookWords(first);
+  const secondWords=getBookWords(second);
 
   if(
     firstWords.size===0||
     secondWords.size===0
   ){
-
-    return stringSimilarity(
-      first,
-      second
-    );
-
+    return stringSimilarity(first,second);
   }
-
 
   let matchingWords=0;
 
   firstWords.forEach(word=>{
 
     if(secondWords.has(word)){
-
       matchingWords++;
       return;
-
     }
 
     for(const otherWord of secondWords){
@@ -1321,16 +1268,11 @@ function titleSimilarity(first,second){
         otherWord.length>=4&&
         stringSimilarity(word,otherWord)>=.78
       ){
-
         matchingWords++;
         break;
-
       }
-
     }
-
   });
-
 
   const coverageOfEnteredTitle=
     matchingWords/firstWords.size;
@@ -1338,56 +1280,33 @@ function titleSimilarity(first,second){
   const coverageOfExistingTitle=
     matchingWords/secondWords.size;
 
-  const wordScore=
-    Math.max(
-      coverageOfEnteredTitle,
-      coverageOfExistingTitle*.85
-    );
-
-  const characterScore=
-    stringSimilarity(
-      first,
-      second
-    );
-
-  return Math.max(
-    wordScore*.75+
-      characterScore*.25,
-    wordScore
+  const wordScore=Math.max(
+    coverageOfEnteredTitle,
+    coverageOfExistingTitle*.85
   );
 
+  const characterScore=
+    stringSimilarity(first,second);
+
+  return Math.max(
+    wordScore*.75+characterScore*.25,
+    wordScore
+  );
 }
 
 
-/*
-  Returns the best matching books for the title currently
-  being typed.
-
-  This is deliberately title-focused because at this stage
-  the teacher has NOT filled out the author/category fields.
-*/
 function findTitleMatches(title){
 
-  if(!title.trim())
-    return [];
+  if(!title.trim())return [];
 
   const results=[];
 
   books.forEach(book=>{
 
-    const existingTitle=
-      String(book.Title||"");
+    const existingTitle=String(book.Title||"");
 
     const titleScore=
-      titleSimilarity(
-        title,
-        existingTitle
-      );
-
-    /*
-      Search matching is slightly more forgiving than the
-      final duplicate check because the user is still typing.
-    */
+      titleSimilarity(title,existingTitle);
 
     if(titleScore>=.48){
 
@@ -1395,167 +1314,94 @@ function findTitleMatches(title){
         book,
         titleScore
       });
-
     }
-
   });
 
-
   results.sort(
-    (a,b)=>
-      b.titleScore-a.titleScore
+    (a,b)=>b.titleScore-a.titleScore
   );
 
-
   return results.slice(0,6);
-
 }
 
 
 function getMatchConfidence(score){
 
-  if(score>=.88)
-    return "Very likely";
-
-  if(score>=.72)
-    return "Likely";
+  if(score>=.88)return "Very likely";
+  if(score>=.72)return "Likely";
 
   return "Possible";
-
 }
 
 
 /* ============================================================
-   QUICK ADD BOOK
+   QUICK ADD
 ============================================================ */
 
 function renderBookSearchResults(){
 
-  const area=
-    document.getElementById(
-      "bookSearchResults"
-    );
-
-  const title=
-    document.getElementById(
-      "bookTitleInput"
-    ).value.trim();
-
+  const area=document.getElementById("bookSearchResults");
+  const title=document.getElementById("bookTitleInput").value.trim();
 
   selectedExistingBookId=null;
-
-
   area.innerHTML="";
 
+  if(!title)return;
 
-  if(!title){
-
-    return;
-
-  }
-
-
-  const matches=
-    findTitleMatches(title);
-
+  const matches=findTitleMatches(title);
 
   if(matches.length===0){
 
-    const noResults=
-      document.createElement("div");
+    const noResults=document.createElement("div");
 
-    noResults.className=
-      "book-search-no-results";
+    noResults.className="book-search-no-results";
 
     noResults.textContent=
       "No existing book looks like this yet. If this is a new book, use “+ Add as New Book” below.";
 
-    area.appendChild(
-      noResults
-    );
+    area.appendChild(noResults);
 
     return;
-
   }
 
+  const label=document.createElement("div");
 
-  const label=
-    document.createElement("div");
+  label.className="book-search-label";
+  label.textContent="Books already in your library:";
 
-  label.className=
-    "book-search-label";
-
-  label.textContent=
-    "Books already in your library:";
-
-  area.appendChild(
-    label
-  );
-
+  area.appendChild(label);
 
   matches.forEach(match=>{
 
-    const book=
-      match.book;
-
-
-    const button=
-      document.createElement("button");
+    const book=match.book;
+    const button=document.createElement("button");
 
     button.type="button";
+    button.className="book-search-option";
 
-    button.className=
-      "book-search-option";
+    const titleDiv=document.createElement("div");
 
+    titleDiv.className="book-search-option-title";
+    titleDiv.textContent=book.Title||"Untitled";
 
-    const titleDiv=
-      document.createElement("div");
+    const confidence=document.createElement("span");
 
-    titleDiv.className=
-      "book-search-option-title";
-
-    titleDiv.textContent=
-      book.Title||"Untitled";
-
-
-    const confidence=
-      document.createElement("span");
-
-    confidence.className=
-      "match-confidence";
-
+    confidence.className="match-confidence";
     confidence.textContent=
-      getMatchConfidence(
-        match.titleScore
-      );
+      getMatchConfidence(match.titleScore);
 
-    titleDiv.appendChild(
-      confidence
-    );
+    titleDiv.appendChild(confidence);
+    button.appendChild(titleDiv);
 
+    const details=document.createElement("div");
 
-    button.appendChild(
-      titleDiv
-    );
+    details.className="book-search-option-details";
 
-
-    const details=
-      document.createElement("div");
-
-    details.className=
-      "book-search-option-details";
-
-
-    let detailText=
-      book.Author
-        ? book.Author
-        : "";
-
+    let detailText=book.Author?book.Author:"";
 
     if(book.Series){
 
-      if(detailText)
-        detailText+=" · ";
+      if(detailText)detailText+=" · ";
 
       detailText+=book.Series;
 
@@ -1563,201 +1409,116 @@ function renderBookSearchResults(){
         book["Series #"]!==null&&
         book["Series #"]!==""
       ){
-
-        detailText+=
-          ` #${book["Series #"]}`;
-
+        detailText+=` #${book["Series #"]}`;
       }
-
     }
 
-
-    if(detailText)
-      detailText+=" · ";
-
+    if(detailText)detailText+=" · ";
 
     detailText+=
       `${Number(book.Copies||0)} ${Number(book.Copies||0)===1?"copy":"copies"} in library`;
 
-
-    details.textContent=
-      detailText;
-
-
-    button.appendChild(
-      details
-    );
-
+    details.textContent=detailText;
+    button.appendChild(details);
 
     button.addEventListener(
       "click",
       ()=>{
-        selectExistingBookForAdd(
-          book.id
-        );
+        selectExistingBookForAdd(book.id);
       }
     );
 
-
-    area.appendChild(
-      button
-    );
-
+    area.appendChild(button);
   });
-
 }
 
 
 function selectExistingBookForAdd(bookId){
 
-  const book=
-    books.find(
-      b=>String(b.id)===String(bookId)
-    );
+  const book=books.find(
+    b=>String(b.id)===String(bookId)
+  );
 
+  if(!book)return;
 
-  if(!book)
-    return;
+  selectedExistingBookId=book.id;
 
-
-  selectedExistingBookId=
-    book.id;
-
-
-  document.getElementById(
-    "bookTitleInput"
-  ).value=
+  document.getElementById("bookTitleInput").value=
     book.Title||"";
 
-
-  const area=
-    document.getElementById(
-      "bookSearchResults"
-    );
-
+  const area=document.getElementById(
+    "bookSearchResults"
+  );
 
   area.innerHTML="";
 
+  const box=document.createElement("div");
 
-  const box=
-    document.createElement("div");
+  box.className="selected-existing-book";
 
-  box.className=
-    "selected-existing-book";
+  const title=document.createElement("div");
 
+  title.className="selected-existing-book-title";
+  title.textContent=book.Title||"Untitled";
 
-  const title=
-    document.createElement("div");
+  box.appendChild(title);
 
-  title.className=
-    "selected-existing-book-title";
+  const details=document.createElement("div");
 
-  title.textContent=
-    book.Title||"Untitled";
+  details.className="selected-existing-book-details";
 
-  box.appendChild(
-    title
-  );
-
-
-  const details=
-    document.createElement("div");
-
-  details.className=
-    "selected-existing-book-details";
-
-
-  let detailText=
-    book.Author
-      ? `Author: ${book.Author}`
-      : "";
-
+  let detailText=book.Author
+    ? `Author: ${book.Author}`
+    : "";
 
   if(book.Series){
 
-    if(detailText)
-      detailText+="<br>";
+    if(detailText)detailText+="<br>";
 
-    detailText+=
-      `Series: ${book.Series}`;
-
+    detailText+=`Series: ${book.Series}`;
   }
-
 
   if(
     book["Series #"]!==null&&
     book["Series #"]!==""
   ){
 
-    if(detailText)
-      detailText+="<br>";
+    if(detailText)detailText+="<br>";
 
-    detailText+=
-      `Series #: ${book["Series #"]}`;
-
+    detailText+=`Series #: ${book["Series #"]}`;
   }
 
-
-  if(detailText)
-    detailText+="<br>";
-
+  if(detailText)detailText+="<br>";
 
   detailText+=
     `You currently have ${Number(book.Copies||0)} ${Number(book.Copies||0)===1?"copy":"copies"} in your library.`;
 
+  details.innerHTML=detailText;
 
-  details.innerHTML=
-    detailText;
+  box.appendChild(details);
 
+  const buttons=document.createElement("div");
 
-  box.appendChild(
-    details
-  );
+  buttons.className="selected-book-buttons";
 
-
-  const buttons=
-    document.createElement("div");
-
-  buttons.className=
-    "selected-book-buttons";
-
-
-  const addButton=
-    document.createElement("button");
+  const addButton=document.createElement("button");
 
   addButton.type="button";
-
-  addButton.className=
-    "add-copies-button";
-
-  addButton.textContent=
-    "Add Copies to This Book";
-
+  addButton.className="add-copies-button";
+  addButton.textContent="Add Copies to This Book";
 
   addButton.addEventListener(
     "click",
-    ()=>{
-      addCopiesToSelectedBook();
-    }
+    addCopiesToSelectedBook
   );
 
+  buttons.appendChild(addButton);
 
-  buttons.appendChild(
-    addButton
-  );
-
-
-  const changeButton=
-    document.createElement("button");
+  const changeButton=document.createElement("button");
 
   changeButton.type="button";
-
-  changeButton.className=
-    "change-book-button";
-
-  changeButton.textContent=
-    "Choose a Different Book";
-
+  changeButton.className="change-book-button";
+  changeButton.textContent="Choose a Different Book";
 
   changeButton.addEventListener(
     "click",
@@ -1773,57 +1534,33 @@ function selectExistingBookForAdd(bookId){
       document.getElementById(
         "bookTitleInput"
       ).focus();
-
     }
   );
 
+  buttons.appendChild(changeButton);
 
-  buttons.appendChild(
-    changeButton
-  );
-
-
-  box.appendChild(
-    buttons
-  );
-
-
-  area.appendChild(
-    box
-  );
-
+  box.appendChild(buttons);
+  area.appendChild(box);
 }
 
 
 async function addCopiesToSelectedBook(){
 
-  if(!selectedExistingBookId)
-    return;
+  if(!selectedExistingBookId)return;
 
+  const book=books.find(
+    b=>String(b.id)===String(selectedExistingBookId)
+  );
 
-  const book=
-    books.find(
-      b=>String(b.id)===
-        String(selectedExistingBookId)
-    );
+  if(!book)return;
 
+  const copies=Number(
+    document.getElementById(
+      "bookCopiesInput"
+    ).value
+  );
 
-  if(!book)
-    return;
-
-
-  const copies=
-    Number(
-      document.getElementById(
-        "bookCopiesInput"
-      ).value
-    );
-
-
-  if(
-    !Number.isInteger(copies)||
-    copies<1
-  ){
+  if(!Number.isInteger(copies)||copies<1){
 
     showBookModalMessage(
       "Copies must be a whole number of at least 1.",
@@ -1831,79 +1568,48 @@ async function addCopiesToSelectedBook(){
     );
 
     return;
-
   }
 
-
-  const button=
-    document.querySelector(
-      ".add-copies-button"
-    );
-
+  const button=document.querySelector(
+    ".add-copies-button"
+  );
 
   if(button){
 
     button.disabled=true;
-
-    button.textContent=
-      "Adding Copies...";
-
+    button.textContent="Adding Copies...";
   }
-
 
   try{
 
     const newCopies=
-      Number(book.Copies||0)+
-      copies;
+      Number(book.Copies||0)+copies;
 
+    const {error}=await supabaseClient
+      .from("Books")
+      .update({"Copies":newCopies})
+      .eq("id",book.id);
 
-    const {error}=
-      await supabaseClient
-        .from("Books")
-        .update({
-          "Copies":newCopies
-        })
-        .eq(
-          "id",
-          book.id
-        );
-
-
-    if(error)
-      throw error;
-
+    if(error)throw error;
 
     closeBookModal();
-
     await loadData();
-
 
   }catch(error){
 
-    console.error(
-      "Add copies error:",
-      error
-    );
-
+    console.error("Add copies error:",error);
 
     showBookModalMessage(
       "Could not add the copies. Please try again.",
       "error"
     );
 
-
     if(button){
 
       button.disabled=false;
-
-      button.textContent=
-        "Add Copies to This Book";
-
+      button.textContent="Add Copies to This Book";
     }
-
   }
-
 }
 
 
@@ -1913,19 +1619,15 @@ async function addCopiesToSelectedBook(){
 
 function showNewBookForm(){
 
-  const title=
+  const title=document.getElementById(
+    "bookTitleInput"
+  ).value.trim();
+
+  const copies=Number(
     document.getElementById(
-      "bookTitleInput"
-    ).value.trim();
-
-
-  const copies=
-    Number(
-      document.getElementById(
-        "bookCopiesInput"
-      ).value
-    );
-
+      "bookCopiesInput"
+    ).value
+  );
 
   if(!title){
 
@@ -1939,14 +1641,9 @@ function showNewBookForm(){
     ).focus();
 
     return;
-
   }
 
-
-  if(
-    !Number.isInteger(copies)||
-    copies<1
-  ){
+  if(!Number.isInteger(copies)||copies<1){
 
     showBookModalMessage(
       "Copies must be a whole number of at least 1.",
@@ -1954,37 +1651,25 @@ function showNewBookForm(){
     );
 
     return;
-
   }
-
 
   selectedExistingBookId=null;
 
-
   document.getElementById(
     "quickAddSection"
-  ).classList.add(
-    "hidden"
-  );
-
+  ).classList.add("hidden");
 
   document.getElementById(
     "newBookDetailsSection"
-  ).classList.remove(
-    "hidden"
-  );
-
+  ).classList.remove("hidden");
 
   document.getElementById(
     "bookModalTitle"
-  ).textContent=
-    "Add New Book";
-
+  ).textContent="Add New Book";
 
   document.getElementById(
     "newBookAuthorInput"
   ).focus();
-
 }
 
 
@@ -1992,56 +1677,41 @@ function returnToBookSearch(){
 
   document.getElementById(
     "newBookDetailsSection"
-  ).classList.add(
-    "hidden"
-  );
-
+  ).classList.add("hidden");
 
   document.getElementById(
     "quickAddSection"
-  ).classList.remove(
-    "hidden"
-  );
-
+  ).classList.remove("hidden");
 
   document.getElementById(
     "bookModalTitle"
-  ).textContent=
-    "Add Book";
-
+  ).textContent="Add Book";
 
   document.getElementById(
     "bookModalMessage"
   ).innerHTML="";
-
 
   renderBookSearchResults();
 
   document.getElementById(
     "bookTitleInput"
   ).focus();
-
 }
 
 
 function updateNewBookCategoryFields(){
 
-  const category=
-    document.getElementById(
-      "newBookCategoryInput"
-    ).value;
+  const category=document.getElementById(
+    "newBookCategoryInput"
+  ).value;
 
+  const seriesGroup=document.getElementById(
+    "newBookSeriesGroup"
+  );
 
-  const seriesGroup=
-    document.getElementById(
-      "newBookSeriesGroup"
-    );
-
-  const numberGroup=
-    document.getElementById(
-      "newBookSeriesNumberGroup"
-    );
-
+  const numberGroup=document.getElementById(
+    "newBookSeriesNumberGroup"
+  );
 
   if(category==="Series"){
 
@@ -2062,53 +1732,38 @@ function updateNewBookCategoryFields(){
       document.getElementById(
         "newBookSeriesNumberInput"
       ).value="";
-
     }
-
   }
-
 }
 
 
 function collectNewBookData(){
 
-  const title=
+  const title=document.getElementById(
+    "bookTitleInput"
+  ).value.trim();
+
+  const copies=Number(
     document.getElementById(
-      "bookTitleInput"
-    ).value.trim();
+      "bookCopiesInput"
+    ).value
+  );
 
+  const author=document.getElementById(
+    "newBookAuthorInput"
+  ).value.trim();
 
-  const copies=
-    Number(
-      document.getElementById(
-        "bookCopiesInput"
-      ).value
-    );
+  const category=document.getElementById(
+    "newBookCategoryInput"
+  ).value;
 
+  const series=document.getElementById(
+    "newBookSeriesInput"
+  ).value.trim();
 
-  const author=
-    document.getElementById(
-      "newBookAuthorInput"
-    ).value.trim();
-
-
-  const category=
-    document.getElementById(
-      "newBookCategoryInput"
-    ).value;
-
-
-  const series=
-    document.getElementById(
-      "newBookSeriesInput"
-    ).value.trim();
-
-
-  const seriesNumberValue=
-    document.getElementById(
-      "newBookSeriesNumberInput"
-    ).value;
-
+  const seriesNumberValue=document.getElementById(
+    "newBookSeriesNumberInput"
+  ).value;
 
   if(!title){
 
@@ -2118,14 +1773,9 @@ function collectNewBookData(){
     );
 
     return null;
-
   }
 
-
-  if(
-    !Number.isInteger(copies)||
-    copies<1
-  ){
+  if(!Number.isInteger(copies)||copies<1){
 
     showBookModalMessage(
       "Copies must be a whole number of at least 1.",
@@ -2133,9 +1783,7 @@ function collectNewBookData(){
     );
 
     return null;
-
   }
-
 
   if(!author){
 
@@ -2145,9 +1793,7 @@ function collectNewBookData(){
     );
 
     return null;
-
   }
-
 
   if(!category){
 
@@ -2157,9 +1803,7 @@ function collectNewBookData(){
     );
 
     return null;
-
   }
-
 
   if(category==="Series"&&!series){
 
@@ -2169,12 +1813,9 @@ function collectNewBookData(){
     );
 
     return null;
-
   }
 
-
   let seriesNumber=null;
-
 
   if(category==="Series"){
 
@@ -2182,7 +1823,6 @@ function collectNewBookData(){
       seriesNumberValue
         ? Number(seriesNumberValue)
         : null;
-
 
     if(
       seriesNumber!==null&&
@@ -2198,11 +1838,8 @@ function collectNewBookData(){
       );
 
       return null;
-
     }
-
   }
-
 
   return {
     title,
@@ -2212,64 +1849,46 @@ function collectNewBookData(){
     seriesNumber,
     copies
   };
-
 }
 
 
 async function saveNewBook(){
 
-  const data=
-    collectNewBookData();
+  const data=collectNewBookData();
 
+  if(!data)return;
 
-  if(!data)
-    return;
-
-
-  const button=
-    document.getElementById(
-      "saveNewBookButton"
-    );
-
+  const button=document.getElementById(
+    "saveNewBookButton"
+  );
 
   button.disabled=true;
-
-  button.textContent=
-    "Checking Library...";
-
+  button.textContent="Checking Library...";
 
   try{
 
-    const exactMatch=
-      books.find(book=>
-        normalizeBookText(book.Title)===
-          normalizeBookText(data.title)&&
-
-        normalizeBookText(book.Author)===
-          normalizeBookText(data.author)&&
-
-        normalizeBookText(book.Category)===
-          normalizeBookText(data.category)&&
-
-        normalizeBookText(book.Series||"")===
-          normalizeBookText(
-            data.category==="Series"
-              ? data.series
-              : ""
-          )&&
-
-        String(book["Series #"]||"")===
-          String(data.seriesNumber||"")
-      );
-
+    const exactMatch=books.find(book=>
+      normalizeBookText(book.Title)===
+        normalizeBookText(data.title)&&
+      normalizeBookText(book.Author)===
+        normalizeBookText(data.author)&&
+      normalizeBookText(book.Category)===
+        normalizeBookText(data.category)&&
+      normalizeBookText(book.Series||"")===
+        normalizeBookText(
+          data.category==="Series"
+            ? data.series
+            : ""
+        )&&
+      String(book["Series #"]||"")===
+        String(data.seriesNumber||"")
+    );
 
     if(exactMatch){
 
-      const confirmed=
-        confirm(
-          `"${exactMatch.Title}" is already in your library.\n\nWould you like to add ${data.copies} more ${data.copies===1?"copy":"copies"} to that existing book instead?`
-        );
-
+      const confirmed=confirm(
+        `"${exactMatch.Title}" is already in your library.\n\nWould you like to add ${data.copies} more ${data.copies===1?"copy":"copies"} to that existing book instead?`
+      );
 
       if(confirmed){
 
@@ -2277,51 +1896,25 @@ async function saveNewBook(){
           Number(exactMatch.Copies||0)+
           data.copies;
 
+        const {error}=await supabaseClient
+          .from("Books")
+          .update({"Copies":newCopies})
+          .eq("id",exactMatch.id);
 
-        const {error}=
-          await supabaseClient
-            .from("Books")
-            .update({
-              "Copies":newCopies
-            })
-            .eq(
-              "id",
-              exactMatch.id
-            );
-
-
-        if(error)
-          throw error;
-
+        if(error)throw error;
 
         closeBookModal();
-
         await loadData();
 
         return;
-
       }
-
     }
-
 
     await insertNewBook(data);
 
-
   }catch(error){
 
-    console.error(
-      "Save new book error:",
-      error
-    );
-
-    console.error(
-      "Supabase error details:",
-      error.message,
-      error.details,
-      error.hint
-    );
-
+    console.error("Save new book error:",error);
 
     showBookModalMessage(
       "Could not save the book. Please try again.",
@@ -2333,102 +1926,71 @@ async function saveNewBook(){
     button.disabled=false;
 
     button.textContent=
-      "Add New Book";
-
+      editingBookId
+        ? "Save Changes"
+        : "Add New Book";
   }
-
 }
 
 
 async function insertNewBook(data){
 
-  const button=
-    document.getElementById(
-      "saveNewBookButton"
-    );
-
+  const button=document.getElementById(
+    "saveNewBookButton"
+  );
 
   if(button){
 
     button.disabled=true;
-
-    button.textContent=
-      "Adding...";
-
+    button.textContent="Adding...";
   }
-
 
   try{
 
-    const {error}=
-      await supabaseClient
-        .from("Books")
-        .insert({
+    const {error}=await supabaseClient
+      .from("Books")
+      .insert({
 
-          "Title":data.title,
+        "Title":data.title,
+        "Author":data.author,
+        "Category":data.category,
 
-          "Author":data.author,
+        "Series":
+          data.category==="Series"
+            ? data.series
+            : null,
 
-          "Category":data.category,
+        "Series #":
+          data.category==="Series"
+            ? data.seriesNumber
+            : null,
 
-          "Series":
-            data.category==="Series"
-              ? data.series
-              : null,
+        "Copies":data.copies
 
-          "Series #":
-            data.category==="Series"
-              ? data.seriesNumber
-              : null,
+      });
 
-          "Copies":data.copies
-
-        });
-
-
-    if(error)
-      throw error;
-
+    if(error)throw error;
 
     closeBookModal();
-
     await loadData();
-
 
   }catch(error){
 
-    console.error(
-      "Insert new book error:",
-      error
-    );
-
-    console.error(
-      "Supabase error details:",
-      error.message,
-      error.details,
-      error.hint
-    );
-
+    console.error("Insert new book error:",error);
 
     showBookModalMessage(
       "Could not save the book. Please make sure the Books permissions were added in Supabase.",
       "error"
     );
 
-
   }finally{
 
     if(button){
 
       button.disabled=false;
-
-      button.textContent=
-        "Add New Book";
-
+      button.textContent="Add New Book";
     }
-
   }
-
 }
 
 
@@ -2473,18 +2035,15 @@ async function loadData(){
 
     ]);
 
-
     if(booksResult.error)throw booksResult.error;
     if(studentsResult.error)throw studentsResult.error;
     if(classesResult.error)throw classesResult.error;
     if(checkoutsResult.error)throw checkoutsResult.error;
 
-
     books=booksResult.data||[];
     students=studentsResult.data||[];
     classes=classesResult.data||[];
     checkouts=checkoutsResult.data||[];
-
 
     updateDashboard();
     populateClasses();
@@ -2494,20 +2053,14 @@ async function loadData(){
     renderHistory();
     updateSeriesOptions();
 
-
   }catch(error){
 
-    console.error(
-      "Error loading data:",
-      error
-    );
+    console.error("Error loading data:",error);
 
     alert(
       "There was a problem loading your library data. Please refresh the page and try again."
     );
-
   }
-
 }
 
 
@@ -2523,14 +2076,14 @@ function updateDashboard(){
     0
   );
 
-  const checkedOut=
-    checkouts.filter(
-      c=>!c["Return Date"]
-    ).length;
+  const checkedOut=checkouts.filter(
+    c=>!c["Return Date"]
+  ).length;
 
-  const available=
-    Math.max(0,totalBooks-checkedOut);
-
+  const available=Math.max(
+    0,
+    totalBooks-checkedOut
+  );
 
   document.getElementById("totalBooks").textContent=
     totalBooks;
@@ -2543,7 +2096,6 @@ function updateDashboard(){
 
   document.getElementById("totalStudents").textContent=
     students.length;
-
 }
 
 
@@ -2553,45 +2105,41 @@ function updateDashboard(){
 
 function populateClasses(){
 
-  const select=
-    document.getElementById("classSelect");
+  const select=document.getElementById(
+    "classSelect"
+  );
 
   select.innerHTML=
     '<option value="">Select a class...</option>';
 
   classes.forEach(classItem=>{
 
-    const option=
-      document.createElement("option");
+    const option=document.createElement("option");
 
     option.value=classItem.id;
-
-    option.textContent=
-      getClassName(classItem.id);
+    option.textContent=getClassName(classItem.id);
 
     select.appendChild(option);
-
   });
-
 }
 
 
 function populateStudents(){
 
-  const classId=
-    document.getElementById("classSelect").value;
+  const classId=document.getElementById(
+    "classSelect"
+  ).value;
 
-  const studentSelect=
-    document.getElementById("studentSelect");
+  const studentSelect=document.getElementById(
+    "studentSelect"
+  );
 
   studentSelect.innerHTML=
     '<option value="">Select a student...</option>';
 
-
   if(!classId){
 
     studentSelect.disabled=true;
-
     clearBookSelection();
 
     document.getElementById(
@@ -2599,30 +2147,22 @@ function populateStudents(){
     ).disabled=true;
 
     return;
-
   }
 
-
-  const classStudents=
-    students.filter(student=>
-      String(student.class_id)===String(classId)
-    );
-
+  const classStudents=students.filter(student=>
+    String(student.class_id)===String(classId)
+  );
 
   classStudents.forEach(student=>{
 
-    const option=
-      document.createElement("option");
+    const option=document.createElement("option");
 
     option.value=student.id;
-
     option.textContent=
       `Student #${student.student_number}`;
 
     studentSelect.appendChild(option);
-
   });
-
 
   studentSelect.disabled=false;
 
@@ -2631,27 +2171,19 @@ function populateStudents(){
   ).disabled=false;
 
   populateBooks();
-
 }
 
 
 function getFilteredBooks(){
 
-  const search=
-    document.getElementById(
-      "bookSelect"
-    ).value.toLowerCase().trim();
-
+  const search=document.getElementById(
+    "bookSelect"
+  ).value.toLowerCase().trim();
 
   return books.filter(book=>{
 
-    if(getAvailableCopies(book)<=0)
-      return false;
-
-
-    if(!search)
-      return true;
-
+    if(getAvailableCopies(book)<=0)return false;
+    if(!search)return true;
 
     const title=
       String(book.Title||"").toLowerCase();
@@ -2662,33 +2194,26 @@ function getFilteredBooks(){
     const series=
       String(book.Series||"").toLowerCase();
 
-
     return title.includes(search)||
       author.includes(search)||
       series.includes(search);
-
   });
-
 }
 
 
 function populateBooks(){
 
-  const input=
-    document.getElementById("bookSelect");
+  const input=document.getElementById(
+    "bookSelect"
+  );
 
-  const list=
-    document.getElementById(
-      "bookDropdownList"
-    );
+  const list=document.getElementById(
+    "bookDropdownList"
+  );
 
-
-  const availableBooks=
-    getFilteredBooks();
-
+  const availableBooks=getFilteredBooks();
 
   list.innerHTML="";
-
 
   if(availableBooks.length===0){
 
@@ -2696,49 +2221,36 @@ function populateBooks(){
       '<div class="book-dropdown-empty">No available books found.</div>';
 
     return;
-
   }
-
 
   availableBooks.forEach(book=>{
 
-    const option=
-      document.createElement("div");
+    const option=document.createElement("div");
 
-    option.className=
-      "book-dropdown-option";
-
+    option.className="book-dropdown-option";
 
     let text=book.Title;
 
     if(book.Author)
       text+=` — ${book.Author}`;
 
-
     text+=
       ` (${getAvailableCopies(book)} available)`;
 
-
     option.textContent=text;
 
-
-    option.addEventListener("click",()=>{
-
-      selectedBookId=book.id;
-
-      input.value=text;
-
-      list.classList.add("hidden");
-
-      updateCheckoutButton();
-
-    });
-
+    option.addEventListener(
+      "click",
+      ()=>{
+        selectedBookId=book.id;
+        input.value=text;
+        list.classList.add("hidden");
+        updateCheckoutButton();
+      }
+    );
 
     list.appendChild(option);
-
   });
-
 }
 
 
@@ -2755,25 +2267,20 @@ function clearBookSelection(){
   ).classList.add("hidden");
 
   updateCheckoutButton();
-
 }
 
 
 function updateCheckoutButton(){
 
-  const classValue=
-    document.getElementById(
-      "classSelect"
-    ).value;
+  const classValue=document.getElementById(
+    "classSelect"
+  ).value;
 
-  const studentValue=
-    document.getElementById(
-      "studentSelect"
-    ).value;
+  const studentValue=document.getElementById(
+    "studentSelect"
+  ).value;
 
-  const bookValue=
-    selectedBookId;
-
+  const bookValue=selectedBookId;
 
   document.getElementById(
     "checkoutButton"
@@ -2781,34 +2288,24 @@ function updateCheckoutButton(){
     !classValue||
     !studentValue||
     !bookValue;
-
 }
 
 
 async function checkoutBook(){
 
-  const studentId=
-    document.getElementById(
-      "studentSelect"
-    ).value;
+  const studentId=document.getElementById(
+    "studentSelect"
+  ).value;
 
-  const bookId=
-    selectedBookId;
+  const bookId=selectedBookId;
 
+  if(!studentId||!bookId)return;
 
-  if(!studentId||!bookId)
-    return;
+  const book=books.find(
+    b=>String(b.id)===String(bookId)
+  );
 
-
-  const book=
-    books.find(
-      b=>String(b.id)===String(bookId)
-    );
-
-
-  if(!book)
-    return;
-
+  if(!book)return;
 
   if(getAvailableCopies(book)<=0){
 
@@ -2819,46 +2316,34 @@ async function checkoutBook(){
     );
 
     return;
-
   }
 
-
-  const button=
-    document.getElementById(
-      "checkoutButton"
-    );
-
+  const button=document.getElementById(
+    "checkoutButton"
+  );
 
   button.disabled=true;
-  button.textContent=
-    "Checking Out...";
-
+  button.textContent="Checking Out...";
 
   try{
 
-    const today=
-      getTodayEastern();
+    const today=getTodayEastern();
 
+    const {error}=await supabaseClient
+      .from("Checkouts")
+      .insert({
 
-    const {error}=
-      await supabaseClient
-        .from("Checkouts")
-        .insert({
+        "Check Out Date":
+          `${today}T12:00:00`,
 
-          "Check Out Date":
-            `${today}T12:00:00`,
+        "Return Date":null,
 
-          "Return Date":null,
+        student_id:Number(studentId),
+        book_id:Number(bookId)
 
-          student_id:Number(studentId),
-
-          book_id:Number(bookId)
-
-        });
-
+      });
 
     if(error)throw error;
-
 
     showMessage(
       "checkoutMessage",
@@ -2866,40 +2351,30 @@ async function checkoutBook(){
       "success"
     );
 
-
     document.getElementById(
       "classSelect"
     ).value="";
-
 
     document.getElementById(
       "studentSelect"
     ).innerHTML=
       '<option value="">Select a student...</option>';
 
-
     document.getElementById(
       "studentSelect"
     ).disabled=true;
 
-
     clearBookSelection();
-
 
     document.getElementById(
       "bookSelect"
     ).disabled=true;
 
-
     await loadData();
-
 
   }catch(error){
 
-    console.error(
-      "Checkout error:",
-      error
-    );
+    console.error("Checkout error:",error);
 
     showMessage(
       "checkoutMessage",
@@ -2909,13 +2384,9 @@ async function checkoutBook(){
 
   }finally{
 
-    button.textContent=
-      "Check Out";
-
+    button.textContent="Check Out";
     updateCheckoutButton();
-
   }
-
 }
 
 
@@ -2923,47 +2394,31 @@ async function returnBook(checkoutId){
 
   if(!confirm(
     "Are you sure you want to mark this book as returned?"
-  ))
-    return;
-
+  ))return;
 
   try{
 
-    const today=
-      getTodayEastern();
+    const today=getTodayEastern();
 
-
-    const {error}=
-      await supabaseClient
-        .from("Checkouts")
-        .update({
-
-          "Return Date":
-            `${today}T12:00:00`
-
-        })
-        .eq("id",checkoutId);
-
+    const {error}=await supabaseClient
+      .from("Checkouts")
+      .update({
+        "Return Date":`${today}T12:00:00`
+      })
+      .eq("id",checkoutId);
 
     if(error)throw error;
 
-
     await loadData();
-
 
   }catch(error){
 
-    console.error(
-      "Return error:",
-      error
-    );
+    console.error("Return error:",error);
 
     alert(
       "Could not return the book. Please try again."
     );
-
   }
-
 }
 
 
@@ -2973,46 +2428,36 @@ async function returnBook(checkoutId){
 
 function renderLibrary(){
 
-  const tbody=
-    document.getElementById(
-      "libraryTableBody"
-    );
+  const tbody=document.getElementById(
+    "libraryTableBody"
+  );
 
+  const search=document.getElementById(
+    "librarySearch"
+  ).value.toLowerCase().trim();
 
-  const search=
-    document.getElementById(
-      "librarySearch"
-    ).value.toLowerCase().trim();
+  const filteredBooks=books.filter(book=>{
 
+    if(!search)return true;
 
-  const filteredBooks=
-    books.filter(book=>{
+    return String(book.Title||"")
+      .toLowerCase()
+      .includes(search)||
 
-      if(!search)
-        return true;
-
-
-      return String(book.Title||"")
+      String(book.Author||"")
         .toLowerCase()
         .includes(search)||
 
-        String(book.Author||"")
-          .toLowerCase()
-          .includes(search)||
+      String(book.Category||"")
+        .toLowerCase()
+        .includes(search)||
 
-        String(book.Category||"")
-          .toLowerCase()
-          .includes(search)||
-
-        String(book.Series||"")
-          .toLowerCase()
-          .includes(search);
-
-    });
-
+      String(book.Series||"")
+        .toLowerCase()
+        .includes(search);
+  });
 
   tbody.innerHTML="";
-
 
   if(filteredBooks.length===0){
 
@@ -3020,23 +2465,13 @@ function renderLibrary(){
       '<tr><td colspan="8">No books found.</td></tr>';
 
     return;
-
   }
-
 
   filteredBooks.forEach(book=>{
 
-    const row=
-      document.createElement("tr");
+    const row=document.createElement("tr");
 
-
-    const available=
-      getAvailableCopies(book);
-
-
-    const active=
-      getActiveCheckoutCount(book.id);
-
+    const available=getAvailableCopies(book);
 
     row.innerHTML=`
 
@@ -3083,14 +2518,10 @@ function renderLibrary(){
         </div>
 
       </td>
-
     `;
 
-
     tbody.appendChild(row);
-
   });
-
 }
 
 
@@ -3100,39 +2531,30 @@ function renderLibrary(){
 
 function updateSeriesOptions(){
 
-  const datalist=
-    document.getElementById(
-      "seriesOptions"
-    );
+  const datalist=document.getElementById(
+    "seriesOptions"
+  );
 
+  if(!datalist)return;
 
-  if(!datalist)
-    return;
-
-
-  const seriesNames=
-    [...new Set(
+  const seriesNames=[
+    ...new Set(
       books
         .map(book=>String(book.Series||"").trim())
         .filter(Boolean)
-    )]
-    .sort();
-
+    )
+  ].sort();
 
   datalist.innerHTML="";
 
-
   seriesNames.forEach(series=>{
 
-    const option=
-      document.createElement("option");
+    const option=document.createElement("option");
 
     option.value=series;
 
     datalist.appendChild(option);
-
   });
-
 }
 
 
@@ -3145,69 +2567,72 @@ function resetBookModal(){
   editingBookId=null;
   selectedExistingBookId=null;
 
-
   document.getElementById(
     "bookModalTitle"
-  ).textContent=
-    "Add Book";
-
+  ).textContent="Add Book";
 
   document.getElementById(
     "bookModalMessage"
   ).innerHTML="";
 
-
   document.getElementById(
     "quickAddSection"
-  ).classList.remove(
-    "hidden"
-  );
-
+  ).classList.remove("hidden");
 
   document.getElementById(
     "newBookDetailsSection"
-  ).classList.add(
-    "hidden"
-  );
+  ).classList.add("hidden");
 
+  document.getElementById(
+    "backToBookSearchButton"
+  ).classList.remove("hidden");
+
+  document.querySelector(
+    "#newBookDetailsSection h3"
+  ).textContent="New Book Details";
+
+  document.querySelector(
+    "#newBookDetailsSection p"
+  ).textContent=
+    "This book isn't already in your library. Enter the information below to add it.";
 
   document.getElementById(
     "bookTitleInput"
   ).value="";
 
-
   document.getElementById(
     "bookCopiesInput"
   ).value="1";
-
 
   document.getElementById(
     "bookSearchResults"
   ).innerHTML="";
 
+  document.getElementById(
+    "newBookCoverInput"
+  ).value="";
 
   document.getElementById(
     "newBookAuthorInput"
   ).value="";
 
-
   document.getElementById(
     "newBookCategoryInput"
   ).value="";
-
 
   document.getElementById(
     "newBookSeriesInput"
   ).value="";
 
-
   document.getElementById(
     "newBookSeriesNumberInput"
   ).value="";
 
+  document.getElementById(
+    "saveNewBookButton"
+  ).textContent="Add New Book";
 
   updateNewBookCategoryFields();
-
 }
 
 
@@ -3215,140 +2640,101 @@ function openAddBook(){
 
   resetBookModal();
 
-
   document.getElementById(
     "bookModal"
-  ).classList.remove(
-    "hidden"
-  );
-
+  ).classList.remove("hidden");
 
   document.getElementById(
     "bookTitleInput"
   ).focus();
-
 }
 
 
 function openEditBook(bookId){
 
-  const book=
-    books.find(
-      b=>String(b.id)===String(bookId)
-    );
+  const book=books.find(
+    b=>String(b.id)===String(bookId)
+  );
 
-
-  if(!book)
-    return;
-
+  if(!book)return;
 
   editingBookId=bookId;
   selectedExistingBookId=null;
 
-
   document.getElementById(
     "bookModalTitle"
-  ).textContent=
-    "Edit Book";
-
-
-  /*
-    Editing uses the full details form.
-  */
+  ).textContent="Edit Book";
 
   document.getElementById(
     "quickAddSection"
-  ).classList.add(
-    "hidden"
-  );
-
+  ).classList.add("hidden");
 
   document.getElementById(
     "newBookDetailsSection"
-  ).classList.remove(
-    "hidden"
-  );
-
+  ).classList.remove("hidden");
 
   document.getElementById(
     "backToBookSearchButton"
-  ).classList.add(
-    "hidden"
-  );
-
+  ).classList.add("hidden");
 
   document.querySelector(
     "#newBookDetailsSection h3"
-  ).textContent=
-    "Edit Book Details";
-
+  ).textContent="Edit Book Details";
 
   document.querySelector(
     "#newBookDetailsSection p"
   ).textContent=
     "Update the information for this book.";
 
-
   document.getElementById(
     "bookTitleInput"
-  ).value=
-    book.Title||"";
+  ).value=book.Title||"";
 
+  document.getElementById(
+    "newBookCoverInput"
+  ).value=
+    book["Cover URL"]||
+    book.CoverURL||
+    "";
 
   document.getElementById(
     "newBookAuthorInput"
   ).value=
     book.Author||"";
 
-
   document.getElementById(
     "newBookCategoryInput"
   ).value=
     book.Category||"";
-
 
   document.getElementById(
     "newBookSeriesInput"
   ).value=
     book.Series||"";
 
-
   document.getElementById(
     "newBookSeriesNumberInput"
   ).value=
     book["Series #"]||"";
-
 
   document.getElementById(
     "bookCopiesInput"
   ).value=
     Number(book.Copies||1);
 
-
   document.getElementById(
     "bookModalMessage"
   ).innerHTML="";
 
-
   updateNewBookCategoryFields();
-
-
-  /*
-    Change the save button's text.
-  */
 
   document.getElementById(
     "saveNewBookButton"
-  ).textContent=
-    "Save Changes";
-
+  ).textContent="Save Changes";
 
   document.getElementById(
     "bookModal"
-  ).classList.remove(
-    "hidden"
-  );
-
+  ).classList.remove("hidden");
 }
 
 
@@ -3357,13 +2743,9 @@ function closeBookModal(){
   editingBookId=null;
   selectedExistingBookId=null;
 
-
   document.getElementById(
     "bookModal"
-  ).classList.add(
-    "hidden"
-  );
-
+  ).classList.add("hidden");
 }
 
 
@@ -3373,7 +2755,6 @@ function showBookModalMessage(message,type){
     "bookModalMessage"
   ).innerHTML=
     `<div class="message ${type}">${message}</div>`;
-
 }
 
 
@@ -3383,47 +2764,37 @@ function showBookModalMessage(message,type){
 
 async function saveEditedBook(){
 
-  if(!editingBookId)
-    return;
+  if(!editingBookId)return;
 
+  const title=document.getElementById(
+    "bookTitleInput"
+  ).value.trim();
 
-  const title=
+  const coverUrl=document.getElementById(
+    "newBookCoverInput"
+  ).value.trim();
+
+  const author=document.getElementById(
+    "newBookAuthorInput"
+  ).value.trim();
+
+  const category=document.getElementById(
+    "newBookCategoryInput"
+  ).value;
+
+  const series=document.getElementById(
+    "newBookSeriesInput"
+  ).value.trim();
+
+  const seriesNumberValue=document.getElementById(
+    "newBookSeriesNumberInput"
+  ).value;
+
+  const copies=Number(
     document.getElementById(
-      "bookTitleInput"
-    ).value.trim();
-
-
-  const author=
-    document.getElementById(
-      "newBookAuthorInput"
-    ).value.trim();
-
-
-  const category=
-    document.getElementById(
-      "newBookCategoryInput"
-    ).value;
-
-
-  const series=
-    document.getElementById(
-      "newBookSeriesInput"
-    ).value.trim();
-
-
-  const seriesNumberValue=
-    document.getElementById(
-      "newBookSeriesNumberInput"
-    ).value;
-
-
-  const copies=
-    Number(
-      document.getElementById(
-        "bookCopiesInput"
-      ).value
-    );
-
+      "bookCopiesInput"
+    ).value
+  );
 
   if(!title){
 
@@ -3433,9 +2804,7 @@ async function saveEditedBook(){
     );
 
     return;
-
   }
-
 
   if(!author){
 
@@ -3445,9 +2814,7 @@ async function saveEditedBook(){
     );
 
     return;
-
   }
-
 
   if(!category){
 
@@ -3457,9 +2824,7 @@ async function saveEditedBook(){
     );
 
     return;
-
   }
-
 
   if(category==="Series"&&!series){
 
@@ -3469,14 +2834,9 @@ async function saveEditedBook(){
     );
 
     return;
-
   }
 
-
-  if(
-    !Number.isInteger(copies)||
-    copies<1
-  ){
+  if(!Number.isInteger(copies)||copies<1){
 
     showBookModalMessage(
       "Copies must be a whole number of at least 1.",
@@ -3484,12 +2844,9 @@ async function saveEditedBook(){
     );
 
     return;
-
   }
 
-
   let seriesNumber=null;
-
 
   if(category==="Series"){
 
@@ -3497,7 +2854,6 @@ async function saveEditedBook(){
       seriesNumberValue
         ? Number(seriesNumberValue)
         : null;
-
 
     if(
       seriesNumber!==null&&
@@ -3513,42 +2869,27 @@ async function saveEditedBook(){
       );
 
       return;
-
     }
-
   }
 
-
-  const button=
-    document.getElementById(
-      "saveNewBookButton"
-    );
-
+  const button=document.getElementById(
+    "saveNewBookButton"
+  );
 
   button.disabled=true;
-
-  button.textContent=
-    "Saving...";
-
+  button.textContent="Saving...";
 
   try{
 
-    const existingBook=
-      books.find(
-        b=>String(b.id)===
-          String(editingBookId)
-      );
-
+    const existingBook=books.find(
+      b=>String(b.id)===String(editingBookId)
+    );
 
     if(!existingBook)
       throw new Error("Book not found.");
 
-
     const activeCheckouts=
-      getActiveCheckoutCount(
-        editingBookId
-      );
-
+      getActiveCheckoutCount(editingBookId);
 
     if(copies<activeCheckouts){
 
@@ -3558,33 +2899,32 @@ async function saveEditedBook(){
       );
 
       return;
-
     }
 
+    const duplicate=books.find(book=>
 
-    const duplicate=
-      books.find(book=>
+      String(book.id)!==
+        String(editingBookId)&&
 
-        String(book.id)!==
-          String(editingBookId)&&
+      String(book.Title||"").trim().toLowerCase()===
+        title.toLowerCase()&&
 
-        String(book.Title||"").trim().toLowerCase()===
-          title.toLowerCase()&&
+      String(book.Author||"").trim().toLowerCase()===
+        author.toLowerCase()&&
 
-        String(book.Author||"").trim().toLowerCase()===
-          author.toLowerCase()&&
+      String(book.Category||"").trim().toLowerCase()===
+        category.toLowerCase()&&
 
-        String(book.Category||"").trim().toLowerCase()===
-          category.toLowerCase()&&
+      String(book.Series||"").trim().toLowerCase()===
+        (
+          category==="Series"
+            ? series
+            : ""
+        ).toLowerCase()&&
 
-        String(book.Series||"").trim().toLowerCase()===
-          series.toLowerCase()&&
-
-        String(book["Series #"]||"")===
-          String(seriesNumber||"")
-
-      );
-
+      String(book["Series #"]||"")===
+        String(seriesNumber||"")
+    );
 
     if(duplicate){
 
@@ -3594,48 +2934,55 @@ async function saveEditedBook(){
       );
 
       return;
-
     }
 
+    const updateData={
 
-    const {error}=
-      await supabaseClient
-        .from("Books")
-        .update({
+      "Title":title,
 
-          "Title":title,
+      "Author":author,
 
-          "Author":author,
+      "Category":category,
 
-          "Category":category,
+      "Series":
+        category==="Series"
+          ? series
+          : null,
 
-          "Series":
-            category==="Series"
-              ? series
-              : null,
+      "Series #":
+        category==="Series"
+          ? seriesNumber
+          : null,
 
-          "Series #":
-            category==="Series"
-              ? seriesNumber
-              : null,
+      "Copies":copies
+    };
 
-          "Copies":copies
+    /*
+      Only include the cover column if it exists in the
+      database response. This prevents cover support from
+      breaking normal book editing.
+    */
 
-        })
-        .eq(
-          "id",
-          editingBookId
-        );
+    if(
+      Object.prototype.hasOwnProperty.call(
+        existingBook,
+        "Cover URL"
+      )
+    ){
 
+      updateData["Cover URL"]=
+        coverUrl||null;
+    }
 
-    if(error)
-      throw error;
+    const {error}=await supabaseClient
+      .from("Books")
+      .update(updateData)
+      .eq("id",editingBookId);
 
+    if(error)throw error;
 
     closeBookModal();
-
     await loadData();
-
 
   }catch(error){
 
@@ -3644,12 +2991,10 @@ async function saveEditedBook(){
       error
     );
 
-
     showBookModalMessage(
       "Could not save the book. Please try again.",
       "error"
     );
-
 
   }finally{
 
@@ -3659,9 +3004,7 @@ async function saveEditedBook(){
       editingBookId
         ? "Save Changes"
         : "Add New Book";
-
   }
-
 }
 
 
@@ -3671,21 +3014,15 @@ async function saveEditedBook(){
 
 async function deleteBook(bookId){
 
-  const book=
-    books.find(
-      b=>String(b.id)===String(bookId)
-    );
+  const book=books.find(
+    b=>String(b.id)===String(bookId)
+  );
 
+  if(!book)return;
 
-  if(!book)
-    return;
-
-
-  const historyCount=
-    checkouts.filter(
-      c=>String(c.book_id)===String(bookId)
-    ).length;
-
+  const historyCount=checkouts.filter(
+    c=>String(c.book_id)===String(bookId)
+  ).length;
 
   if(historyCount>0){
 
@@ -3694,38 +3031,24 @@ async function deleteBook(bookId){
     );
 
     return;
-
   }
 
+  const confirmed=confirm(
+    `Delete "${book.Title}" from your library?\n\nThis cannot be undone.`
+  );
 
-  const confirmed=
-    confirm(
-      `Delete "${book.Title}" from your library?\n\nThis cannot be undone.`
-    );
-
-
-  if(!confirmed)
-    return;
-
+  if(!confirmed)return;
 
   try{
 
-    const {error}=
-      await supabaseClient
-        .from("Books")
-        .delete()
-        .eq(
-          "id",
-          bookId
-        );
+    const {error}=await supabaseClient
+      .from("Books")
+      .delete()
+      .eq("id",bookId);
 
-
-    if(error)
-      throw error;
-
+    if(error)throw error;
 
     await loadData();
-
 
   }catch(error){
 
@@ -3734,13 +3057,10 @@ async function deleteBook(bookId){
       error
     );
 
-
     alert(
       "Could not delete the book. Please try again."
     );
-
   }
-
 }
 
 
@@ -3750,50 +3070,38 @@ async function deleteBook(bookId){
 
 function renderStudents(){
 
-  const tbody=
-    document.getElementById(
-      "studentsTableBody"
-    );
+  const tbody=document.getElementById(
+    "studentsTableBody"
+  );
 
-
-  const search=
-    document.getElementById(
-      "studentSearch"
-    ).value.toLowerCase().trim();
-
+  const search=document.getElementById(
+    "studentSearch"
+  ).value.toLowerCase().trim();
 
   tbody.innerHTML="";
 
+  const filteredStudents=students.filter(student=>{
 
-  const filteredStudents=
-    students.filter(student=>{
+    const className=
+      getClassName(student.class_id);
 
-      const className=
-        getClassName(student.class_id);
+    if(
+      className.toLowerCase()!==
+      selectedStudentClass.toLowerCase()
+    )
+      return false;
 
+    const studentNumber=
+      String(student.student_number);
 
-      if(
-        className.toLowerCase()!==
-        selectedStudentClass.toLowerCase()
-      )
-        return false;
+    if(
+      search&&
+      !studentNumber.includes(search)
+    )
+      return false;
 
-
-      const studentNumber=
-        String(student.student_number);
-
-
-      if(
-        search&&
-        !studentNumber.includes(search)
-      )
-        return false;
-
-
-      return true;
-
-    });
-
+    return true;
+  });
 
   if(filteredStudents.length===0){
 
@@ -3801,38 +3109,27 @@ function renderStudents(){
       '<tr><td colspan="3">No students found.</td></tr>';
 
     return;
-
   }
-
 
   filteredStudents.forEach(student=>{
 
     const className=
       getClassName(student.class_id);
 
+    const borrowed=checkouts.filter(checkout=>
+      String(checkout.student_id)===
+        String(student.id)&&
+      !checkout["Return Date"]
+    ).length;
 
-    const borrowed=
-      checkouts.filter(checkout=>
-        String(checkout.student_id)===
-          String(student.id)&&
-        !checkout["Return Date"]
-      ).length;
+    const row=document.createElement("tr");
 
-
-    const row=
-      document.createElement("tr");
-
-
-    row.classList.add(
-      "clickable-row"
-    );
-
+    row.classList.add("clickable-row");
 
     row.addEventListener(
       "click",
       ()=>showStudentHistory(student.id)
     );
-
 
     row.innerHTML=`
 
@@ -3846,11 +3143,8 @@ function renderStudents(){
 
     `;
 
-
     tbody.appendChild(row);
-
   });
-
 
   document.querySelectorAll(
     ".student-tab"
@@ -3861,9 +3155,7 @@ function renderStudents(){
       tab.dataset.class.toLowerCase()===
         selectedStudentClass.toLowerCase()
     );
-
   });
-
 }
 
 
@@ -3873,54 +3165,39 @@ function renderStudents(){
 
 function showStudentHistory(studentId){
 
-  const student=
-    getStudent(studentId);
+  const student=getStudent(studentId);
 
+  if(!student)return;
 
-  if(!student)
-    return;
-
-
-  currentStudentHistoryStudentId=
-    studentId;
-
+  currentStudentHistoryStudentId=studentId;
 
   const className=
     getClassName(student.class_id);
-
 
   document.getElementById(
     "studentHistoryTitle"
   ).textContent=
     `Student #${student.student_number} — ${className}`;
 
-
-  const tbody=
-    document.getElementById(
-      "studentHistoryTableBody"
-    );
-
+  const tbody=document.getElementById(
+    "studentHistoryTableBody"
+  );
 
   tbody.innerHTML="";
 
-
-  const studentCheckouts=
-    checkouts.filter(checkout=>
-      String(checkout.student_id)===
-        String(studentId)
-    );
-
+  const studentCheckouts=checkouts.filter(checkout=>
+    String(checkout.student_id)===
+      String(studentId)
+  );
 
   if(studentCheckouts.length===0){
 
     tbody.innerHTML=`
 
       <tr>
-
         <td colspan="5">
           This student has not checked out any books yet.
         </td>
-
       </tr>
 
     `;
@@ -3929,22 +3206,15 @@ function showStudentHistory(studentId){
 
     studentCheckouts.forEach(checkout=>{
 
-      const book=
-        books.find(
-          b=>String(b.id)===
-            String(checkout.book_id)
-        );
-
+      const book=books.find(
+        b=>String(b.id)===
+          String(checkout.book_id)
+      );
 
       const returned=
-        Boolean(
-          checkout["Return Date"]
-        );
+        Boolean(checkout["Return Date"]);
 
-
-      const row=
-        document.createElement("tr");
-
+      const row=document.createElement("tr");
 
       row.innerHTML=`
 
@@ -3969,13 +3239,11 @@ function showStudentHistory(studentId){
         </td>
 
         <td>
-
           ${
             returned
               ? '<span class="history-status-returned">Returned</span>'
               : '<span class="history-status-out">Checked Out</span>'
           }
-
         </td>
 
         <td>
@@ -4002,18 +3270,11 @@ function showStudentHistory(studentId){
 
       `;
 
-
       tbody.appendChild(row);
-
     });
-
   }
 
-
-  showPage(
-    "studentHistory"
-  );
-
+  showPage("studentHistory");
 }
 
 
@@ -4023,32 +3284,18 @@ function showStudentHistory(studentId){
 
 function openEditCheckout(checkoutId){
 
-  const checkout=
-    checkouts.find(
-      c=>String(c.id)===
-        String(checkoutId)
-    );
+  const checkout=checkouts.find(
+    c=>String(c.id)===String(checkoutId)
+  );
 
+  if(!checkout)return;
 
-  if(!checkout)
-    return;
-
-
-  editingCheckoutId=
-    checkoutId;
-
-
-  const book=
-    getBookTitle(
-      checkout.book_id
-    );
-
+  editingCheckoutId=checkoutId;
 
   document.getElementById(
     "editBookName"
   ).textContent=
-    book;
-
+    getBookTitle(checkout.book_id);
 
   document.getElementById(
     "editCheckoutDate"
@@ -4059,12 +3306,8 @@ function openEditCheckout(checkoutId){
         ).substring(0,10)
       : "";
 
-
   const returned=
-    Boolean(
-      checkout["Return Date"]
-    );
-
+    Boolean(checkout["Return Date"]);
 
   document.getElementById(
     "editStatus"
@@ -4072,7 +3315,6 @@ function openEditCheckout(checkoutId){
     returned
       ? "returned"
       : "out";
-
 
   document.getElementById(
     "editReturnDate"
@@ -4083,14 +3325,11 @@ function openEditCheckout(checkoutId){
         ).substring(0,10)
       : "";
 
-
   updateEditReturnDateVisibility();
-
 
   document.getElementById(
     "editModal"
   ).classList.remove("hidden");
-
 }
 
 
@@ -4101,121 +3340,75 @@ function closeEditCheckout(){
   document.getElementById(
     "editModal"
   ).classList.add("hidden");
-
 }
 
 
 function updateEditReturnDateVisibility(){
 
-  const status=
-    document.getElementById(
-      "editStatus"
-    ).value;
+  const status=document.getElementById(
+    "editStatus"
+  ).value;
 
+  const group=document.getElementById(
+    "editReturnDateGroup"
+  );
 
-  const group=
-    document.getElementById(
-      "editReturnDateGroup"
-    );
-
-
-  const input=
-    document.getElementById(
-      "editReturnDate"
-    );
-
+  const input=document.getElementById(
+    "editReturnDate"
+  );
 
   if(status==="returned"){
 
-    group.classList.remove(
-      "hidden"
-    );
-
+    group.classList.remove("hidden");
     input.disabled=false;
 
-
     if(!input.value){
-
-      input.value=
-        getTodayEastern();
-
+      input.value=getTodayEastern();
     }
 
   }else{
 
-    group.classList.add(
-      "hidden"
-    );
-
+    group.classList.add("hidden");
     input.disabled=true;
-
     input.value="";
-
   }
-
 }
 
 
 async function saveEditedCheckout(){
 
-  if(!editingCheckoutId)
-    return;
+  if(!editingCheckoutId)return;
 
+  const checkoutDate=document.getElementById(
+    "editCheckoutDate"
+  ).value;
 
-  const checkoutDate=
-    document.getElementById(
-      "editCheckoutDate"
-    ).value;
+  const status=document.getElementById(
+    "editStatus"
+  ).value;
 
-
-  const status=
-    document.getElementById(
-      "editStatus"
-    ).value;
-
-
-  const returnDate=
-    document.getElementById(
-      "editReturnDate"
-    ).value;
-
+  const returnDate=document.getElementById(
+    "editReturnDate"
+  ).value;
 
   if(!checkoutDate){
 
-    alert(
-      "Please enter a checkout date."
-    );
-
+    alert("Please enter a checkout date.");
     return;
-
   }
 
+  if(status==="returned"&&!returnDate){
 
-  if(
-    status==="returned"&&
-    !returnDate
-  ){
-
-    alert(
-      "Please enter a return date."
-    );
-
+    alert("Please enter a return date.");
     return;
-
   }
 
-
-  const button=
-    document.getElementById(
-      "saveEditButton"
-    );
-
+  const button=document.getElementById(
+    "saveEditButton"
+  );
 
   button.disabled=true;
-
-  button.textContent=
-    "Saving...";
-
+  button.textContent="Saving...";
 
   try{
 
@@ -4228,38 +3421,25 @@ async function saveEditedCheckout(){
         status==="returned"
           ? `${returnDate}T12:00:00`
           : null
-
     };
 
-
-    const {error}=
-      await supabaseClient
-        .from("Checkouts")
-        .update(updateData)
-        .eq(
-          "id",
-          editingCheckoutId
-        );
-
+    const {error}=await supabaseClient
+      .from("Checkouts")
+      .update(updateData)
+      .eq("id",editingCheckoutId);
 
     if(error)throw error;
-
 
     closeEditCheckout();
 
     await loadData();
 
-
-    if(
-      currentStudentHistoryStudentId
-    ){
+    if(currentStudentHistoryStudentId){
 
       showStudentHistory(
         currentStudentHistoryStudentId
       );
-
     }
-
 
   }catch(error){
 
@@ -4275,12 +3455,8 @@ async function saveEditedCheckout(){
   }finally{
 
     button.disabled=false;
-
-    button.textContent=
-      "Save Changes";
-
+    button.textContent="Save Changes";
   }
-
 }
 
 
@@ -4290,75 +3466,47 @@ async function saveEditedCheckout(){
 
 async function deleteCheckout(checkoutId){
 
-  const checkout=
-    checkouts.find(
-      c=>String(c.id)===
-        String(checkoutId)
-    );
+  const checkout=checkouts.find(
+    c=>String(c.id)===String(checkoutId)
+  );
 
+  if(!checkout)return;
 
-  if(!checkout)
-    return;
+  const student=getStudent(
+    checkout.student_id
+  );
 
+  const book=getBookTitle(
+    checkout.book_id
+  );
 
-  const student=
-    getStudent(
-      checkout.student_id
-    );
+  const studentText=student
+    ? `Student #${student.student_number}`
+    : "this student";
 
+  const confirmed=confirm(
+    `Delete this checkout record?\n\nBook: ${book}\nStudent: ${studentText}\n\nThis cannot be undone.`
+  );
 
-  const book=
-    getBookTitle(
-      checkout.book_id
-    );
-
-
-  const studentText=
-    student
-      ? `Student #${student.student_number}`
-      : "this student";
-
-
-  const confirmed=
-    confirm(
-
-      `Delete this checkout record?\n\nBook: ${book}\nStudent: ${studentText}\n\nThis cannot be undone.`
-
-    );
-
-
-  if(!confirmed)
-    return;
-
+  if(!confirmed)return;
 
   try{
 
-    const {error}=
-      await supabaseClient
-        .from("Checkouts")
-        .delete()
-        .eq(
-          "id",
-          checkoutId
-        );
-
+    const {error}=await supabaseClient
+      .from("Checkouts")
+      .delete()
+      .eq("id",checkoutId);
 
     if(error)throw error;
 
-
     await loadData();
 
-
-    if(
-      currentStudentHistoryStudentId
-    ){
+    if(currentStudentHistoryStudentId){
 
       showStudentHistory(
         currentStudentHistoryStudentId
       );
-
     }
-
 
   }catch(error){
 
@@ -4370,9 +3518,7 @@ async function deleteCheckout(checkoutId){
     alert(
       "Could not delete the checkout record. Please try again."
     );
-
   }
-
 }
 
 
@@ -4382,20 +3528,15 @@ async function deleteCheckout(checkoutId){
 
 function renderCheckedOut(){
 
-  const tbody=
-    document.getElementById(
-      "checkedOutTableBody"
-    );
-
+  const tbody=document.getElementById(
+    "checkedOutTableBody"
+  );
 
   tbody.innerHTML="";
 
-
-  const activeCheckouts=
-    checkouts.filter(
-      c=>!c["Return Date"]
-    );
-
+  const activeCheckouts=checkouts.filter(
+    c=>!c["Return Date"]
+  );
 
   if(activeCheckouts.length===0){
 
@@ -4403,36 +3544,24 @@ function renderCheckedOut(){
       '<tr><td colspan="5">No books are currently checked out.</td></tr>';
 
     return;
-
   }
-
 
   activeCheckouts.forEach(checkout=>{
 
-    const student=
-      getStudent(
-        checkout.student_id
-      );
+    const student=getStudent(
+      checkout.student_id
+    );
 
+    const book=books.find(
+      b=>String(b.id)===
+        String(checkout.book_id)
+    );
 
-    const book=
-      books.find(
-        b=>String(b.id)===
-          String(checkout.book_id)
-      );
+    const className=student
+      ? getClassName(student.class_id)
+      : "";
 
-
-    const className=
-      student
-        ? getClassName(
-            student.class_id
-          )
-        : "";
-
-
-    const row=
-      document.createElement("tr");
-
+    const row=document.createElement("tr");
 
     row.innerHTML=`
 
@@ -4487,11 +3616,8 @@ function renderCheckedOut(){
 
     `;
 
-
     tbody.appendChild(row);
-
   });
-
 }
 
 
@@ -4501,84 +3627,55 @@ function renderCheckedOut(){
 
 function renderHistory(){
 
-  const tbody=
-    document.getElementById(
-      "historyTableBody"
-    );
+  const tbody=document.getElementById(
+    "historyTableBody"
+  );
 
-
-  const search=
-    document.getElementById(
-      "historySearch"
-    ).value.toLowerCase().trim();
-
+  const search=document.getElementById(
+    "historySearch"
+  ).value.toLowerCase().trim();
 
   tbody.innerHTML="";
 
-
-  let filteredCheckouts=
-    [...checkouts];
-
+  let filteredCheckouts=[...checkouts];
 
   if(search){
 
     filteredCheckouts=
-      filteredCheckouts.filter(
-        checkout=>{
+      filteredCheckouts.filter(checkout=>{
 
-          const student=
-            getStudent(
-              checkout.student_id
-            );
+        const student=getStudent(
+          checkout.student_id
+        );
 
+        const book=books.find(
+          b=>String(b.id)===
+            String(checkout.book_id)
+        );
 
-          const book=
-            books.find(
-              b=>String(b.id)===
-                String(checkout.book_id)
-            );
+        const className=student
+          ? getClassName(student.class_id)
+          : "";
 
+        const studentText=student
+          ? `student ${student.student_number}`
+          : "";
 
-          const className=
-            student
-              ? getClassName(
-                  student.class_id
-                )
-              : "";
+        const bookText=book
+          ? book.Title
+          : "";
 
+        const authorText=book
+          ? book.Author||""
+          : "";
 
-          const studentText=
-            student
-              ? `student ${student.student_number}`
-              : "";
+        const combined=
+          `${bookText} ${authorText} ${studentText} ${className}`
+            .toLowerCase();
 
-
-          const bookText=
-            book
-              ? book.Title
-              : "";
-
-
-          const authorText=
-            book
-              ? book.Author||""
-              : "";
-
-
-          const combined=
-            `${bookText} ${authorText} ${studentText} ${className}`
-              .toLowerCase();
-
-
-          return combined.includes(
-            search
-          );
-
-        }
-      );
-
+        return combined.includes(search);
+      });
   }
-
 
   if(filteredCheckouts.length===0){
 
@@ -4586,94 +3683,72 @@ function renderHistory(){
       '<tr><td colspan="6">No checkout history found.</td></tr>';
 
     return;
-
   }
 
+  filteredCheckouts.forEach(checkout=>{
 
-  filteredCheckouts.forEach(
-    checkout=>{
+    const student=getStudent(
+      checkout.student_id
+    );
 
-      const student=
-        getStudent(
-          checkout.student_id
-        );
+    const book=books.find(
+      b=>String(b.id)===
+        String(checkout.book_id)
+    );
 
+    const className=student
+      ? getClassName(student.class_id)
+      : "";
 
-      const book=
-        books.find(
-          b=>String(b.id)===
-            String(checkout.book_id)
-        );
+    const returned=
+      Boolean(checkout["Return Date"]);
 
+    const row=document.createElement("tr");
 
-      const className=
-        student
-          ? getClassName(
-              student.class_id
-            )
-          : "";
+    row.innerHTML=`
 
+      <td>
+        ${book?book.Title:"Unknown Book"}
+      </td>
 
-      const returned=
-        Boolean(
-          checkout["Return Date"]
-        );
+      <td>
+        ${
+          student
+            ? `Student #${student.student_number}`
+            : "Unknown Student"
+        }
+      </td>
 
+      <td>${className}</td>
 
-      const row=
-        document.createElement("tr");
+      <td>
+        ${formatDate(
+          checkout["Check Out Date"]
+        )}
+      </td>
 
+      <td>
+        ${
+          returned
+            ? formatDate(
+                checkout["Return Date"]
+              )
+            : "—"
+        }
+      </td>
 
-      row.innerHTML=`
+      <td>
+        ${
+          returned
+            ? '<span class="history-status-returned">Returned</span>'
+            : '<span class="history-status-out">Checked Out</span>'
+        }
+      </td>
 
-        <td>
-          ${book?book.Title:"Unknown Book"}
-        </td>
+    `;
 
-        <td>
-          ${
-            student
-              ? `Student #${student.student_number}`
-              : "Unknown Student"
-          }
-        </td>
-
-        <td>${className}</td>
-
-        <td>
-          ${formatDate(
-            checkout["Check Out Date"]
-          )}
-        </td>
-
-        <td>
-          ${
-            returned
-              ? formatDate(
-                  checkout["Return Date"]
-                )
-              : "—"
-          }
-        </td>
-
-        <td>
-
-          ${
-            returned
-              ? '<span class="history-status-returned">Returned</span>'
-              : '<span class="history-status-out">Checked Out</span>'
-          }
-
-        </td>
-
-      `;
-
-
-      tbody.appendChild(row);
-
-    }
-  );
-
+    tbody.appendChild(row);
+  });
 }
 
 
@@ -4686,64 +3761,41 @@ function showPage(pageId){
   document.querySelectorAll(
     ".page"
   ).forEach(page=>{
-    page.classList.remove(
-      "active"
-    );
+    page.classList.remove("active");
   });
-
 
   document.querySelectorAll(
     ".nav-button"
   ).forEach(button=>{
-    button.classList.remove(
-      "active"
-    );
+    button.classList.remove("active");
   });
 
-
-  const page=
-    document.getElementById(
-      pageId
-    );
-
+  const page=document.getElementById(pageId);
 
   if(page)
-    page.classList.add(
-      "active"
-    );
+    page.classList.add("active");
 
-
-  const activeButton=
-    document.querySelector(
-      `.nav-button[data-page="${pageId}"]`
-    );
-
+  const activeButton=document.querySelector(
+    `.nav-button[data-page="${pageId}"]`
+  );
 
   if(activeButton)
-    activeButton.classList.add(
-      "active"
-    );
-
+    activeButton.classList.add("active");
 
   if(pageId==="checkout")
     populateBooks();
 
-
   if(pageId==="library")
     renderLibrary();
-
 
   if(pageId==="students")
     renderStudents();
 
-
   if(pageId==="checkedout")
     renderCheckedOut();
 
-
   if(pageId==="history")
     renderHistory();
-
 }
 
 
@@ -4753,26 +3805,19 @@ function showPage(pageId){
 
 async function login(){
 
-  const email=
-    document.getElementById(
-      "email"
-    ).value.trim();
+  const email=document.getElementById(
+    "email"
+  ).value.trim();
 
+  const password=document.getElementById(
+    "password"
+  ).value;
 
-  const password=
-    document.getElementById(
-      "password"
-    ).value;
-
-
-  const errorElement=
-    document.getElementById(
-      "loginError"
-    );
-
+  const errorElement=document.getElementById(
+    "loginError"
+  );
 
   errorElement.textContent="";
-
 
   if(!email||!password){
 
@@ -4780,30 +3825,19 @@ async function login(){
       "Please enter your email and password.";
 
     return;
-
   }
 
-
-  const button=
-    document.getElementById(
-      "loginButton"
-    );
-
+  const button=document.getElementById(
+    "loginButton"
+  );
 
   button.disabled=true;
+  button.textContent="Logging in...";
 
-  button.textContent=
-    "Logging in...";
-
-
-  const {error}=
-    await supabaseClient.auth.signInWithPassword({
-
-      email,
-      password
-
-    });
-
+  const {error}=await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
 
   if(error){
 
@@ -4816,23 +3850,17 @@ async function login(){
       "Incorrect email or password.";
 
     button.disabled=false;
-
-    button.textContent=
-      "Log In";
+    button.textContent="Log In";
 
     return;
-
   }
-
 
   localStorage.setItem(
     LOGIN_TIME_KEY,
     String(Date.now())
   );
 
-
   await showApp();
-
 }
 
 
@@ -4842,14 +3870,11 @@ async function showApp(){
     "loginScreen"
   ).classList.add("hidden");
 
-
   document.getElementById(
     "app"
   ).classList.remove("hidden");
 
-
   await loadData();
-
 }
 
 
@@ -4861,21 +3886,17 @@ async function logout(){
     LOGIN_TIME_KEY
   );
 
-
   document.getElementById(
     "app"
   ).classList.add("hidden");
-
 
   document.getElementById(
     "loginScreen"
   ).classList.remove("hidden");
 
-
   document.getElementById(
     "password"
   ).value="";
-
 }
 
 
@@ -4890,7 +3911,6 @@ async function checkExistingSession(){
   }=
     await supabaseClient.auth.getSession();
 
-
   if(!session){
 
     localStorage.removeItem(
@@ -4898,15 +3918,12 @@ async function checkExistingSession(){
     );
 
     return;
-
   }
-
 
   const storedLoginTime=
     localStorage.getItem(
       LOGIN_TIME_KEY
     );
-
 
   if(!storedLoginTime){
 
@@ -4918,17 +3935,14 @@ async function checkExistingSession(){
     await showApp();
 
     return;
-
   }
 
-
-  const loginTime=
-    Number(storedLoginTime);
-
+  const loginTime=Number(
+    storedLoginTime
+  );
 
   const elapsed=
     Date.now()-loginTime;
-
 
   if(elapsed>=LOGIN_DURATION){
 
@@ -4936,27 +3950,20 @@ async function checkExistingSession(){
       LOGIN_TIME_KEY
     );
 
-
     await supabaseClient.auth.signOut();
-
 
     document.getElementById(
       "app"
     ).classList.add("hidden");
 
-
     document.getElementById(
       "loginScreen"
     ).classList.remove("hidden");
 
-
     return;
-
   }
 
-
   await showApp();
-
 }
 
 
@@ -4974,19 +3981,15 @@ document.getElementById(
   login
 );
 
-
 document.getElementById(
   "password"
 ).addEventListener(
   "keydown",
   event=>{
-
     if(event.key==="Enter")
       login();
-
   }
 );
-
 
 document.getElementById(
   "logoutButton"
@@ -4994,7 +3997,6 @@ document.getElementById(
   "click",
   logout
 );
-
 
 document.querySelectorAll(
   ".nav-button"
@@ -5011,7 +4013,6 @@ document.querySelectorAll(
 
 });
 
-
 document.getElementById(
   "classSelect"
 ).addEventListener(
@@ -5019,59 +4020,45 @@ document.getElementById(
   populateStudents
 );
 
-
 document.getElementById(
   "studentSelect"
 ).addEventListener(
   "change",
   ()=>{
-
     populateBooks();
     updateCheckoutButton();
-
   }
 );
-
 
 document.getElementById(
   "bookSelect"
 ).addEventListener(
   "focus",
   ()=>{
-
     populateBooks();
 
     document.getElementById(
       "bookDropdownList"
-    ).classList.remove(
-      "hidden"
-    );
-
+    ).classList.remove("hidden");
   }
 );
-
 
 document.getElementById(
   "bookSelect"
 ).addEventListener(
   "input",
   ()=>{
-
     selectedBookId="";
 
     populateBooks();
 
     document.getElementById(
       "bookDropdownList"
-    ).classList.remove(
-      "hidden"
-    );
+    ).classList.remove("hidden");
 
     updateCheckoutButton();
-
   }
 );
-
 
 document.getElementById(
   "checkoutButton"
@@ -5080,14 +4067,12 @@ document.getElementById(
   checkoutBook
 );
 
-
 document.getElementById(
   "librarySearch"
 ).addEventListener(
   "input",
   renderLibrary
 );
-
 
 document.getElementById(
   "studentSearch"
@@ -5096,14 +4081,12 @@ document.getElementById(
   renderStudents
 );
 
-
 document.getElementById(
   "historySearch"
 ).addEventListener(
   "input",
   renderHistory
 );
-
 
 document.addEventListener(
   "click",
@@ -5114,25 +4097,17 @@ document.addEventListener(
         ".book-dropdown"
       );
 
-
     if(
       dropdown&&
-      !dropdown.contains(
-        event.target
-      )
+      !dropdown.contains(event.target)
     ){
 
       document.getElementById(
         "bookDropdownList"
-      ).classList.add(
-        "hidden"
-      );
-
+      ).classList.add("hidden");
     }
-
   }
 );
-
 
 document.querySelectorAll(
   ".student-tab"
@@ -5141,7 +4116,6 @@ document.querySelectorAll(
   tab.addEventListener(
     "click",
     ()=>{
-
       selectedStudentClass=
         tab.dataset.class;
 
@@ -5150,21 +4124,16 @@ document.querySelectorAll(
       ).value="";
 
       renderStudents();
-
     }
   );
-
 });
-
 
 document.getElementById(
   "backToStudentsButton"
 ).addEventListener(
   "click",
   ()=>{
-    showPage(
-      "students"
-    );
+    showPage("students");
   }
 );
 
@@ -5177,11 +4146,8 @@ document.getElementById(
   "editStatus"
 ).addEventListener(
   "change",
-  ()=>{
-    updateEditReturnDateVisibility();
-  }
+  updateEditReturnDateVisibility
 );
-
 
 document.getElementById(
   "saveEditButton"
@@ -5190,7 +4156,6 @@ document.getElementById(
   saveEditedCheckout
 );
 
-
 document.getElementById(
   "cancelEditButton"
 ).addEventListener(
@@ -5198,17 +4163,14 @@ document.getElementById(
   closeEditCheckout
 );
 
-
 document.getElementById(
   "editModal"
 ).addEventListener(
   "click",
   event=>{
-
     if(event.target.id==="editModal"){
       closeEditCheckout();
     }
-
   }
 );
 
@@ -5224,17 +4186,11 @@ document.getElementById(
   openAddBook
 );
 
-
-/*
-  As the teacher types the title, search the existing library
-  immediately.
-*/
 document.getElementById(
   "bookTitleInput"
 ).addEventListener(
   "input",
   ()=>{
-
     selectedExistingBookId=null;
 
     document.getElementById(
@@ -5242,15 +4198,9 @@ document.getElementById(
     ).innerHTML="";
 
     renderBookSearchResults();
-
   }
 );
 
-
-/*
-  Pressing Enter in the title field does not accidentally submit
-  anything. It simply leaves the teacher in the search flow.
-*/
 document.getElementById(
   "bookTitleInput"
 ).addEventListener(
@@ -5261,13 +4211,11 @@ document.getElementById(
 
       event.preventDefault();
 
-      const matches=
-        findTitleMatches(
-          document.getElementById(
-            "bookTitleInput"
-          ).value
-        );
-
+      const matches=findTitleMatches(
+        document.getElementById(
+          "bookTitleInput"
+        ).value
+      );
 
       if(matches.length>0){
 
@@ -5278,14 +4226,10 @@ document.getElementById(
       }else{
 
         showNewBookForm();
-
       }
-
     }
-
   }
 );
-
 
 document.getElementById(
   "quickAddNewBookButton"
@@ -5294,14 +4238,12 @@ document.getElementById(
   showNewBookForm
 );
 
-
 document.getElementById(
   "backToBookSearchButton"
 ).addEventListener(
   "click",
   returnToBookSearch
 );
-
 
 document.getElementById(
   "saveNewBookButton"
@@ -5316,14 +4258,12 @@ document.getElementById(
   }
 );
 
-
 document.getElementById(
   "cancelNewBookButton"
 ).addEventListener(
   "click",
   closeBookModal
 );
-
 
 document.getElementById(
   "cancelBookButton"
@@ -5332,7 +4272,6 @@ document.getElementById(
   closeBookModal
 );
 
-
 document.getElementById(
   "newBookCategoryInput"
 ).addEventListener(
@@ -5340,17 +4279,14 @@ document.getElementById(
   updateNewBookCategoryFields
 );
 
-
 document.getElementById(
   "bookModal"
 ).addEventListener(
   "click",
   event=>{
-
     if(event.target.id==="bookModal"){
       closeBookModal();
     }
-
   }
 );
 
