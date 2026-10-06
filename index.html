@@ -202,78 +202,153 @@ tr:hover td{background:#f8fafc}
   margin-top:5px;
 }
 
-/* POSSIBLE BOOK MATCHES */
 
-.book-match-area{
+/* ============================================================
+   ADD BOOK SEARCH / MATCHING
+============================================================ */
+
+.add-book-intro{
+  color:#475569;
+  margin-top:-5px;
+  margin-bottom:20px;
+  line-height:1.5;
+}
+
+.book-search-results{
+  margin-top:-8px;
   margin-bottom:20px;
 }
 
-.book-match-box{
-  border:2px solid #2563eb;
-  background:#eff6ff;
-  border-radius:9px;
-  padding:15px;
-  margin-bottom:12px;
-}
-
-.book-match-box h3{
-  margin:0 0 8px 0;
-  color:#1e40af;
-  font-size:17px;
-}
-
-.book-match-intro{
-  margin:0 0 12px 0;
-  color:#334155;
+.book-search-label{
   font-size:14px;
+  font-weight:bold;
+  color:#475569;
+  margin-bottom:8px;
 }
 
-.book-match-option{
+.book-search-option{
+  width:100%;
+  text-align:left;
   background:white;
   border:1px solid #cbd5e1;
   border-radius:8px;
   padding:13px;
-  margin-top:10px;
+  margin-bottom:8px;
+  cursor:pointer;
+  transition:.15s;
 }
 
-.book-match-option:hover{
+.book-search-option:hover{
   border-color:#2563eb;
+  background:#eff6ff;
 }
 
-.book-match-title{
+.book-search-option-title{
   font-weight:bold;
   font-size:16px;
+  color:#1e293b;
   margin-bottom:4px;
 }
 
-.book-match-details{
+.book-search-option-details{
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+
+.book-search-no-results{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
+  padding:12px;
+  color:#64748b;
+  font-size:14px;
+  margin-bottom:12px;
+}
+
+.selected-existing-book{
+  background:#eff6ff;
+  border:2px solid #2563eb;
+  border-radius:9px;
+  padding:15px;
+  margin-bottom:18px;
+}
+
+.selected-existing-book-title{
+  font-weight:bold;
+  font-size:18px;
+  color:#1e40af;
+  margin-bottom:6px;
+}
+
+.selected-existing-book-details{
   color:#475569;
   font-size:14px;
   line-height:1.5;
-  margin-bottom:10px;
+  margin-bottom:14px;
 }
 
-.book-match-buttons{
+.selected-book-buttons{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
 }
 
-.match-button{
-  background:#2563eb;
+.add-copies-button{
+  background:#16a34a;
   color:white;
   border:none;
-  padding:8px 12px;
+  padding:10px 14px;
   border-radius:6px;
   cursor:pointer;
   font-weight:bold;
 }
 
-.match-button:hover{
+.add-copies-button:hover{
+  background:#15803d;
+}
+
+.change-book-button{
+  background:#64748b;
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.change-book-button:hover{
+  background:#475569;
+}
+
+.new-book-choice{
+  border-top:1px solid #e2e8f0;
+  padding-top:18px;
+  margin-top:8px;
+}
+
+.new-book-choice-text{
+  color:#64748b;
+  font-size:14px;
+  margin-bottom:9px;
+}
+
+.add-new-book-button{
+  background:#2563eb;
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.add-new-book-button:hover{
   background:#1d4ed8;
 }
 
-.new-book-button{
+.back-to-book-search{
   background:#64748b;
   color:white;
   border:none;
@@ -281,10 +356,29 @@ tr:hover td{background:#f8fafc}
   border-radius:6px;
   cursor:pointer;
   font-weight:bold;
+  margin-bottom:18px;
 }
 
-.new-book-button:hover{
+.back-to-book-search:hover{
   background:#475569;
+}
+
+.new-book-section{
+  border-top:1px solid #e2e8f0;
+  margin-top:20px;
+  padding-top:20px;
+}
+
+.new-book-section h3{
+  margin-top:0;
+  margin-bottom:6px;
+}
+
+.new-book-section p{
+  color:#64748b;
+  font-size:14px;
+  margin-top:0;
+  margin-bottom:18px;
 }
 
 .match-confidence{
@@ -297,6 +391,11 @@ tr:hover td{background:#f8fafc}
   border-radius:999px;
   margin-left:6px;
 }
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
 
 @media(max-width:800px){
 .stats{grid-template-columns:repeat(2,1fr)}
@@ -714,109 +813,173 @@ nav{padding:8px}
 
     <div id="bookModalMessage"></div>
 
-    <!-- Possible matches appear here when adding a book -->
-    <div id="bookMatchArea" class="book-match-area"></div>
+    <!-- =====================================================
+         QUICK ADD MODE
+    ====================================================== -->
 
-    <div class="form-group">
+    <div id="quickAddSection">
 
-      <label for="bookTitleInput">Title</label>
+      <p class="add-book-intro">
+        Start typing the title. If the book is already in your
+        library, choose it from the list and just add the number
+        of copies you have.
+      </p>
 
-      <input
-        type="text"
-        id="bookTitleInput"
-        placeholder="Book title"
-      >
+      <div class="form-group">
 
-    </div>
+        <label for="bookTitleInput">Book Title</label>
 
+        <input
+          type="text"
+          id="bookTitleInput"
+          placeholder="Start typing a book title..."
+          autocomplete="off"
+        >
 
-    <div class="form-group">
+      </div>
 
-      <label for="bookAuthorInput">Author</label>
+      <div id="bookSearchResults" class="book-search-results"></div>
 
-      <input
-        type="text"
-        id="bookAuthorInput"
-        placeholder="Author"
-      >
+      <div class="form-group">
 
-    </div>
+        <label for="bookCopiesInput">Copies</label>
 
+        <input
+          type="number"
+          id="bookCopiesInput"
+          min="1"
+          step="1"
+          value="1"
+        >
 
-    <div class="form-group">
+        <div class="copy-note">
+          How many physical copies are you adding?
+        </div>
 
-      <label for="bookCategoryInput">Category</label>
+      </div>
 
-      <select id="bookCategoryInput">
+      <div class="modal-buttons">
 
-        <option value="">Select a category...</option>
-        <option value="Series">Series</option>
-        <option value="Standalone">Standalone</option>
+        <button
+          id="quickAddNewBookButton"
+          class="primary-button"
+          type="button"
+        >
+          + Add as New Book
+        </button>
 
-      </select>
+        <button
+          id="cancelBookButton"
+          class="cancel-button"
+          type="button"
+        >
+          Cancel
+        </button>
 
-    </div>
-
-
-    <div class="form-group" id="bookSeriesGroup">
-
-      <label for="bookSeriesInput">Series</label>
-
-      <input
-        type="text"
-        id="bookSeriesInput"
-        list="seriesOptions"
-        placeholder="Series name"
-      >
-
-      <datalist id="seriesOptions"></datalist>
-
-    </div>
-
-
-    <div class="form-group" id="bookSeriesNumberGroup">
-
-      <label for="bookSeriesNumberInput">Series #</label>
-
-      <input
-        type="number"
-        id="bookSeriesNumberInput"
-        min="1"
-        step="1"
-        placeholder="Example: 3"
-      >
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="bookCopiesInput">Copies</label>
-
-      <input
-        type="number"
-        id="bookCopiesInput"
-        min="1"
-        step="1"
-        value="1"
-      >
-
-      <div class="copy-note" id="copyNote">
-        How many physical copies of this book do you own?
       </div>
 
     </div>
 
 
-    <div class="modal-buttons">
+    <!-- =====================================================
+         NEW BOOK DETAILS
+    ====================================================== -->
 
-      <button id="saveBookButton" class="primary-button">
-        Add Book
+    <div id="newBookDetailsSection" class="new-book-section hidden">
+
+      <button
+        id="backToBookSearchButton"
+        class="back-to-book-search"
+        type="button"
+      >
+        ← Back to Book Search
       </button>
 
-      <button id="cancelBookButton" class="cancel-button">
-        Cancel
-      </button>
+      <h3>New Book Details</h3>
+
+      <p>
+        This book isn't already in your library. Enter the
+        information below to add it.
+      </p>
+
+      <div class="form-group">
+
+        <label for="newBookAuthorInput">Author</label>
+
+        <input
+          type="text"
+          id="newBookAuthorInput"
+          placeholder="Author"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="newBookCategoryInput">Category</label>
+
+        <select id="newBookCategoryInput">
+
+          <option value="">Select a category...</option>
+          <option value="Series">Series</option>
+          <option value="Standalone">Standalone</option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group hidden" id="newBookSeriesGroup">
+
+        <label for="newBookSeriesInput">Series</label>
+
+        <input
+          type="text"
+          id="newBookSeriesInput"
+          list="seriesOptions"
+          placeholder="Series name"
+        >
+
+        <datalist id="seriesOptions"></datalist>
+
+      </div>
+
+
+      <div class="form-group hidden" id="newBookSeriesNumberGroup">
+
+        <label for="newBookSeriesNumberInput">Series #</label>
+
+        <input
+          type="number"
+          id="newBookSeriesNumberInput"
+          min="1"
+          step="1"
+          placeholder="Example: 3"
+        >
+
+      </div>
+
+
+      <div class="modal-buttons">
+
+        <button
+          id="saveNewBookButton"
+          class="primary-button"
+          type="button"
+        >
+          Add New Book
+        </button>
+
+        <button
+          id="cancelNewBookButton"
+          class="cancel-button"
+          type="button"
+        >
+          Cancel
+        </button>
+
+      </div>
 
     </div>
 
@@ -850,12 +1013,8 @@ let selectedBookId="";
 
 let editingBookId=null;
 
-/*
-  When a possible book match is found while adding a book,
-  the information is temporarily stored here until the
-  teacher decides whether it is the same book.
-*/
-let pendingBookAdd=null;
+/* Book currently selected during quick-add */
+let selectedExistingBookId=null;
 
 
 /* ============================================================
@@ -998,21 +1157,12 @@ function showMessage(elementId,message,type){
    SMART BOOK MATCHING
 ============================================================ */
 
-/*
-  Makes book text easier to compare.
-
-  Examples:
-  "The Lightning Thief"
-  "the-lightning thief!"
-  "THE LIGHTENING THIEF"
-
-  all become similar searchable text.
-*/
 function normalizeBookText(value){
 
   return String(value||"")
     .toLowerCase()
     .replace(/['’]/g,"")
+    .replace(/&/g," and ")
     .replace(/[^a-z0-9\s]/g," ")
     .replace(/\s+/g," ")
     .trim();
@@ -1020,10 +1170,6 @@ function normalizeBookText(value){
 }
 
 
-/*
-  Breaks a title into individual words and removes very common
-  words that are not especially useful for identifying a book.
-*/
 function getBookWords(value){
 
   const ignoredWords=new Set([
@@ -1049,13 +1195,6 @@ function getBookWords(value){
 }
 
 
-/*
-  Calculates how similar two strings are using edit distance.
-  This helps catch small spelling mistakes such as:
-
-  lightening -> lightning
-  harry potterr -> harry potter
-*/
 function stringSimilarity(first,second){
 
   const a=normalizeBookText(first);
@@ -1078,15 +1217,12 @@ function stringSimilarity(first,second){
   for(let i=0;i<rows;i++){
 
     matrix[i]=new Array(columns).fill(0);
-
     matrix[i][0]=i;
 
   }
 
   for(let j=0;j<columns;j++){
-
     matrix[0][j]=j;
-
   }
 
   for(let i=1;i<rows;i++){
@@ -1122,23 +1258,6 @@ function stringSimilarity(first,second){
 }
 
 
-/*
-  Compares the words in two titles.
-
-  This is especially useful when the title entered by the teacher
-  is shorter than the actual title in the library.
-
-  Example:
-
-  "Lightning Thief"
-
-  versus
-
-  "Percy Jackson and the Lightning Thief"
-
-  The important words overlap strongly even though the second
-  title contains additional words.
-*/
 function titleSimilarity(first,second){
 
   const firstText=
@@ -1150,9 +1269,7 @@ function titleSimilarity(first,second){
   if(!firstText||!secondText)
     return 0;
 
-  if(
-    firstText===secondText
-  )
+  if(firstText===secondText)
     return 1;
 
   if(
@@ -1204,16 +1321,9 @@ function titleSimilarity(first,second){
     if(secondWords.has(word)){
 
       matchingWords++;
-
       return;
 
     }
-
-
-    /*
-      Also consider a word a match when it has a small
-      spelling difference.
-    */
 
     for(const otherWord of secondWords){
 
@@ -1261,24 +1371,16 @@ function titleSimilarity(first,second){
 
 
 /*
-  Finds books that are likely matches.
+  Returns the best matching books for the title currently
+  being typed.
 
-  The algorithm considers:
-  - title similarity
-  - author similarity
-  - series similarity
-  - series number
-
-  It intentionally returns possible matches rather than
-  automatically merging anything.
+  This is deliberately title-focused because at this stage
+  the teacher has NOT filled out the author/category fields.
 */
-function findPossibleBookMatches(
-  title,
-  author,
-  category,
-  series,
-  seriesNumber
-){
+function findTitleMatches(title){
+
+  if(!title.trim())
+    return [];
 
   const results=[];
 
@@ -1287,133 +1389,22 @@ function findPossibleBookMatches(
     const existingTitle=
       String(book.Title||"");
 
-    const existingAuthor=
-      String(book.Author||"");
-
-    const existingSeries=
-      String(book.Series||"");
-
-    const existingCategory=
-      String(book.Category||"");
-
-    const existingSeriesNumber=
-      book["Series #"];
-
     const titleScore=
       titleSimilarity(
         title,
         existingTitle
       );
 
-    const authorScore=
-      author&&existingAuthor
-        ? stringSimilarity(
-            author,
-            existingAuthor
-          )
-        : 0;
-
-    const seriesScore=
-      series&&existingSeries
-        ? stringSimilarity(
-            series,
-            existingSeries
-          )
-        : 0;
-
-    const sameCategory=
-      category&&existingCategory
-        ? normalizeBookText(category)===
-          normalizeBookText(existingCategory)
-        : false;
-
-    const sameSeriesNumber=
-      seriesNumber!==null&&
-      seriesNumber!==""&&
-      existingSeriesNumber!==null&&
-      existingSeriesNumber!==""&&
-      String(seriesNumber)===
-      String(existingSeriesNumber);
-
-
     /*
-      Start with the title because the title is the most important
-      part of identifying a book.
+      Search matching is slightly more forgiving than the
+      final duplicate check because the user is still typing.
     */
 
-    let score=
-      titleScore*.72;
-
-
-    /*
-      Author agreement makes the match substantially stronger.
-    */
-
-    if(authorScore>=.8)
-      score+=.18*authorScore;
-    else if(authorScore>=.6)
-      score+=.10*authorScore;
-
-
-    /*
-      Series agreement is also useful, especially for books in
-      large series.
-    */
-
-    if(seriesScore>=.8)
-      score+=.12*seriesScore;
-    else if(seriesScore>=.6)
-      score+=.06*seriesScore;
-
-
-    /*
-      Matching series number is a strong additional signal.
-    */
-
-    if(sameSeriesNumber)
-      score+=.08;
-
-
-    if(sameCategory)
-      score+=.02;
-
-
-    score=Math.min(
-      1,
-      score
-    );
-
-
-    /*
-      Require either a strong title match or a very strong
-      combination of title + author/series.
-
-      This prevents unrelated books from constantly appearing
-      as possible matches.
-    */
-
-    const strongTitle=
-      titleScore>=.55;
-
-    const strongCombination=
-      titleScore>=.42&&
-      (
-        authorScore>=.8||
-        seriesScore>=.8
-      );
-
-    if(
-      strongTitle||
-      strongCombination
-    ){
+    if(titleScore>=.48){
 
       results.push({
         book,
-        score,
-        titleScore,
-        authorScore,
-        seriesScore,
-        sameSeriesNumber
+        titleScore
       });
 
     }
@@ -1423,27 +1414,21 @@ function findPossibleBookMatches(
 
   results.sort(
     (a,b)=>
-      b.score-a.score
+      b.titleScore-a.titleScore
   );
 
 
-  /*
-    Only show the best few suggestions.
-  */
-  return results.slice(0,5);
+  return results.slice(0,6);
 
 }
 
 
-/*
-  Turns the score into a simple label for the teacher.
-*/
 function getMatchConfidence(score){
 
   if(score>=.88)
     return "Very likely";
 
-  if(score>=.75)
+  if(score>=.72)
     return "Likely";
 
   return "Possible";
@@ -1451,52 +1436,71 @@ function getMatchConfidence(score){
 }
 
 
-/*
-  Displays the possible matches inside the Add Book modal.
-*/
-function showBookMatchOptions(matches){
+/* ============================================================
+   QUICK ADD BOOK
+============================================================ */
+
+function renderBookSearchResults(){
 
   const area=
     document.getElementById(
-      "bookMatchArea"
+      "bookSearchResults"
     );
+
+  const title=
+    document.getElementById(
+      "bookTitleInput"
+    ).value.trim();
+
+
+  selectedExistingBookId=null;
+
 
   area.innerHTML="";
 
 
-  if(!matches.length)
+  if(!title){
+
     return;
 
+  }
 
-  const box=
+
+  const matches=
+    findTitleMatches(title);
+
+
+  if(matches.length===0){
+
+    const noResults=
+      document.createElement("div");
+
+    noResults.className=
+      "book-search-no-results";
+
+    noResults.textContent=
+      "No existing book looks like this yet. If this is a new book, use “+ Add as New Book” below.";
+
+    area.appendChild(
+      noResults
+    );
+
+    return;
+
+  }
+
+
+  const label=
     document.createElement("div");
 
-  box.className=
-    "book-match-box";
+  label.className=
+    "book-search-label";
 
+  label.textContent=
+    "Books already in your library:";
 
-  const heading=
-    document.createElement("h3");
-
-  heading.textContent=
-    "Possible match found";
-
-  box.appendChild(
-    heading
-  );
-
-
-  const intro=
-    document.createElement("p");
-
-  intro.className=
-    "book-match-intro";
-
-  intro.textContent=
-    "I found a book in your library that may be the same book. Choose it below if you want to add your new copy/copies to that existing book.";
-
-  box.appendChild(
-    intro
+  area.appendChild(
+    label
   );
 
 
@@ -1506,20 +1510,22 @@ function showBookMatchOptions(matches){
       match.book;
 
 
-    const option=
+    const button=
+      document.createElement("button");
+
+    button.type="button";
+
+    button.className=
+      "book-search-option";
+
+
+    const titleDiv=
       document.createElement("div");
 
-    option.className=
-      "book-match-option";
+    titleDiv.className=
+      "book-search-option-title";
 
-
-    const title=
-      document.createElement("div");
-
-    title.className=
-      "book-match-title";
-
-    title.textContent=
+    titleDiv.textContent=
       book.Title||"Untitled";
 
 
@@ -1531,16 +1537,16 @@ function showBookMatchOptions(matches){
 
     confidence.textContent=
       getMatchConfidence(
-        match.score
+        match.titleScore
       );
 
-
-    title.appendChild(
+    titleDiv.appendChild(
       confidence
     );
 
-    option.appendChild(
-      title
+
+    button.appendChild(
+      titleDiv
     );
 
 
@@ -1548,131 +1554,248 @@ function showBookMatchOptions(matches){
       document.createElement("div");
 
     details.className=
-      "book-match-details";
+      "book-search-option-details";
 
 
-    let detailsText=
+    let detailText=
       book.Author
-        ? `Author: ${book.Author}`
+        ? book.Author
         : "";
 
 
     if(book.Series){
 
-      if(detailsText)
-        detailsText+="<br>";
+      if(detailText)
+        detailText+=" · ";
 
-      detailsText+=
-        `Series: ${book.Series}`;
+      detailText+=book.Series;
 
-    }
+      if(
+        book["Series #"]!==null&&
+        book["Series #"]!==""
+      ){
 
+        detailText+=
+          ` #${book["Series #"]}`;
 
-    if(
-      book["Series #"]!==null&&
-      book["Series #"]!==""
-    ){
-
-      if(detailsText)
-        detailsText+="<br>";
-
-      detailsText+=
-        `Series #: ${book["Series #"]}`;
+      }
 
     }
 
 
-    if(detailsText)
-      detailsText+="<br>";
+    if(detailText)
+      detailText+=" · ";
 
 
-    detailsText+=
-      `You currently have ${Number(book.Copies||0)} ${Number(book.Copies||0)===1?"copy":"copies"}.`;
+    detailText+=
+      `${Number(book.Copies||0)} ${Number(book.Copies||0)===1?"copy":"copies"} in library`;
 
 
-    details.innerHTML=
-      detailsText;
+    details.textContent=
+      detailText;
 
 
-    option.appendChild(
+    button.appendChild(
       details
     );
 
 
-    const buttons=
-      document.createElement("div");
-
-    buttons.className=
-      "book-match-buttons";
-
-
-    const useMatchButton=
-      document.createElement("button");
-
-    useMatchButton.type=
-      "button";
-
-    useMatchButton.className=
-      "match-button";
-
-    useMatchButton.textContent=
-      "Yes — This Is the Same Book";
-
-
-    useMatchButton.addEventListener(
+    button.addEventListener(
       "click",
       ()=>{
-        addCopiesToMatchedBook(
-          book
+        selectExistingBookForAdd(
+          book.id
         );
       }
     );
 
 
-    buttons.appendChild(
-      useMatchButton
-    );
-
-
-    option.appendChild(
-      buttons
-    );
-
-
-    box.appendChild(
-      option
+    area.appendChild(
+      button
     );
 
   });
 
+}
 
-  const newBookButton=
+
+function selectExistingBookForAdd(bookId){
+
+  const book=
+    books.find(
+      b=>String(b.id)===String(bookId)
+    );
+
+
+  if(!book)
+    return;
+
+
+  selectedExistingBookId=
+    book.id;
+
+
+  document.getElementById(
+    "bookTitleInput"
+  ).value=
+    book.Title||"";
+
+
+  const area=
+    document.getElementById(
+      "bookSearchResults"
+    );
+
+
+  area.innerHTML="";
+
+
+  const box=
+    document.createElement("div");
+
+  box.className=
+    "selected-existing-book";
+
+
+  const title=
+    document.createElement("div");
+
+  title.className=
+    "selected-existing-book-title";
+
+  title.textContent=
+    book.Title||"Untitled";
+
+  box.appendChild(
+    title
+  );
+
+
+  const details=
+    document.createElement("div");
+
+  details.className=
+    "selected-existing-book-details";
+
+
+  let detailText=
+    book.Author
+      ? `Author: ${book.Author}`
+      : "";
+
+
+  if(book.Series){
+
+    if(detailText)
+      detailText+="<br>";
+
+    detailText+=
+      `Series: ${book.Series}`;
+
+  }
+
+
+  if(
+    book["Series #"]!==null&&
+    book["Series #"]!==""
+  ){
+
+    if(detailText)
+      detailText+="<br>";
+
+    detailText+=
+      `Series #: ${book["Series #"]}`;
+
+  }
+
+
+  if(detailText)
+    detailText+="<br>";
+
+
+  detailText+=
+    `You currently have ${Number(book.Copies||0)} ${Number(book.Copies||0)===1?"copy":"copies"} in your library.`;
+
+
+  details.innerHTML=
+    detailText;
+
+
+  box.appendChild(
+    details
+  );
+
+
+  const buttons=
+    document.createElement("div");
+
+  buttons.className=
+    "selected-book-buttons";
+
+
+  const addButton=
     document.createElement("button");
 
-  newBookButton.type=
-    "button";
+  addButton.type="button";
 
-  newBookButton.className=
-    "new-book-button";
+  addButton.className=
+    "add-copies-button";
 
-  newBookButton.textContent=
-    "None of These — Add as a New Book";
-
-
-  newBookButton.style.marginTop=
-    "12px";
+  addButton.textContent=
+    "Add Copies to This Book";
 
 
-  newBookButton.addEventListener(
+  addButton.addEventListener(
     "click",
     ()=>{
-      continueAddingNewBook();
+      addCopiesToSelectedBook();
     }
   );
 
 
+  buttons.appendChild(
+    addButton
+  );
+
+
+  const changeButton=
+    document.createElement("button");
+
+  changeButton.type="button";
+
+  changeButton.className=
+    "change-book-button";
+
+  changeButton.textContent=
+    "Choose a Different Book";
+
+
+  changeButton.addEventListener(
+    "click",
+    ()=>{
+      selectedExistingBookId=null;
+
+      document.getElementById(
+        "bookSearchResults"
+      ).innerHTML="";
+
+      renderBookSearchResults();
+
+      document.getElementById(
+        "bookTitleInput"
+      ).focus();
+
+    }
+  );
+
+
+  buttons.appendChild(
+    changeButton
+  );
+
+
   box.appendChild(
-    newBookButton
+    buttons
   );
 
 
@@ -1680,38 +1803,63 @@ function showBookMatchOptions(matches){
     box
   );
 
-
-  area.scrollIntoView({
-    behavior:"smooth",
-    block:"nearest"
-  });
-
 }
 
 
-/*
-  Adds the requested number of copies to the selected existing
-  book.
-*/
-async function addCopiesToMatchedBook(book){
+async function addCopiesToSelectedBook(){
 
-  if(!pendingBookAdd)
+  if(!selectedExistingBookId)
+    return;
+
+
+  const book=
+    books.find(
+      b=>String(b.id)===
+        String(selectedExistingBookId)
+    );
+
+
+  if(!book)
     return;
 
 
   const copies=
-    pendingBookAdd.copies;
-
-
-  const button=
-    document.getElementById(
-      "saveBookButton"
+    Number(
+      document.getElementById(
+        "bookCopiesInput"
+      ).value
     );
 
 
-  button.disabled=true;
-  button.textContent=
-    "Adding Copies...";
+  if(
+    !Number.isInteger(copies)||
+    copies<1
+  ){
+
+    showBookModalMessage(
+      "Copies must be a whole number of at least 1.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const button=
+    document.querySelector(
+      ".add-copies-button"
+    );
+
+
+  if(button){
+
+    button.disabled=true;
+
+    button.textContent=
+      "Adding Copies...";
+
+  }
 
 
   try{
@@ -1733,7 +1881,8 @@ async function addCopiesToMatchedBook(book){
         );
 
 
-    if(error)throw error;
+    if(error)
+      throw error;
 
 
     closeBookModal();
@@ -1754,59 +1903,489 @@ async function addCopiesToMatchedBook(book){
       "error"
     );
 
-    button.disabled=false;
-    button.textContent=
-      "Add Book";
+
+    if(button){
+
+      button.disabled=false;
+
+      button.textContent=
+        "Add Copies to This Book";
+
+    }
 
   }
 
 }
 
 
-/*
-  The teacher has decided that none of the suggestions are the
-  same book, so continue with the normal new-book insertion.
-*/
-async function continueAddingNewBook(){
+/* ============================================================
+   NEW BOOK FORM
+============================================================ */
 
-  if(!pendingBookAdd)
+function showNewBookForm(){
+
+  const title=
+    document.getElementById(
+      "bookTitleInput"
+    ).value.trim();
+
+
+  const copies=
+    Number(
+      document.getElementById(
+        "bookCopiesInput"
+      ).value
+    );
+
+
+  if(!title){
+
+    showBookModalMessage(
+      "Please enter a book title first.",
+      "error"
+    );
+
+    document.getElementById(
+      "bookTitleInput"
+    ).focus();
+
     return;
 
-
-  const data=
-    pendingBookAdd;
+  }
 
 
-  pendingBookAdd=null;
+  if(
+    !Number.isInteger(copies)||
+    copies<1
+  ){
+
+    showBookModalMessage(
+      "Copies must be a whole number of at least 1.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  selectedExistingBookId=null;
 
 
   document.getElementById(
-    "bookMatchArea"
-  ).innerHTML="";
-
-
-  await insertNewBook(
-    data
+    "quickAddSection"
+  ).classList.add(
+    "hidden"
   );
+
+
+  document.getElementById(
+    "newBookDetailsSection"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "bookModalTitle"
+  ).textContent=
+    "Add New Book";
+
+
+  document.getElementById(
+    "newBookAuthorInput"
+  ).focus();
 
 }
 
 
-/*
-  Actually inserts a brand-new book.
-*/
-async function insertNewBook(data){
+function returnToBookSearch(){
+
+  document.getElementById(
+    "newBookDetailsSection"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "quickAddSection"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "bookModalTitle"
+  ).textContent=
+    "Add Book";
+
+
+  document.getElementById(
+    "bookModalMessage"
+  ).innerHTML="";
+
+
+  renderBookSearchResults();
+
+  document.getElementById(
+    "bookTitleInput"
+  ).focus();
+
+}
+
+
+function updateNewBookCategoryFields(){
+
+  const category=
+    document.getElementById(
+      "newBookCategoryInput"
+    ).value;
+
+
+  const seriesGroup=
+    document.getElementById(
+      "newBookSeriesGroup"
+    );
+
+  const numberGroup=
+    document.getElementById(
+      "newBookSeriesNumberGroup"
+    );
+
+
+  if(category==="Series"){
+
+    seriesGroup.classList.remove("hidden");
+    numberGroup.classList.remove("hidden");
+
+  }else{
+
+    seriesGroup.classList.add("hidden");
+    numberGroup.classList.add("hidden");
+
+    if(category==="Standalone"){
+
+      document.getElementById(
+        "newBookSeriesInput"
+      ).value="";
+
+      document.getElementById(
+        "newBookSeriesNumberInput"
+      ).value="";
+
+    }
+
+  }
+
+}
+
+
+function collectNewBookData(){
+
+  const title=
+    document.getElementById(
+      "bookTitleInput"
+    ).value.trim();
+
+
+  const copies=
+    Number(
+      document.getElementById(
+        "bookCopiesInput"
+      ).value
+    );
+
+
+  const author=
+    document.getElementById(
+      "newBookAuthorInput"
+    ).value.trim();
+
+
+  const category=
+    document.getElementById(
+      "newBookCategoryInput"
+    ).value;
+
+
+  const series=
+    document.getElementById(
+      "newBookSeriesInput"
+    ).value.trim();
+
+
+  const seriesNumberValue=
+    document.getElementById(
+      "newBookSeriesNumberInput"
+    ).value;
+
+
+  if(!title){
+
+    showBookModalMessage(
+      "Please enter a book title.",
+      "error"
+    );
+
+    return null;
+
+  }
+
+
+  if(
+    !Number.isInteger(copies)||
+    copies<1
+  ){
+
+    showBookModalMessage(
+      "Copies must be a whole number of at least 1.",
+      "error"
+    );
+
+    return null;
+
+  }
+
+
+  if(!author){
+
+    showBookModalMessage(
+      "Please enter the author.",
+      "error"
+    );
+
+    return null;
+
+  }
+
+
+  if(!category){
+
+    showBookModalMessage(
+      "Please select Series or Standalone.",
+      "error"
+    );
+
+    return null;
+
+  }
+
+
+  if(category==="Series"&&!series){
+
+    showBookModalMessage(
+      "Please enter the series name.",
+      "error"
+    );
+
+    return null;
+
+  }
+
+
+  let seriesNumber=null;
+
+
+  if(category==="Series"){
+
+    seriesNumber=
+      seriesNumberValue
+        ? Number(seriesNumberValue)
+        : null;
+
+
+    if(
+      seriesNumber!==null&&
+      (
+        !Number.isInteger(seriesNumber)||
+        seriesNumber<1
+      )
+    ){
+
+      showBookModalMessage(
+        "Series number must be a positive whole number.",
+        "error"
+      );
+
+      return null;
+
+    }
+
+  }
+
+
+  return {
+    title,
+    author,
+    category,
+    series,
+    seriesNumber,
+    copies
+  };
+
+}
+
+
+async function saveNewBook(){
+
+  const data=
+    collectNewBookData();
+
+
+  if(!data)
+    return;
+
 
   const button=
     document.getElementById(
-      "saveBookButton"
+      "saveNewBookButton"
     );
 
 
   button.disabled=true;
 
   button.textContent=
-    "Adding...";
+    "Checking Library...";
+
+
+  try{
+
+    /*
+      Do one final smart duplicate check here too.
+
+      This protects against accidentally creating a duplicate
+      if the teacher typed a new title, clicked "Add as New Book",
+      and the title actually closely matches something already
+      in the library.
+    */
+
+    const matches=
+      findPossibleBookMatches(
+        data.title,
+        data.author,
+        data.category,
+        data.series,
+        data.seriesNumber
+      );
+
+
+    const exactMatch=
+      books.find(book=>
+        normalizeBookText(book.Title)===
+          normalizeBookText(data.title)&&
+
+        normalizeBookText(book.Author)===
+          normalizeBookText(data.author)&&
+
+        normalizeBookText(book.Category)===
+          normalizeBookText(data.category)&&
+
+        normalizeBookText(book.Series||"")===
+          normalizeBookText(
+            data.category==="Series"
+              ? data.series
+              : ""
+          )&&
+
+        String(book["Series #"]||"")===
+          String(data.seriesNumber||"")
+      );
+
+
+    if(exactMatch){
+
+      const confirmed=
+        confirm(
+          `"${exactMatch.Title}" is already in your library.\n\nWould you like to add ${data.copies} more ${data.copies===1?"copy":"copies"} to that existing book instead?`
+        );
+
+
+      if(confirmed){
+
+        const newCopies=
+          Number(exactMatch.Copies||0)+
+          data.copies;
+
+
+        const {error}=
+          await supabaseClient
+            .from("Books")
+            .update({
+              "Copies":newCopies
+            })
+            .eq(
+              "id",
+              exactMatch.id
+            );
+
+
+        if(error)
+          throw error;
+
+
+        closeBookModal();
+
+        await loadData();
+
+        return;
+
+      }
+
+    }
+
+
+    await insertNewBook(data);
+
+
+  }catch(error){
+
+    console.error(
+      "Save new book error:",
+      error
+    );
+
+    console.error(
+      "Supabase error details:",
+      error.message,
+      error.details,
+      error.hint
+    );
+
+
+    showBookModalMessage(
+      "Could not save the book. Please try again.",
+      "error"
+    );
+
+  }finally{
+
+    button.disabled=false;
+
+    button.textContent=
+      "Add New Book";
+
+  }
+
+}
+
+
+async function insertNewBook(data){
+
+  const button=
+    document.getElementById(
+      "saveNewBookButton"
+    );
+
+
+  if(button){
+
+    button.disabled=true;
+
+    button.textContent=
+      "Adding...";
+
+  }
 
 
   try{
@@ -1837,10 +2416,9 @@ async function insertNewBook(data){
         });
 
 
-    if(error)throw error;
+    if(error)
+      throw error;
 
-
-    pendingBookAdd=null;
 
     closeBookModal();
 
@@ -1870,10 +2448,14 @@ async function insertNewBook(data){
 
   }finally{
 
-    button.disabled=false;
+    if(button){
 
-    button.textContent=
-      "Add Book";
+      button.disabled=false;
+
+      button.textContent=
+        "Add New Book";
+
+    }
 
   }
 
@@ -2543,7 +3125,7 @@ function renderLibrary(){
 
 
 /* ============================================================
-   ADD / EDIT BOOK
+   SERIES OPTIONS
 ============================================================ */
 
 function updateSeriesOptions(){
@@ -2584,42 +3166,43 @@ function updateSeriesOptions(){
 }
 
 
+/* ============================================================
+   ADD / EDIT BOOK
+============================================================ */
+
 function resetBookModal(){
 
   editingBookId=null;
-  pendingBookAdd=null;
+  selectedExistingBookId=null;
+
 
   document.getElementById(
     "bookModalTitle"
-  ).textContent="Add Book";
+  ).textContent=
+    "Add Book";
+
 
   document.getElementById(
-    "saveBookButton"
-  ).textContent="Add Book";
+    "bookModalMessage"
+  ).innerHTML="";
+
+
+  document.getElementById(
+    "quickAddSection"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "newBookDetailsSection"
+  ).classList.add(
+    "hidden"
+  );
 
 
   document.getElementById(
     "bookTitleInput"
-  ).value="";
-
-
-  document.getElementById(
-    "bookAuthorInput"
-  ).value="";
-
-
-  document.getElementById(
-    "bookCategoryInput"
-  ).value="";
-
-
-  document.getElementById(
-    "bookSeriesInput"
-  ).value="";
-
-
-  document.getElementById(
-    "bookSeriesNumberInput"
   ).value="";
 
 
@@ -2629,16 +3212,31 @@ function resetBookModal(){
 
 
   document.getElementById(
-    "bookModalMessage"
+    "bookSearchResults"
   ).innerHTML="";
 
 
   document.getElementById(
-    "bookMatchArea"
-  ).innerHTML="";
+    "newBookAuthorInput"
+  ).value="";
 
 
-  updateBookCategoryFields();
+  document.getElementById(
+    "newBookCategoryInput"
+  ).value="";
+
+
+  document.getElementById(
+    "newBookSeriesInput"
+  ).value="";
+
+
+  document.getElementById(
+    "newBookSeriesNumberInput"
+  ).value="";
+
+
+  updateNewBookCategoryFields();
 
 }
 
@@ -2647,9 +3245,13 @@ function openAddBook(){
 
   resetBookModal();
 
+
   document.getElementById(
     "bookModal"
-  ).classList.remove("hidden");
+  ).classList.remove(
+    "hidden"
+  );
+
 
   document.getElementById(
     "bookTitleInput"
@@ -2671,7 +3273,7 @@ function openEditBook(bookId){
 
 
   editingBookId=bookId;
-  pendingBookAdd=null;
+  selectedExistingBookId=null;
 
 
   document.getElementById(
@@ -2680,10 +3282,41 @@ function openEditBook(bookId){
     "Edit Book";
 
 
+  /*
+    Editing uses the full details form.
+  */
+
   document.getElementById(
-    "saveBookButton"
+    "quickAddSection"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "newBookDetailsSection"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "backToBookSearchButton"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.querySelector(
+    "#newBookDetailsSection h3"
   ).textContent=
-    "Save Changes";
+    "Edit Book Details";
+
+
+  document.querySelector(
+    "#newBookDetailsSection p"
+  ).textContent=
+    "Update the information for this book.";
 
 
   document.getElementById(
@@ -2693,25 +3326,25 @@ function openEditBook(bookId){
 
 
   document.getElementById(
-    "bookAuthorInput"
+    "newBookAuthorInput"
   ).value=
     book.Author||"";
 
 
   document.getElementById(
-    "bookCategoryInput"
+    "newBookCategoryInput"
   ).value=
     book.Category||"";
 
 
   document.getElementById(
-    "bookSeriesInput"
+    "newBookSeriesInput"
   ).value=
     book.Series||"";
 
 
   document.getElementById(
-    "bookSeriesNumberInput"
+    "newBookSeriesNumberInput"
   ).value=
     book["Series #"]||"";
 
@@ -2727,17 +3360,24 @@ function openEditBook(bookId){
   ).innerHTML="";
 
 
+  updateNewBookCategoryFields();
+
+
+  /*
+    Change the save button's text.
+  */
+
   document.getElementById(
-    "bookMatchArea"
-  ).innerHTML="";
-
-
-  updateBookCategoryFields();
+    "saveNewBookButton"
+  ).textContent=
+    "Save Changes";
 
 
   document.getElementById(
     "bookModal"
-  ).classList.remove("hidden");
+  ).classList.remove(
+    "hidden"
+  );
 
 }
 
@@ -2745,57 +3385,14 @@ function openEditBook(bookId){
 function closeBookModal(){
 
   editingBookId=null;
-  pendingBookAdd=null;
+  selectedExistingBookId=null;
+
 
   document.getElementById(
     "bookModal"
-  ).classList.add("hidden");
-
-}
-
-
-function updateBookCategoryFields(){
-
-  const category=
-    document.getElementById(
-      "bookCategoryInput"
-    ).value;
-
-
-  const seriesGroup=
-    document.getElementById(
-      "bookSeriesGroup"
-    );
-
-  const numberGroup=
-    document.getElementById(
-      "bookSeriesNumberGroup"
-    );
-
-
-  if(category==="Series"){
-
-    seriesGroup.classList.remove("hidden");
-    numberGroup.classList.remove("hidden");
-
-  }else{
-
-    seriesGroup.classList.add("hidden");
-    numberGroup.classList.add("hidden");
-
-    if(category==="Standalone"){
-
-      document.getElementById(
-        "bookSeriesInput"
-      ).value="";
-
-      document.getElementById(
-        "bookSeriesNumberInput"
-      ).value="";
-
-    }
-
-  }
+  ).classList.add(
+    "hidden"
+  );
 
 }
 
@@ -2811,22 +3408,13 @@ function showBookModalMessage(message,type){
 
 
 /* ============================================================
-   SAVE BOOK
+   EDIT EXISTING BOOK
 ============================================================ */
 
-async function saveBook(){
+async function saveEditedBook(){
 
-  /*
-    If possible matches are already being shown, don't start
-    another search. The teacher needs to choose a match or
-    choose "Add as New Book".
-  */
-
-  if(pendingBookAdd){
-
+  if(!editingBookId)
     return;
-
-  }
 
 
   const title=
@@ -2837,32 +3425,34 @@ async function saveBook(){
 
   const author=
     document.getElementById(
-      "bookAuthorInput"
+      "newBookAuthorInput"
     ).value.trim();
 
 
   const category=
     document.getElementById(
-      "bookCategoryInput"
+      "newBookCategoryInput"
     ).value;
 
 
   const series=
     document.getElementById(
-      "bookSeriesInput"
+      "newBookSeriesInput"
     ).value.trim();
 
 
   const seriesNumberValue=
     document.getElementById(
-      "bookSeriesNumberInput"
+      "newBookSeriesNumberInput"
     ).value;
 
 
-  const copiesValue=
-    document.getElementById(
-      "bookCopiesInput"
-    ).value;
+  const copies=
+    Number(
+      document.getElementById(
+        "bookCopiesInput"
+      ).value
+    );
 
 
   if(!title){
@@ -2913,11 +3503,10 @@ async function saveBook(){
   }
 
 
-  const copies=
-    Number(copiesValue);
-
-
-  if(!Number.isInteger(copies)||copies<1){
+  if(
+    !Number.isInteger(copies)||
+    copies<1
+  ){
 
     showBookModalMessage(
       "Copies must be a whole number of at least 1.",
@@ -2942,8 +3531,10 @@ async function saveBook(){
 
     if(
       seriesNumber!==null&&
-      (!Number.isInteger(seriesNumber)||
-       seriesNumber<1)
+      (
+        !Number.isInteger(seriesNumber)||
+        seriesNumber<1
+      )
     ){
 
       showBookModalMessage(
@@ -2960,239 +3551,144 @@ async function saveBook(){
 
   const button=
     document.getElementById(
-      "saveBookButton"
+      "saveNewBookButton"
     );
 
 
   button.disabled=true;
 
   button.textContent=
-    editingBookId
-      ? "Saving..."
-      : "Checking Library...";
+    "Saving...";
 
 
   try{
 
-    /* ========================================================
-       EDIT EXISTING BOOK
-    ======================================================== */
-
-    if(editingBookId){
-
-      const existingBook=
-        books.find(
-          b=>String(b.id)===String(editingBookId)
-        );
+    const existingBook=
+      books.find(
+        b=>String(b.id)===
+          String(editingBookId)
+      );
 
 
-      if(!existingBook)
-        throw new Error("Book not found.");
+    if(!existingBook)
+      throw new Error("Book not found.");
 
 
-      const activeCheckouts=
-        getActiveCheckoutCount(
+    const activeCheckouts=
+      getActiveCheckoutCount(
+        editingBookId
+      );
+
+
+    if(copies<activeCheckouts){
+
+      showBookModalMessage(
+        `You currently have ${activeCheckouts} copy/copies checked out. Copies cannot be reduced below that number.`,
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const duplicate=
+      books.find(book=>
+
+        String(book.id)!==
+          String(editingBookId)&&
+
+        String(book.Title||"").trim().toLowerCase()===
+          title.toLowerCase()&&
+
+        String(book.Author||"").trim().toLowerCase()===
+          author.toLowerCase()&&
+
+        String(book.Category||"").trim().toLowerCase()===
+          category.toLowerCase()&&
+
+        String(book.Series||"").trim().toLowerCase()===
+          series.toLowerCase()&&
+
+        String(book["Series #"]||"")===
+          String(seriesNumber||"")
+
+      );
+
+
+    if(duplicate){
+
+      showBookModalMessage(
+        "Another book already has the same title, author, category, series, and series number.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const {error}=
+      await supabaseClient
+        .from("Books")
+        .update({
+
+          "Title":title,
+
+          "Author":author,
+
+          "Category":category,
+
+          "Series":
+            category==="Series"
+              ? series
+              : null,
+
+          "Series #":
+            category==="Series"
+              ? seriesNumber
+              : null,
+
+          "Copies":copies
+
+        })
+        .eq(
+          "id",
           editingBookId
         );
 
 
-      if(copies<activeCheckouts){
-
-        showBookModalMessage(
-          `You currently have ${activeCheckouts} copy/copies checked out. Copies cannot be reduced below that number.`,
-          "error"
-        );
-
-        return;
-
-      }
+    if(error)
+      throw error;
 
 
-      /*
-        Check whether the edited information would create
-        an exact duplicate of another book.
-      */
+    closeBookModal();
 
-      const duplicate=
-        books.find(book=>
-          String(book.id)!==
-            String(editingBookId)&&
-
-          String(book.Title||"").trim().toLowerCase()===
-            title.toLowerCase()&&
-
-          String(book.Author||"").trim().toLowerCase()===
-            author.toLowerCase()&&
-
-          String(book.Category||"").trim().toLowerCase()===
-            category.toLowerCase()&&
-
-          String(book.Series||"").trim().toLowerCase()===
-            series.toLowerCase()&&
-
-          String(book["Series #"]||"")===
-            String(seriesNumber||"")
-        );
-
-
-      if(duplicate){
-
-        showBookModalMessage(
-          "Another book already has the same title, author, category, series, and series number.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const {error}=
-        await supabaseClient
-          .from("Books")
-          .update({
-
-            "Title":title,
-
-            "Author":author,
-
-            "Category":category,
-
-            "Series":
-              category==="Series"
-                ? series
-                : null,
-
-            "Series #":
-              category==="Series"
-                ? seriesNumber
-                : null,
-
-            "Copies":copies
-
-          })
-          .eq("id",editingBookId);
-
-
-      if(error)throw error;
-
-
-      closeBookModal();
-
-      await loadData();
-
-      return;
-
-    }
-
-
-    /* ========================================================
-       ADD NEW BOOK — SMART MATCH CHECK
-    ======================================================== */
-
-    const possibleMatches=
-      findPossibleBookMatches(
-        title,
-        author,
-        category,
-        series,
-        seriesNumber
-      );
-
-
-    if(possibleMatches.length>0){
-
-      /*
-        Store everything needed to finish the add after the
-        teacher chooses what the match means.
-      */
-
-      pendingBookAdd={
-        title,
-        author,
-        category,
-        series,
-        seriesNumber,
-        copies
-      };
-
-
-      button.disabled=false;
-
-      button.textContent=
-        "Add Book";
-
-
-      showBookModalMessage(
-        "I found one or more books that may be the same book. Please choose a match or select \"None of These — Add as a New Book.\"",
-        "info"
-      );
-
-
-      showBookMatchOptions(
-        possibleMatches
-      );
-
-
-      return;
-
-    }
-
-
-    /*
-      No likely match was found, so add the book normally.
-    */
-
-    await insertNewBook({
-
-      title,
-      author,
-      category,
-      series,
-      seriesNumber,
-      copies
-
-    });
+    await loadData();
 
 
   }catch(error){
 
     console.error(
-      "Save book error:",
+      "Edit book error:",
       error
     );
 
 
-    console.error(
-      "Supabase error details:",
-      error.message,
-      error.details,
-      error.hint
-    );
-
-
     showBookModalMessage(
-      "Could not save the book. Please make sure the Books permissions were added in Supabase.",
+      "Could not save the book. Please try again.",
       "error"
     );
 
+
   }finally{
 
-    /*
-      If the modal is still open and we're not waiting for the
-      teacher to make a match decision, restore the button.
-    */
+    button.disabled=false;
 
-    if(!pendingBookAdd){
-
-      button.disabled=false;
-
-      button.textContent=
-        editingBookId
-          ? "Save Changes"
-          : "Add Book";
-
-    }
+    button.textContent=
+      editingBookId
+        ? "Save Changes"
+        : "Add New Book";
 
   }
 
@@ -3248,10 +3744,14 @@ async function deleteBook(bookId){
       await supabaseClient
         .from("Books")
         .delete()
-        .eq("id",bookId);
+        .eq(
+          "id",
+          bookId
+        );
 
 
-    if(error)throw error;
+    if(error)
+      throw error;
 
 
     await loadData();
@@ -4755,11 +5255,103 @@ document.getElementById(
 );
 
 
+/*
+  As the teacher types the title, search the existing library
+  immediately.
+*/
 document.getElementById(
-  "saveBookButton"
+  "bookTitleInput"
+).addEventListener(
+  "input",
+  ()=>{
+
+    selectedExistingBookId=null;
+
+    document.getElementById(
+      "bookModalMessage"
+    ).innerHTML="";
+
+    renderBookSearchResults();
+
+  }
+);
+
+
+/*
+  Pressing Enter in the title field does not accidentally submit
+  anything. It simply leaves the teacher in the search flow.
+*/
+document.getElementById(
+  "bookTitleInput"
+).addEventListener(
+  "keydown",
+  event=>{
+
+    if(event.key==="Enter"){
+
+      event.preventDefault();
+
+      const matches=
+        findTitleMatches(
+          document.getElementById(
+            "bookTitleInput"
+          ).value
+        );
+
+
+      if(matches.length>0){
+
+        selectExistingBookForAdd(
+          matches[0].book.id
+        );
+
+      }else{
+
+        showNewBookForm();
+
+      }
+
+    }
+
+  }
+);
+
+
+document.getElementById(
+  "quickAddNewBookButton"
 ).addEventListener(
   "click",
-  saveBook
+  showNewBookForm
+);
+
+
+document.getElementById(
+  "backToBookSearchButton"
+).addEventListener(
+  "click",
+  returnToBookSearch
+);
+
+
+document.getElementById(
+  "saveNewBookButton"
+).addEventListener(
+  "click",
+  ()=>{
+    if(editingBookId){
+      saveEditedBook();
+    }else{
+      saveNewBook();
+    }
+  }
+);
+
+
+document.getElementById(
+  "cancelNewBookButton"
+).addEventListener(
+  "click",
+  closeBookModal
 );
 
 
@@ -4772,10 +5364,10 @@ document.getElementById(
 
 
 document.getElementById(
-  "bookCategoryInput"
+  "newBookCategoryInput"
 ).addEventListener(
   "change",
-  updateBookCategoryFields
+  updateNewBookCategoryFields
 );
 
 
