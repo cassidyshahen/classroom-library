@@ -597,6 +597,22 @@ tr:hover td{background:#f8fafc}
 }
 .online-browse-tab.active{color:#2563eb;border-bottom-color:#2563eb}
 
+.series-sort-controls{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:9px;
+  margin-bottom:14px;
+}
+.series-sort-controls label{font-size:13px;font-weight:700;color:#475569}
+.series-sort-controls select{
+  padding:9px 11px;
+  border:1px solid #cbd5e1;
+  border-radius:7px;
+  background:white;
+  color:#1e293b;
+}
+
 .series-options-grid{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
@@ -1051,6 +1067,15 @@ tr:hover td{background:#f8fafc}
     </div>
 
     <div id="onlineSeriesBrowse" class="hidden">
+      <div id="seriesSortControls" class="series-sort-controls">
+        <label for="seriesSortSelect">Sort series:</label>
+        <select id="seriesSortSelect">
+          <option value="az">A–Z</option>
+          <option value="za">Z–A</option>
+          <option value="count-desc"># of Books: Most to Least</option>
+          <option value="count-asc"># of Books: Least to Most</option>
+        </select>
+      </div>
       <div id="seriesBrowserHeader" class="series-browser-header hidden">
         <button id="backToSeriesButton" class="series-back-button" type="button">← All Series</button>
         <div>
@@ -3524,7 +3549,15 @@ function renderSeriesBrowser(){
     header.classList.add("hidden");
     booksGrid.classList.add("hidden");
     optionsGrid.classList.remove("hidden");
-    const names=[...new Set(books.map(b=>String(b.Series||"").trim()).filter(Boolean))].sort();
+    const names=[...new Set(books.map(b=>String(b.Series||"").trim()).filter(Boolean))];
+    const sortValue=document.getElementById("seriesSortSelect")?.value||"az";
+    const seriesCount=name=>books.filter(b=>String(b.Series||"").trim()===name).length;
+    names.sort((a,b)=>{
+      if(sortValue==="za")return b.localeCompare(a);
+      if(sortValue==="count-desc")return seriesCount(b)-seriesCount(a)||a.localeCompare(b);
+      if(sortValue==="count-asc")return seriesCount(a)-seriesCount(b)||a.localeCompare(b);
+      return a.localeCompare(b);
+    });
     optionsGrid.innerHTML=names.map(name=>{
       const seriesBooks=books.filter(b=>String(b.Series||"").trim()===name);
       const count=seriesBooks.length;
@@ -5816,6 +5849,7 @@ document.getElementById("onlineLibraryViewButton").addEventListener("click",()=>
 document.getElementById("browseBooksTab").addEventListener("click",()=>setOnlineBrowseMode("books"));
 document.getElementById("browseSeriesTab").addEventListener("click",()=>setOnlineBrowseMode("series"));
 document.getElementById("browseGenreTab").addEventListener("click",()=>setOnlineBrowseMode("genre"));
+document.getElementById("seriesSortSelect").addEventListener("change",renderSeriesBrowser);
 document.getElementById("backToSeriesButton").addEventListener("click",()=>{
   selectedBrowseSeries="";
   renderSeriesBrowser();
