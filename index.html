@@ -4038,7 +4038,9 @@ function renderLibrary(){
   const [sortField,sortDirection]=onlineBookSort.split("-");
   const sortKey=sortField==="author"?"Author":"Title";
   filteredBooks.sort((a,b)=>{
-    const result=String(a[sortKey]||"").localeCompare(String(b[sortKey]||""),undefined,{sensitivity:"base"});
+    const aValue=sortKey==="Author"?getAuthorLastNameSortValue(a.Author):String(a.Title||"");
+    const bValue=sortKey==="Author"?getAuthorLastNameSortValue(b.Author):String(b.Title||"");
+    const result=aValue.localeCompare(bValue,undefined,{sensitivity:"base"});
     if(result!==0)return sortDirection==="za"?-result:result;
     return String(a.Title||"").localeCompare(String(b.Title||""),undefined,{sensitivity:"base"});
   });
@@ -5706,6 +5708,15 @@ function renderHistory(){
    NAVIGATION
 ============================================================ */
 
+function getAuthorLastNameSortValue(author){
+  const text=String(author||"").trim();
+  if(!text)return "";
+  const firstAuthor=text.split(/\s*(?:,|&| and )\s*/i)[0].trim();
+  const parts=firstAuthor.split(/\s+/).filter(Boolean);
+  if(parts.length<=1)return firstAuthor;
+  return parts[parts.length-1]+" "+parts.slice(0,-1).join(" ");
+}
+
 function renderBookList(){
   const tbody=document.getElementById("bookListTableBody");
   if(!tbody)return;
@@ -5713,7 +5724,9 @@ function renderBookList(){
   const [field,direction]=sortValue.split("-");
   const key=field==="author"?"Author":"Title";
   const sorted=[...books].sort((a,b)=>{
-    const result=String(a[key]||"").localeCompare(String(b[key]||""),undefined,{sensitivity:"base"});
+    const aValue=key==="Author"?getAuthorLastNameSortValue(a.Author):String(a.Title||"");
+    const bValue=key==="Author"?getAuthorLastNameSortValue(b.Author):String(b.Title||"");
+    const result=aValue.localeCompare(bValue,undefined,{sensitivity:"base"});
     if(result!==0)return direction==="za"?-result:result;
     return String(a.Title||"").localeCompare(String(b.Title||""),undefined,{sensitivity:"base"});
   });
