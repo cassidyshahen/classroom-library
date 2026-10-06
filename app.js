@@ -1259,12 +1259,6 @@ function updateNewBookCategoryFields(){
 
 function updateSeriesOptions(){
 
-  /*
-    Kept as a safe function so the rest of the app can
-    refresh without errors if the page does not have a
-    series-options dropdown.
-  */
-
   const seriesSelect=
     document.getElementById(
       "seriesFilter"
@@ -2285,11 +2279,6 @@ function renderLibrary(){
     const available=
       getAvailableCopies(book);
 
-    const active=
-      getActiveCheckoutCount(
-        book.id
-      );
-
     row.innerHTML=`
 
       <td>
@@ -2450,15 +2439,23 @@ function openEditBook(bookId){
     "hidden"
   );
 
-  document.querySelector(
-    "#newBookDetailsSection h3"
-  ).textContent=
-    "Edit Book Details";
+  const heading=
+    detailsSection.querySelector(
+      "h3"
+    );
 
-  document.querySelector(
-    "#newBookDetailsSection p"
-  ).textContent=
-    "Update the information for this book.";
+  if(heading)
+    heading.textContent=
+      "Edit Book Details";
+
+  const description=
+    detailsSection.querySelector(
+      "p"
+    );
+
+  if(description)
+    description.textContent=
+      "Update the information for this book.";
 
   let editTitleGroup=
     document.getElementById(
@@ -2491,11 +2488,6 @@ function openEditBook(bookId){
       >
 
     `;
-
-    const heading=
-      detailsSection.querySelector(
-        "h3"
-      );
 
     if(heading){
 
@@ -3008,7 +3000,7 @@ function renderStudents(){
   if(filteredStudents.length===0){
 
     tbody.innerHTML=
-      '<tr><td colspan="3">No students found.</td></tr>';
+      '<tr><td colspan="4">No students found.</td></tr>';
 
     return;
 
@@ -3021,11 +3013,26 @@ function renderStudents(){
         student.class_id
       );
 
+    /*
+      Currently Checked Out:
+      Only checkout records without a Return Date.
+
+      Checked Out All Time:
+      Every checkout record for this student,
+      whether the book was returned or not.
+    */
+
     const borrowed=
       checkouts.filter(checkout=>
         String(checkout.student_id)===
           String(student.id)&&
         !checkout["Return Date"]
+      ).length;
+
+    const allTime=
+      checkouts.filter(checkout=>
+        String(checkout.student_id)===
+          String(student.id)
       ).length;
 
     const row=
@@ -3046,13 +3053,21 @@ function renderStudents(){
 
     row.innerHTML=`
 
-      <td>${className}</td>
+      <td>
+        ${className}
+      </td>
 
       <td>
         Student #${student.student_number}
       </td>
 
-      <td>${borrowed}</td>
+      <td>
+        ${borrowed}
+      </td>
+
+      <td>
+        ${allTime}
+      </td>
 
     `;
 
