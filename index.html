@@ -8,125 +8,215 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f8;
   color: #1f2937;
 }
 
-.sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 230px;
-  height: 100vh;
+/* LOGIN */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(0,0,0,.12);
+}
+
+.login-card h1 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.login-card p {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+input, select, button {
+  font: inherit;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background: #1d4ed8;
+}
+
+#errorMessage {
+  color: #dc2626;
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* APP */
+#app {
+  display: none;
+}
+
+header {
   background: #1e293b;
   color: white;
-  padding: 24px 16px;
+  padding: 18px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.sidebar h1 {
-  font-size: 21px;
-  margin: 0 0 30px 8px;
+header h1 {
+  margin: 0;
+  font-size: 22px;
 }
 
-.nav-btn {
-  display: block;
-  width: 100%;
+.logout-button {
+  background: #475569;
+  color: white;
+  border: none;
+  padding: 9px 15px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+nav {
+  background: white;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 20px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+nav button {
   border: none;
   background: transparent;
-  color: #cbd5e1;
-  padding: 12px 14px;
-  margin-bottom: 5px;
-  text-align: left;
-  border-radius: 8px;
+  padding: 10px 15px;
+  border-radius: 7px;
   cursor: pointer;
-  font-size: 15px;
+  font-weight: bold;
 }
 
-.nav-btn:hover,
-.nav-btn.active {
-  background: #334155;
-  color: white;
+nav button:hover,
+nav button.active {
+  background: #e8eefc;
+  color: #2563eb;
 }
 
-.main {
-  margin-left: 230px;
-  padding: 30px;
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 25px;
 }
 
-.page { display: none; }
-.page.active { display: block; }
+.page {
+  display: none;
+}
 
-h2 { margin-top: 0; }
+.page.active {
+  display: block;
+}
 
-.cards {
+.stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-bottom: 30px;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 8px;
 }
 
 .card {
   background: white;
-  border-radius: 12px;
   padding: 22px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
-}
-
-.card-title {
-  color: #64748b;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.card-number {
-  font-size: 30px;
-  font-weight: bold;
-}
-
-.panel {
-  background: white;
   border-radius: 12px;
-  padding: 22px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  margin-bottom: 20px;
+}
+
+.card h2 {
+  margin-top: 0;
 }
 
 .search {
   width: 100%;
-  padding: 11px 13px;
-  border: 1px solid #cbd5e1;
-  border-radius: 7px;
-  margin-bottom: 18px;
-  font-size: 15px;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 15px;
 }
 
-th, td {
-  padding: 13px 10px;
-  border-bottom: 1px solid #e2e8f0;
-  text-align: left;
-  font-size: 14px;
+.book {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  background: #fff;
 }
 
-th {
-  color: #475569;
-  font-size: 13px;
+.book h3 {
+  margin: 0 0 7px;
+  font-size: 17px;
 }
 
-.status {
+.book p {
+  margin: 5px 0;
+  color: #6b7280;
+}
+
+.badge {
   display: inline-block;
+  margin-top: 8px;
   padding: 5px 9px;
   border-radius: 20px;
+  background: #e5e7eb;
   font-size: 12px;
-  font-weight: bold;
 }
 
 .available {
@@ -139,115 +229,21 @@ th {
   color: #991b1b;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-bottom: 20px;
-}
-
-label {
-  display: block;
-  font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 7px;
-}
-
-select, button.action {
-  width: 100%;
-  padding: 11px;
-  border: 1px solid #cbd5e1;
-  border-radius: 7px;
-  font-size: 15px;
-  background: white;
-}
-
-button.action {
-  background: #2563eb;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-button.action:hover {
-  background: #1d4ed8;
-}
-
-button.return-btn {
-  background: #16a34a;
-  color: white;
-  border: none;
-  padding: 7px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.empty {
-  text-align: center;
-  color: #64748b;
-  padding: 30px;
-}
-
-.message {
-  padding: 12px;
-  border-radius: 7px;
-  margin-top: 15px;
-  display: none;
-}
-
-.message.success {
-  display: block;
-  background: #dcfce7;
-  color: #166534;
-}
-
-.message.error {
-  display: block;
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.student-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px;
-}
-
-.student-column {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
-}
-
-.student-list {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.student {
-  padding: 10px;
-  background: #f1f5f9;
-  border-radius: 6px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.loading {
-  color: #64748b;
-  padding: 20px 0;
-}
-
-@media (max-width: 900px) {
-  .cards {
+@media (max-width: 700px) {
+  .stats {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .form-grid,
-  .student-grid {
-    grid-template-columns: 1fr;
+  header {
+    padding: 15px;
+  }
+
+  main {
+    padding: 15px;
+  }
+
+  .login-card {
+    padding: 25px;
   }
 }
 </style>
@@ -255,185 +251,397 @@ button.return-btn {
 
 <body>
 
-<div class="sidebar">
-  <h1>📚 Classroom Library</h1>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>📚 Classroom Library</h1>
+    <p>Teacher Login</p>
 
-  <button class="nav-btn active" onclick="showPage('dashboard', this)">Dashboard</button>
-  <button class="nav-btn" onclick="showPage('library', this)">Library</button>
-  <button class="nav-btn" onclick="showPage('checkout', this)">Check Out</button>
-  <button class="nav-btn" onclick="showPage('returns', this)">Returns</button>
-  <button class="nav-btn" onclick="showPage('students', this)">Students</button>
-  <button class="nav-btn" onclick="showPage('history', this)">History</button>
-</div>
-
-<div class="main">
-
-<section id="dashboard" class="page active">
-  <h2>Dashboard</h2>
-
-  <div class="cards">
-    <div class="card">
-      <div class="card-title">Total Books</div>
-      <div class="card-number" id="totalBooks">—</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Available</div>
-      <div class="card-number" id="availableBooks">—</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Checked Out</div>
-      <div class="card-number" id="checkedOutBooks">—</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Students</div>
-      <div class="card-number" id="totalStudents">—</div>
-    </div>
-  </div>
-
-  <div class="panel">
-    <h3>Welcome to Your Classroom Library</h3>
-    <p>
-      Your library is connected to your database. Books, students,
-      checkouts, returns, and history will appear here automatically.
-    </p>
-  </div>
-</section>
-
-
-<section id="library" class="page">
-  <h2>Library</h2>
-
-  <div class="panel">
     <input
-      type="text"
-      class="search"
-      id="librarySearch"
-      placeholder="Search by title, author, or series..."
-      oninput="renderLibrary()"
+      type="email"
+      id="email"
+      placeholder="Email address"
+      autocomplete="email"
     >
 
-    <div id="libraryTable">
-      <div class="loading">Loading books...</div>
-    </div>
-  </div>
-</section>
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
 
-
-<section id="checkout" class="page">
-  <h2>Check Out a Book</h2>
-
-  <div class="panel">
-
-    <div class="form-grid">
-
-      <div>
-        <label for="classSelect">Class</label>
-
-        <select id="classSelect" onchange="updateStudentNumbers()">
-          <option value="">Select a class</option>
-          <option value="7S">7S</option>
-          <option value="7K">7K</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="studentSelect">Student Number</label>
-
-        <select id="studentSelect">
-          <option value="">Select a student</option>
-        </select>
-      </div>
-
-    </div>
-
-    <div>
-      <label for="bookSelect">Book</label>
-
-      <select id="bookSelect">
-        <option value="">Select a book</option>
-      </select>
-    </div>
-
-    <br>
-
-    <button class="action" onclick="checkoutBook()">
-      Check Out Book
+    <button class="login-button" onclick="login()">
+      Log In
     </button>
 
-    <div id="checkoutMessage" class="message"></div>
-
+    <div id="errorMessage"></div>
   </div>
-</section>
-
-
-<section id="returns" class="page">
-  <h2>Returns</h2>
-
-  <div class="panel">
-    <div id="returnsTable">
-      <div class="loading">Loading checked out books...</div>
-    </div>
-  </div>
-</section>
-
-
-<section id="students" class="page">
-  <h2>Students</h2>
-
-  <div class="student-grid">
-
-    <div class="student-column">
-      <h3>7S</h3>
-      <div class="student-list" id="students7S"></div>
-    </div>
-
-    <div class="student-column">
-      <h3>7K</h3>
-      <div class="student-list" id="students7K"></div>
-    </div>
-
-  </div>
-</section>
-
-
-<section id="history" class="page">
-  <h2>Checkout History</h2>
-
-  <div class="panel">
-    <div id="historyTable">
-      <div class="loading">Loading history...</div>
-    </div>
-  </div>
-</section>
-
 </div>
 
+<!-- MAIN APP -->
+<div id="app">
+
+<header>
+  <h1>📚 Classroom Library</h1>
+  <button class="logout-button" onclick="logout()">Log Out</button>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('dashboard', this)">Dashboard</button>
+  <button onclick="showPage('library', this)">Library</button>
+  <button onclick="showPage('students', this)">Students</button>
+  <button onclick="showPage('checkedout', this)">Checked Out</button>
+</nav>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="page active">
+    <h2>Dashboard</h2>
+
+    <div class="stats">
+      <div class="stat">
+        <div>Total Books</div>
+        <div class="stat-number" id="totalBooks">—</div>
+      </div>
+
+      <div class="stat">
+        <div>Students</div>
+        <div class="stat-number" id="totalStudents">—</div>
+      </div>
+
+      <div class="stat">
+        <div>Checked Out</div>
+        <div class="stat-number" id="checkedOut">—</div>
+      </div>
+
+      <div class="stat">
+        <div>Available</div>
+        <div class="stat-number" id="available">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Welcome!</h2>
+      <p>Your classroom library is connected and ready.</p>
+    </div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="library" class="page">
+    <h2>Library</h2>
+
+    <div class="card">
+      <input
+        class="search"
+        id="bookSearch"
+        placeholder="Search by title, author, or series..."
+        oninput="displayBooks()"
+      >
+
+      <div id="bookList" class="book-list"></div>
+    </div>
+  </section>
+
+  <!-- STUDENTS -->
+  <section id="students" class="page">
+    <h2>Students</h2>
+
+    <div class="card">
+      <div id="studentList"></div>
+    </div>
+  </section>
+
+  <!-- CHECKED OUT -->
+  <section id="checkedout" class="page">
+    <h2>Checked Out</h2>
+
+    <div class="card">
+      <div id="checkoutList"></div>
+    </div>
+  </section>
+
+</main>
+</div>
 
 <script>
-
-const SUPABASE_URL =
-  "https://wwkcacypzjoojonmfaui.supabase.co";
+const SUPABASE_URL = "https://wwkcacypzjoojonmfaui.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
+"sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
 
 const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
+  window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let books = [];
 let students = [];
 let classes = [];
 let checkouts = [];
 
+/* LOGIN */
 
-/* PAGE NAVIGATION */
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const error = document.getElementById("errorMessage");
+
+  error.textContent = "";
+
+  if (!email || !password) {
+    error.textContent = "Please enter your email and password.";
+    return;
+  }
+
+  const { error: loginError } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if (loginError) {
+    error.textContent = loginError.message;
+    return;
+  }
+
+  showApp();
+}
+
+async function logout() {
+  await supabaseClient.auth.signOut();
+  document.getElementById("app").style.display = "none";
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("password").value = "";
+}
+
+function showApp() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  loadData();
+}
+
+/* CHECK EXISTING LOGIN */
+
+async function checkLogin() {
+  const { data } = await supabaseClient.auth.getSession();
+
+  if (data.session) {
+    showApp();
+  }
+}
+
+/* LOAD DATABASE */
+
+async function loadData() {
+
+  const booksResult = await supabaseClient
+    .from("Books")
+    .select("*")
+    .order("Title");
+
+  if (booksResult.error) {
+    console.error(booksResult.error);
+    return;
+  }
+
+  books = booksResult.data || [];
+
+  const studentsResult = await supabaseClient
+    .from("Students")
+    .select("*")
+    .order("class_id")
+    .order("student_number");
+
+  if (!studentsResult.error) {
+    students = studentsResult.data || [];
+  }
+
+  const classesResult = await supabaseClient
+    .from("Classes")
+    .select("*")
+    .order("id");
+
+  if (!classesResult.error) {
+    classes = classesResult.data || [];
+  }
+
+  const checkoutsResult = await supabaseClient
+    .from("Checkouts")
+    .select("*")
+    .is("Return Date", null);
+
+  if (!checkoutsResult.error) {
+    checkouts = checkoutsResult.data || [];
+  }
+
+  updateDashboard();
+  displayBooks();
+  displayStudents();
+  displayCheckouts();
+}
+
+/* DASHBOARD */
+
+function updateDashboard() {
+  const totalCopies = books.reduce(
+    (sum, book) => sum + Number(book["Copies"] || 1),
+    0
+  );
+
+  const checkedOutCopies = checkouts.length;
+
+  document.getElementById("totalBooks").textContent = totalCopies;
+  document.getElementById("totalStudents").textContent = students.length;
+  document.getElementById("checkedOut").textContent = checkedOutCopies;
+  document.getElementById("available").textContent =
+    Math.max(0, totalCopies - checkedOutCopies);
+}
+
+/* LIBRARY */
+
+function displayBooks() {
+  const container = document.getElementById("bookList");
+  const search =
+    document.getElementById("bookSearch").value.toLowerCase();
+
+  const filtered = books.filter(book => {
+    const title = String(book["Title"] || "").toLowerCase();
+    const author = String(book["Author"] || "").toLowerCase();
+    const series = String(book["Series"] || "").toLowerCase();
+
+    return (
+      title.includes(search) ||
+      author.includes(search) ||
+      series.includes(search)
+    );
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = "<p>No books found.</p>";
+    return;
+  }
+
+  container.innerHTML = filtered.map(book => {
+
+    const copies = Number(book["Copies"] || 1);
+
+    const checkedOutCount = checkouts.filter(
+      c => String(c.book_id) === String(book.id)
+    ).length;
+
+    const available = Math.max(0, copies - checkedOutCount);
+
+    return `
+      <div class="book">
+        <h3>${escapeHtml(book["Title"] || "")}</h3>
+
+        <p><strong>Author:</strong>
+          ${escapeHtml(book["Author"] || "")}
+        </p>
+
+        ${
+          book["Series"]
+            ? `<p><strong>Series:</strong>
+                ${escapeHtml(book["Series"])}
+              </p>`
+            : ""
+        }
+
+        ${
+          book["Series #"]
+            ? `<p><strong>Book #:</strong> ${book["Series #"]}</p>`
+            : ""
+        }
+
+        <span class="badge ${available > 0 ? "available" : "checked"}">
+          ${available} of ${copies} available
+        </span>
+      </div>
+    `;
+
+  }).join("");
+}
+
+/* STUDENTS */
+
+function displayStudents() {
+  const container = document.getElementById("studentList");
+
+  if (!students.length) {
+    container.innerHTML = "<p>No students found.</p>";
+    return;
+  }
+
+  container.innerHTML = students.map(student => {
+
+    const className =
+      classes.find(c => String(c.id) === String(student.class_id));
+
+    const classText =
+      className ? className.name || className.Name || "" : "";
+
+    return `
+      <p>
+        ${escapeHtml(classText)}
+        #${student.student_number}
+      </p>
+    `;
+
+  }).join("");
+}
+
+/* CHECKED OUT */
+
+function displayCheckouts() {
+  const container = document.getElementById("checkoutList");
+
+  if (!checkouts.length) {
+    container.innerHTML = "<p>Nothing is currently checked out.</p>";
+    return;
+  }
+
+  container.innerHTML = checkouts.map(checkout => {
+
+    const book = books.find(
+      b => String(b.id) === String(checkout.book_id)
+    );
+
+    const student = students.find(
+      s => String(s.id) === String(checkout.student_id)
+    );
+
+    const className = student
+      ? classes.find(
+          c => String(c.id) === String(student.class_id)
+        )
+      : null;
+
+    const classText = className
+      ? className.name || className.Name || ""
+      : "";
+
+    return `
+      <div class="book">
+        <h3>
+          ${escapeHtml(book ? book["Title"] : "Unknown Book")}
+        </h3>
+
+        <p>
+          <strong>Student:</strong>
+          ${escapeHtml(classText)} #${student ? student.student_number : "?"}
+        </p>
+
+        <p>
+          <strong>Checked out:</strong>
+          ${escapeHtml(checkout["Check Out Date"] || "")}
+        </p>
+      </div>
+    `;
+
+  }).join("");
+}
+
+/* NAVIGATION */
 
 function showPage(pageId, button) {
 
@@ -443,822 +651,27 @@ function showPage(pageId, button) {
 
   document.getElementById(pageId).classList.add("active");
 
-  document.querySelectorAll(".nav-btn").forEach(btn => {
+  document.querySelectorAll("nav button").forEach(btn => {
     btn.classList.remove("active");
   });
 
   button.classList.add("active");
-
-  if (pageId === "returns") {
-    renderReturns();
-  }
-
-  if (pageId === "history") {
-    renderHistory();
-  }
 }
 
+/* SECURITY */
 
-/* LOAD DATA */
-
-async function loadData() {
-
-  try {
-
-    const booksResult =
-      await supabaseClient
-        .from("Books")
-        .select("*")
-        .order("Title");
-
-    if (booksResult.error) {
-      throw booksResult.error;
-    }
-
-    books = booksResult.data || [];
-
-
-    const studentsResult =
-      await supabaseClient
-        .from("Students")
-        .select("*")
-        .order("class_id")
-        .order("student_number");
-
-    if (studentsResult.error) {
-      throw studentsResult.error;
-    }
-
-    students = studentsResult.data || [];
-
-
-    const classesResult =
-      await supabaseClient
-        .from("Classes")
-        .select("*")
-        .order("id");
-
-    if (classesResult.error) {
-      throw classesResult.error;
-    }
-
-    classes = classesResult.data || [];
-
-
-    await loadCheckouts();
-
-    updateDashboard();
-    renderLibrary();
-    populateBookSelect();
-    renderStudents();
-
-  } catch (error) {
-
-    console.error("Library database error:", error);
-
-    document.getElementById("libraryTable").innerHTML =
-      `<div class="message error">
-        Could not connect to the library database.
-      </div>`;
-  }
-}
-
-
-/* LOAD CHECKOUTS */
-
-async function loadCheckouts() {
-
-  const result =
-    await supabaseClient
-      .from("Checkouts")
-      .select("*")
-      .order("Check Out Date", { ascending: false });
-
-  if (result.error) {
-    throw result.error;
-  }
-
-  checkouts = result.data || [];
-}
-
-
-/* DASHBOARD */
-
-function updateDashboard() {
-
-  const activeCheckouts =
-    checkouts.filter(
-      checkout => checkout["Return Date"] === null
-    );
-
-  document.getElementById("totalBooks").textContent =
-    books.length;
-
-  document.getElementById("availableBooks").textContent =
-    books.length - activeCheckouts.length;
-
-  document.getElementById("checkedOutBooks").textContent =
-    activeCheckouts.length;
-
-  document.getElementById("totalStudents").textContent =
-    students.length;
-}
-
-
-/* LIBRARY */
-
-function renderLibrary() {
-
-  const search =
-    document.getElementById("librarySearch")?.value
-      .toLowerCase()
-      .trim() || "";
-
-  const activeCheckouts =
-    checkouts.filter(
-      checkout => checkout["Return Date"] === null
-    );
-
-
-  const rows =
-    books.filter(book => {
-
-      const title =
-        (book.Title || "").toLowerCase();
-
-      const author =
-        (book.Author || "").toLowerCase();
-
-      const series =
-        (book.Series || "").toLowerCase();
-
-      return (
-        title.includes(search) ||
-        author.includes(search) ||
-        series.includes(search)
-      );
-    });
-
-
-  if (rows.length === 0) {
-
-    document.getElementById("libraryTable").innerHTML =
-      `<div class="empty">No books found.</div>`;
-
-    return;
-  }
-
-
-  let html = `
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Author</th>
-          <th>Category</th>
-          <th>Series</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-
-  rows.forEach(book => {
-
-    const checkout =
-      activeCheckouts.find(
-        c => c.book_id === book.id
-      );
-
-
-    let seriesText = "";
-
-    if (book.Series) {
-
-      seriesText = book.Series;
-
-      if (
-        book["Series #"] !== null &&
-        book["Series #"] !== undefined
-      ) {
-        seriesText +=
-          ` #${book["Series #"]}`;
-      }
-    }
-
-
-    html += `
-      <tr>
-
-        <td>
-          <strong>
-            ${escapeHTML(book.Title)}
-          </strong>
-        </td>
-
-        <td>
-          ${escapeHTML(book.Author || "")}
-        </td>
-
-        <td>
-          ${escapeHTML(book.Category || "")}
-        </td>
-
-        <td>
-          ${escapeHTML(seriesText)}
-        </td>
-
-        <td>
-          ${
-            checkout
-              ? `<span class="status checked">
-                   Checked Out
-                 </span>`
-              : `<span class="status available">
-                   Available
-                 </span>`
-          }
-        </td>
-
-      </tr>
-    `;
-  });
-
-
-  html += `
-      </tbody>
-    </table>
-  `;
-
-  document.getElementById("libraryTable").innerHTML =
-    html;
-}
-
-
-/* BOOK DROPDOWN */
-
-function populateBookSelect() {
-
-  const select =
-    document.getElementById("bookSelect");
-
-  select.innerHTML =
-    `<option value="">Select a book</option>`;
-
-
-  const activeCheckouts =
-    checkouts.filter(
-      checkout => checkout["Return Date"] === null
-    );
-
-
-  books
-    .filter(book => {
-
-      return !activeCheckouts.some(
-        checkout => checkout.book_id === book.id
-      );
-
-    })
-    .sort((a, b) =>
-      (a.Title || "").localeCompare(b.Title || "")
-    )
-    .forEach(book => {
-
-      const option =
-        document.createElement("option");
-
-      option.value = book.id;
-
-      option.textContent =
-        book.Title +
-        (
-          book.Series
-            ? ` — ${book.Series}${
-                book["Series #"]
-                  ? " #" + book["Series #"]
-                  : ""
-              }`
-            : ""
-        );
-
-      select.appendChild(option);
-    });
-}
-
-
-/* STUDENT NUMBERS */
-
-function updateStudentNumbers() {
-
-  const className =
-    document.getElementById("classSelect").value;
-
-  const select =
-    document.getElementById("studentSelect");
-
-  select.innerHTML =
-    `<option value="">Select a student</option>`;
-
-
-  if (!className) {
-    return;
-  }
-
-
-  const classRecord =
-    classes.find(
-      c => c.name === className
-    );
-
-
-  if (!classRecord) {
-    return;
-  }
-
-
-  students
-    .filter(
-      student =>
-        student.class_id === classRecord.id
-    )
-    .sort(
-      (a, b) =>
-        a.student_number - b.student_number
-    )
-    .forEach(student => {
-
-      const option =
-        document.createElement("option");
-
-      option.value = student.id;
-
-      option.textContent =
-        `${className} #${student.student_number}`;
-
-      select.appendChild(option);
-    });
-}
-
-
-/* CHECK OUT */
-
-async function checkoutBook() {
-
-  const studentId =
-    document.getElementById("studentSelect").value;
-
-  const bookId =
-    document.getElementById("bookSelect").value;
-
-  const message =
-    document.getElementById("checkoutMessage");
-
-
-  message.className = "message";
-  message.textContent = "";
-
-
-  if (!studentId || !bookId) {
-
-    message.className =
-      "message error";
-
-    message.textContent =
-      "Please select a class, student, and book.";
-
-    return;
-  }
-
-
-  const alreadyOut =
-    checkouts.some(
-      checkout =>
-        checkout.book_id == bookId &&
-        checkout["Return Date"] === null
-    );
-
-
-  if (alreadyOut) {
-
-    message.className =
-      "message error";
-
-    message.textContent =
-      "That book is already checked out.";
-
-    return;
-  }
-
-
-  const result =
-    await supabaseClient
-      .from("Checkouts")
-      .insert([
-        {
-          book_id: Number(bookId),
-          student_id: Number(studentId),
-          "Check Out Date":
-            new Date().toISOString(),
-          "Return Date": null
-        }
-      ]);
-
-
-  if (result.error) {
-
-    console.error(
-      "Checkout error:",
-      result.error
-    );
-
-    message.className =
-      "message error";
-
-    message.textContent =
-      "There was a problem checking out the book.";
-
-    return;
-  }
-
-
-  message.className =
-    "message success";
-
-  message.textContent =
-    "Book successfully checked out!";
-
-
-  document.getElementById("classSelect").value = "";
-
-  document.getElementById("studentSelect").innerHTML =
-    `<option value="">Select a student</option>`;
-
-  document.getElementById("bookSelect").value = "";
-
-
-  await loadCheckouts();
-
-  updateDashboard();
-  renderLibrary();
-  populateBookSelect();
-  renderReturns();
-  renderHistory();
-}
-
-
-/* RETURNS */
-
-function renderReturns() {
-
-  const activeCheckouts =
-    checkouts.filter(
-      checkout =>
-        checkout["Return Date"] === null
-    );
-
-
-  if (activeCheckouts.length === 0) {
-
-    document.getElementById("returnsTable").innerHTML =
-      `<div class="empty">
-        No books are currently checked out.
-      </div>`;
-
-    return;
-  }
-
-
-  let html = `
-    <table>
-      <thead>
-        <tr>
-          <th>Book</th>
-          <th>Student</th>
-          <th>Checked Out</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-
-  activeCheckouts.forEach(checkout => {
-
-    const book =
-      books.find(
-        b => b.id === checkout.book_id
-      );
-
-    const student =
-      students.find(
-        s => s.id === checkout.student_id
-      );
-
-
-    let studentText = "Unknown";
-
-
-    if (student) {
-
-      const classRecord =
-        classes.find(
-          c => c.id === student.class_id
-        );
-
-      if (classRecord) {
-
-        studentText =
-          `${classRecord.name} #${student.student_number}`;
-      }
-    }
-
-
-    const date =
-      new Date(
-        checkout["Check Out Date"]
-      ).toLocaleDateString();
-
-
-    html += `
-      <tr>
-
-        <td>
-          <strong>
-            ${escapeHTML(
-              book?.Title || "Unknown Book"
-            )}
-          </strong>
-        </td>
-
-        <td>
-          ${escapeHTML(studentText)}
-        </td>
-
-        <td>
-          ${date}
-        </td>
-
-        <td>
-          <button
-            class="return-btn"
-            onclick="returnBook(${checkout.id})">
-            Return
-          </button>
-        </td>
-
-      </tr>
-    `;
-  });
-
-
-  html += `
-      </tbody>
-    </table>
-  `;
-
-
-  document.getElementById("returnsTable").innerHTML =
-    html;
-}
-
-
-/* RETURN BOOK */
-
-async function returnBook(checkoutId) {
-
-  const result =
-    await supabaseClient
-      .from("Checkouts")
-      .update({
-        "Return Date":
-          new Date().toISOString()
-      })
-      .eq("id", checkoutId);
-
-
-  if (result.error) {
-
-    console.error(
-      "Return error:",
-      result.error
-    );
-
-    alert(
-      "There was a problem returning the book."
-    );
-
-    return;
-  }
-
-
-  await loadCheckouts();
-
-  updateDashboard();
-  renderLibrary();
-  populateBookSelect();
-  renderReturns();
-  renderHistory();
-}
-
-
-/* STUDENTS */
-
-function renderStudents() {
-
-  const class7S =
-    classes.find(
-      c => c.name === "7S"
-    );
-
-  const class7K =
-    classes.find(
-      c => c.name === "7K"
-    );
-
-
-  if (class7S) {
-
-    const students7S =
-      students
-        .filter(
-          s => s.class_id === class7S.id
-        )
-        .sort(
-          (a, b) =>
-            a.student_number -
-            b.student_number
-        );
-
-
-    document.getElementById("students7S").innerHTML =
-      students7S
-        .map(
-          student =>
-            `<div class="student">
-              #${student.student_number}
-            </div>`
-        )
-        .join("");
-  }
-
-
-  if (class7K) {
-
-    const students7K =
-      students
-        .filter(
-          s => s.class_id === class7K.id
-        )
-        .sort(
-          (a, b) =>
-            a.student_number -
-            b.student_number
-        );
-
-
-    document.getElementById("students7K").innerHTML =
-      students7K
-        .map(
-          student =>
-            `<div class="student">
-              #${student.student_number}
-            </div>`
-        )
-        .join("");
-  }
-}
-
-
-/* HISTORY */
-
-function renderHistory() {
-
-  if (checkouts.length === 0) {
-
-    document.getElementById("historyTable").innerHTML =
-      `<div class="empty">
-        No checkout history yet.
-      </div>`;
-
-    return;
-  }
-
-
-  let html = `
-    <table>
-      <thead>
-        <tr>
-          <th>Book</th>
-          <th>Student</th>
-          <th>Checked Out</th>
-          <th>Returned</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-
-  checkouts.forEach(checkout => {
-
-    const book =
-      books.find(
-        b => b.id === checkout.book_id
-      );
-
-    const student =
-      students.find(
-        s => s.id === checkout.student_id
-      );
-
-
-    let studentText = "Unknown";
-
-
-    if (student) {
-
-      const classRecord =
-        classes.find(
-          c => c.id === student.class_id
-        );
-
-      if (classRecord) {
-
-        studentText =
-          `${classRecord.name} #${student.student_number}`;
-      }
-    }
-
-
-    const checkoutDate =
-      new Date(
-        checkout["Check Out Date"]
-      ).toLocaleDateString();
-
-
-    const returnDate =
-      checkout["Return Date"]
-        ? new Date(
-            checkout["Return Date"]
-          ).toLocaleDateString()
-        : "Still out";
-
-
-    html += `
-      <tr>
-
-        <td>
-          ${escapeHTML(
-            book?.Title || "Unknown Book"
-          )}
-        </td>
-
-        <td>
-          ${escapeHTML(studentText)}
-        </td>
-
-        <td>
-          ${checkoutDate}
-        </td>
-
-        <td>
-          ${returnDate}
-        </td>
-
-      </tr>
-    `;
-  });
-
-
-  html += `
-      </tbody>
-    </table>
-  `;
-
-
-  document.getElementById("historyTable").innerHTML =
-    html;
-}
-
-
-/* CLEAN TEXT */
-
-function escapeHTML(value) {
-
+function escapeHtml(value) {
   return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
-
 
 /* START */
 
-loadData();
-
+checkLogin();
 </script>
 
 </body>
