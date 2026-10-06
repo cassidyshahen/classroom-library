@@ -19,7 +19,12 @@ body {
   color: #1f2937;
 }
 
+button, input, select {
+  font: inherit;
+}
+
 /* LOGIN */
+
 #loginScreen {
   min-height: 100vh;
   display: flex;
@@ -46,10 +51,6 @@ body {
   text-align: center;
   color: #6b7280;
   margin-bottom: 30px;
-}
-
-input, select, button {
-  font: inherit;
 }
 
 .login-card input {
@@ -82,6 +83,7 @@ input, select, button {
 }
 
 /* APP */
+
 #app {
   display: none;
 }
@@ -147,6 +149,8 @@ main {
   display: block;
 }
 
+/* DASHBOARD */
+
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -167,6 +171,8 @@ main {
   margin-top: 8px;
 }
 
+/* CARDS */
+
 .card {
   background: white;
   padding: 22px;
@@ -178,6 +184,79 @@ main {
 .card h2 {
   margin-top: 0;
 }
+
+/* FORMS */
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 7px;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+}
+
+.primary-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: #1d4ed8;
+}
+
+.primary-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.return-button {
+  padding: 9px 14px;
+  border: none;
+  border-radius: 7px;
+  background: #16a34a;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.return-button:hover {
+  background: #15803d;
+}
+
+.message {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  display: none;
+}
+
+.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* LIBRARY */
 
 .search {
   width: 100%;
@@ -229,9 +308,53 @@ main {
   color: #991b1b;
 }
 
+/* CHECKOUT LIST */
+
+.checkout-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+}
+
+.checkout-info h3 {
+  margin: 0 0 7px;
+}
+
+.checkout-info p {
+  margin: 4px 0;
+  color: #6b7280;
+}
+
+/* STUDENTS */
+
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.student-card {
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+/* RESPONSIVE */
+
 @media (max-width: 700px) {
   .stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .checkout-item {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   header {
@@ -251,10 +374,14 @@ main {
 
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
+
 <div id="loginScreen">
+
   <div class="login-card">
+
     <h1>📚 Classroom Library</h1>
+
     <p>Teacher Login</p>
 
     <input
@@ -276,402 +403,1283 @@ main {
     </button>
 
     <div id="errorMessage"></div>
+
   </div>
+
 </div>
 
-<!-- MAIN APP -->
+
+<!-- APP -->
+
 <div id="app">
 
 <header>
+
   <h1>📚 Classroom Library</h1>
-  <button class="logout-button" onclick="logout()">Log Out</button>
+
+  <button class="logout-button" onclick="logout()">
+    Log Out
+  </button>
+
 </header>
 
+
 <nav>
-  <button class="active" onclick="showPage('dashboard', this)">Dashboard</button>
-  <button onclick="showPage('library', this)">Library</button>
-  <button onclick="showPage('students', this)">Students</button>
-  <button onclick="showPage('checkedout', this)">Checked Out</button>
+
+  <button class="active"
+          onclick="showPage('dashboard', this)">
+    Dashboard
+  </button>
+
+  <button onclick="showPage('checkout', this)">
+    📕 Check Out
+  </button>
+
+  <button onclick="showPage('library', this)">
+    📚 Library
+  </button>
+
+  <button onclick="showPage('students', this)">
+    👥 Students
+  </button>
+
+  <button onclick="showPage('checkedout', this)">
+    📖 Checked Out
+  </button>
+
 </nav>
+
 
 <main>
 
-  <!-- DASHBOARD -->
-  <section id="dashboard" class="page active">
-    <h2>Dashboard</h2>
 
-    <div class="stats">
-      <div class="stat">
-        <div>Total Books</div>
-        <div class="stat-number" id="totalBooks">—</div>
-      </div>
+<!-- DASHBOARD -->
 
-      <div class="stat">
-        <div>Students</div>
-        <div class="stat-number" id="totalStudents">—</div>
-      </div>
+<section id="dashboard" class="page active">
 
-      <div class="stat">
-        <div>Checked Out</div>
-        <div class="stat-number" id="checkedOut">—</div>
-      </div>
+  <h2>Dashboard</h2>
 
-      <div class="stat">
-        <div>Available</div>
-        <div class="stat-number" id="available">—</div>
-      </div>
+  <div class="stats">
+
+    <div class="stat">
+      <div>Total Books</div>
+      <div class="stat-number" id="totalBooks">—</div>
     </div>
 
-    <div class="card">
-      <h2>Welcome!</h2>
-      <p>Your classroom library is connected and ready.</p>
+    <div class="stat">
+      <div>Students</div>
+      <div class="stat-number" id="totalStudents">—</div>
     </div>
-  </section>
 
-  <!-- LIBRARY -->
-  <section id="library" class="page">
-    <h2>Library</h2>
-
-    <div class="card">
-      <input
-        class="search"
-        id="bookSearch"
-        placeholder="Search by title, author, or series..."
-        oninput="displayBooks()"
-      >
-
-      <div id="bookList" class="book-list"></div>
+    <div class="stat">
+      <div>Checked Out</div>
+      <div class="stat-number" id="checkedOut">—</div>
     </div>
-  </section>
 
-  <!-- STUDENTS -->
-  <section id="students" class="page">
-    <h2>Students</h2>
-
-    <div class="card">
-      <div id="studentList"></div>
+    <div class="stat">
+      <div>Available</div>
+      <div class="stat-number" id="available">—</div>
     </div>
-  </section>
 
-  <!-- CHECKED OUT -->
-  <section id="checkedout" class="page">
-    <h2>Checked Out</h2>
+  </div>
 
-    <div class="card">
-      <div id="checkoutList"></div>
+
+  <div class="card">
+
+    <h2>Welcome!</h2>
+
+    <p>
+      Your classroom library is ready to manage.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- CHECKOUT -->
+
+<section id="checkout" class="page">
+
+  <h2>Check Out a Book</h2>
+
+  <div class="card">
+
+    <div class="form-group">
+
+      <label for="classSelect">
+        Class
+      </label>
+
+      <select id="classSelect"
+              onchange="loadStudentOptions()">
+
+        <option value="">
+          Select a class
+        </option>
+
+      </select>
+
     </div>
-  </section>
+
+
+    <div class="form-group">
+
+      <label for="studentSelect">
+        Student
+      </label>
+
+      <select id="studentSelect">
+
+        <option value="">
+          Select a student
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="bookSelect">
+        Book
+      </label>
+
+      <select id="bookSelect">
+
+        <option value="">
+          Select a book
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <button
+      class="primary-button"
+      id="checkoutButton"
+      onclick="checkoutBook()">
+
+      Check Out Book
+
+    </button>
+
+
+    <div id="checkoutMessage"
+         class="message">
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- LIBRARY -->
+
+<section id="library" class="page">
+
+  <h2>Library</h2>
+
+  <div class="card">
+
+    <input
+      class="search"
+      id="bookSearch"
+      placeholder="Search by title, author, or series..."
+      oninput="displayBooks()"
+    >
+
+    <div id="bookList"
+         class="book-list">
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- STUDENTS -->
+
+<section id="students" class="page">
+
+  <h2>Students</h2>
+
+  <div class="card">
+
+    <div id="studentList"
+         class="student-grid">
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CHECKED OUT -->
+
+<section id="checkedout" class="page">
+
+  <h2>Currently Checked Out</h2>
+
+  <div class="card">
+
+    <div id="checkoutList">
+    </div>
+
+  </div>
+
+</section>
+
 
 </main>
+
 </div>
 
+
 <script>
-const SUPABASE_URL = "https://wwkcacypzjoojonmfaui.supabase.co";
+
+/* SUPABASE */
+
+const SUPABASE_URL =
+  "https://wwkcacypzjoojonmfaui.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
+  "sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
 
 const supabaseClient =
-  window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* DATA */
 
 let books = [];
 let students = [];
 let classes = [];
 let checkouts = [];
 
+
 /* LOGIN */
 
 async function login() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const error = document.getElementById("errorMessage");
+
+  const email =
+    document.getElementById("email")
+      .value.trim();
+
+  const password =
+    document.getElementById("password")
+      .value;
+
+  const error =
+    document.getElementById("errorMessage");
 
   error.textContent = "";
 
   if (!email || !password) {
-    error.textContent = "Please enter your email and password.";
+
+    error.textContent =
+      "Please enter your email and password.";
+
     return;
   }
 
   const { error: loginError } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
+    await supabaseClient.auth
+      .signInWithPassword({
+        email,
+        password
+      });
 
   if (loginError) {
-    error.textContent = loginError.message;
+
+    error.textContent =
+      loginError.message;
+
     return;
   }
 
   showApp();
 }
 
+
+/* LOGOUT */
+
 async function logout() {
+
   await supabaseClient.auth.signOut();
-  document.getElementById("app").style.display = "none";
-  document.getElementById("loginScreen").style.display = "flex";
-  document.getElementById("password").value = "";
+
+  document.getElementById("app")
+    .style.display = "none";
+
+  document.getElementById("loginScreen")
+    .style.display = "flex";
+
+  document.getElementById("password")
+    .value = "";
+
 }
+
+
+/* SHOW APP */
 
 function showApp() {
-  document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("app").style.display = "block";
+
+  document.getElementById("loginScreen")
+    .style.display = "none";
+
+  document.getElementById("app")
+    .style.display = "block";
+
   loadData();
+
 }
 
-/* CHECK EXISTING LOGIN */
+
+/* CHECK EXISTING SESSION */
 
 async function checkLogin() {
-  const { data } = await supabaseClient.auth.getSession();
+
+  const { data } =
+    await supabaseClient.auth.getSession();
 
   if (data.session) {
+
     showApp();
+
   }
+
 }
+
 
 /* LOAD DATABASE */
 
 async function loadData() {
 
-  const booksResult = await supabaseClient
-    .from("Books")
-    .select("*")
-    .order("Title");
+  const booksResult =
+    await supabaseClient
+      .from("Books")
+      .select("*")
+      .order("Title");
+
 
   if (booksResult.error) {
-    console.error(booksResult.error);
+
+    console.error(
+      "Books error:",
+      booksResult.error
+    );
+
     return;
   }
 
-  books = booksResult.data || [];
 
-  const studentsResult = await supabaseClient
-    .from("Students")
-    .select("*")
-    .order("class_id")
-    .order("student_number");
+  books =
+    booksResult.data || [];
 
-  if (!studentsResult.error) {
-    students = studentsResult.data || [];
+
+  const studentsResult =
+    await supabaseClient
+      .from("Students")
+      .select("*")
+      .order("class_id")
+      .order("student_number");
+
+
+  if (studentsResult.error) {
+
+    console.error(
+      "Students error:",
+      studentsResult.error
+    );
+
+  } else {
+
+    students =
+      studentsResult.data || [];
+
   }
 
-  const classesResult = await supabaseClient
-    .from("Classes")
-    .select("*")
-    .order("id");
 
-  if (!classesResult.error) {
-    classes = classesResult.data || [];
+  const classesResult =
+    await supabaseClient
+      .from("Classes")
+      .select("*")
+      .order("id");
+
+
+  if (classesResult.error) {
+
+    console.error(
+      "Classes error:",
+      classesResult.error
+    );
+
+  } else {
+
+    classes =
+      classesResult.data || [];
+
   }
 
-  const checkoutsResult = await supabaseClient
-    .from("Checkouts")
-    .select("*")
-    .is("Return Date", null);
 
-  if (!checkoutsResult.error) {
-    checkouts = checkoutsResult.data || [];
+  const checkoutsResult =
+    await supabaseClient
+      .from("Checkouts")
+      .select("*")
+      .is("Return Date", null);
+
+
+  if (checkoutsResult.error) {
+
+    console.error(
+      "Checkouts error:",
+      checkoutsResult.error
+    );
+
+  } else {
+
+    checkouts =
+      checkoutsResult.data || [];
+
   }
+
 
   updateDashboard();
+
+  populateClassSelect();
+
+  populateBookSelect();
+
   displayBooks();
+
   displayStudents();
+
   displayCheckouts();
+
 }
+
 
 /* DASHBOARD */
 
 function updateDashboard() {
-  const totalCopies = books.reduce(
-    (sum, book) => sum + Number(book["Copies"] || 1),
-    0
+
+  const totalCopies =
+    books.reduce(
+      (sum, book) =>
+        sum + Number(book["Copies"] || 1),
+      0
+    );
+
+
+  const checkedOutCopies =
+    checkouts.length;
+
+
+  document.getElementById(
+    "totalBooks"
+  ).textContent =
+    totalCopies;
+
+
+  document.getElementById(
+    "totalStudents"
+  ).textContent =
+    students.length;
+
+
+  document.getElementById(
+    "checkedOut"
+  ).textContent =
+    checkedOutCopies;
+
+
+  document.getElementById(
+    "available"
+  ).textContent =
+    Math.max(
+      0,
+      totalCopies - checkedOutCopies
+    );
+
+}
+
+
+/* CLASS DROPDOWN */
+
+function populateClassSelect() {
+
+  const select =
+    document.getElementById(
+      "classSelect"
+    );
+
+
+  select.innerHTML =
+    `<option value="">
+       Select a class
+     </option>`;
+
+
+  classes.forEach(cls => {
+
+    const option =
+      document.createElement("option");
+
+    option.value =
+      cls.id;
+
+    option.textContent =
+      cls.name ||
+      cls.Name ||
+      cls.class_name ||
+      cls["Class Name"] ||
+      cls.id;
+
+    select.appendChild(option);
+
+  });
+
+}
+
+
+/* STUDENT DROPDOWN */
+
+function loadStudentOptions() {
+
+  const classId =
+    document.getElementById(
+      "classSelect"
+    ).value;
+
+
+  const studentSelect =
+    document.getElementById(
+      "studentSelect"
+    );
+
+
+  studentSelect.innerHTML =
+    `<option value="">
+       Select a student
+     </option>`;
+
+
+  if (!classId) {
+
+    return;
+
+  }
+
+
+  const classStudents =
+    students.filter(
+      student =>
+        String(student.class_id) ===
+        String(classId)
+    );
+
+
+  classStudents.forEach(student => {
+
+    const option =
+      document.createElement("option");
+
+    option.value =
+      student.id;
+
+    option.textContent =
+      `#${student.student_number}`;
+
+    studentSelect.appendChild(option);
+
+  });
+
+}
+
+
+/* AVAILABLE BOOKS */
+
+function populateBookSelect() {
+
+  const select =
+    document.getElementById(
+      "bookSelect"
+    );
+
+
+  select.innerHTML =
+    `<option value="">
+       Select a book
+     </option>`;
+
+
+  books.forEach(book => {
+
+    const copies =
+      Number(book["Copies"] || 1);
+
+
+    const checkedOutCount =
+      checkouts.filter(
+        checkout =>
+          String(checkout.book_id) ===
+          String(book.id)
+      ).length;
+
+
+    const available =
+      copies - checkedOutCount;
+
+
+    if (available > 0) {
+
+      const option =
+        document.createElement("option");
+
+      option.value =
+        book.id;
+
+      let label =
+        book["Title"] || "";
+
+
+      if (book["Series"]) {
+
+        label +=
+          ` — ${book["Series"]}`;
+
+      }
+
+
+      option.textContent =
+        label;
+
+
+      select.appendChild(option);
+
+    }
+
+  });
+
+}
+
+
+/* CHECK OUT */
+
+async function checkoutBook() {
+
+  const studentId =
+    document.getElementById(
+      "studentSelect"
+    ).value;
+
+
+  const bookId =
+    document.getElementById(
+      "bookSelect"
+    ).value;
+
+
+  const message =
+    document.getElementById(
+      "checkoutMessage"
+    );
+
+
+  message.style.display = "none";
+
+
+  if (!studentId || !bookId) {
+
+    showMessage(
+      message,
+      "Please select a student and a book.",
+      false
+    );
+
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      "checkoutButton"
+    );
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "Checking Out...";
+
+
+  const today =
+    new Date()
+      .toISOString()
+      .split("T")[0];
+
+
+  const { error } =
+    await supabaseClient
+      .from("Checkouts")
+      .insert({
+
+        "Check Out Date":
+          today,
+
+        "Return Date":
+          null,
+
+        student_id:
+          studentId,
+
+        book_id:
+          bookId
+
+      });
+
+
+  button.disabled = false;
+
+  button.textContent =
+    "Check Out Book";
+
+
+  if (error) {
+
+    console.error(
+      "Checkout error:",
+      error
+    );
+
+
+    showMessage(
+      message,
+      "There was a problem checking out the book.",
+      false
+    );
+
+
+    return;
+
+  }
+
+
+  showMessage(
+    message,
+    "Book checked out successfully!",
+    true
   );
 
-  const checkedOutCopies = checkouts.length;
 
-  document.getElementById("totalBooks").textContent = totalCopies;
-  document.getElementById("totalStudents").textContent = students.length;
-  document.getElementById("checkedOut").textContent = checkedOutCopies;
-  document.getElementById("available").textContent =
-    Math.max(0, totalCopies - checkedOutCopies);
+  document.getElementById(
+    "studentSelect"
+  ).value = "";
+
+
+  document.getElementById(
+    "bookSelect"
+  ).value = "";
+
+
+  await loadData();
+
 }
+
+
+/* RETURN BOOK */
+
+async function returnBook(checkoutId) {
+
+  if (
+    !confirm(
+      "Are you sure you want to return this book?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  const today =
+    new Date()
+      .toISOString()
+      .split("T")[0];
+
+
+  const { error } =
+    await supabaseClient
+      .from("Checkouts")
+      .update({
+
+        "Return Date":
+          today
+
+      })
+      .eq(
+        "id",
+        checkoutId
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Return error:",
+      error
+    );
+
+
+    alert(
+      "There was a problem returning the book."
+    );
+
+
+    return;
+
+  }
+
+
+  await loadData();
+
+}
+
+
+/* MESSAGE */
+
+function showMessage(
+  element,
+  text,
+  success
+) {
+
+  element.textContent =
+    text;
+
+  element.className =
+    "message " +
+    (success
+      ? "success"
+      : "error");
+
+  element.style.display =
+    "block";
+
+}
+
 
 /* LIBRARY */
 
 function displayBooks() {
-  const container = document.getElementById("bookList");
-  const search =
-    document.getElementById("bookSearch").value.toLowerCase();
 
-  const filtered = books.filter(book => {
-    const title = String(book["Title"] || "").toLowerCase();
-    const author = String(book["Author"] || "").toLowerCase();
-    const series = String(book["Series"] || "").toLowerCase();
-
-    return (
-      title.includes(search) ||
-      author.includes(search) ||
-      series.includes(search)
+  const container =
+    document.getElementById(
+      "bookList"
     );
-  });
+
+
+  const search =
+    document.getElementById(
+      "bookSearch"
+    ).value.toLowerCase();
+
+
+  const filtered =
+    books.filter(book => {
+
+      const title =
+        String(
+          book["Title"] || ""
+        ).toLowerCase();
+
+
+      const author =
+        String(
+          book["Author"] || ""
+        ).toLowerCase();
+
+
+      const series =
+        String(
+          book["Series"] || ""
+        ).toLowerCase();
+
+
+      return (
+        title.includes(search) ||
+        author.includes(search) ||
+        series.includes(search)
+      );
+
+    });
+
 
   if (!filtered.length) {
-    container.innerHTML = "<p>No books found.</p>";
+
+    container.innerHTML =
+      "<p>No books found.</p>";
+
     return;
+
   }
 
-  container.innerHTML = filtered.map(book => {
 
-    const copies = Number(book["Copies"] || 1);
+  container.innerHTML =
+    filtered.map(book => {
 
-    const checkedOutCount = checkouts.filter(
-      c => String(c.book_id) === String(book.id)
-    ).length;
+      const copies =
+        Number(
+          book["Copies"] || 1
+        );
 
-    const available = Math.max(0, copies - checkedOutCount);
 
-    return `
-      <div class="book">
-        <h3>${escapeHtml(book["Title"] || "")}</h3>
+      const checkedOutCount =
+        checkouts.filter(
+          checkout =>
+            String(
+              checkout.book_id
+            ) ===
+            String(book.id)
+        ).length;
 
-        <p><strong>Author:</strong>
-          ${escapeHtml(book["Author"] || "")}
-        </p>
 
-        ${
-          book["Series"]
-            ? `<p><strong>Series:</strong>
-                ${escapeHtml(book["Series"])}
-              </p>`
-            : ""
-        }
+      const available =
+        Math.max(
+          0,
+          copies - checkedOutCount
+        );
 
-        ${
-          book["Series #"]
-            ? `<p><strong>Book #:</strong> ${book["Series #"]}</p>`
-            : ""
-        }
 
-        <span class="badge ${available > 0 ? "available" : "checked"}">
-          ${available} of ${copies} available
-        </span>
-      </div>
-    `;
+      return `
 
-  }).join("");
+        <div class="book">
+
+          <h3>
+            ${escapeHtml(
+              book["Title"] || ""
+            )}
+          </h3>
+
+          <p>
+            <strong>Author:</strong>
+            ${escapeHtml(
+              book["Author"] || ""
+            )}
+          </p>
+
+          ${
+            book["Series"]
+              ? `
+                <p>
+                  <strong>Series:</strong>
+                  ${escapeHtml(
+                    book["Series"]
+                  )}
+                </p>
+              `
+              : ""
+          }
+
+          ${
+            book["Series #"]
+              ? `
+                <p>
+                  <strong>Book #:</strong>
+                  ${book["Series #"]}
+                </p>
+              `
+              : ""
+          }
+
+          <span class="badge ${
+            available > 0
+              ? "available"
+              : "checked"
+          }">
+
+            ${
+              available
+            } of ${
+              copies
+            } available
+
+          </span>
+
+        </div>
+
+      `;
+
+    }).join("");
+
 }
+
 
 /* STUDENTS */
 
 function displayStudents() {
-  const container = document.getElementById("studentList");
+
+  const container =
+    document.getElementById(
+      "studentList"
+    );
+
 
   if (!students.length) {
-    container.innerHTML = "<p>No students found.</p>";
+
+    container.innerHTML =
+      "<p>No students found.</p>";
+
     return;
+
   }
 
-  container.innerHTML = students.map(student => {
 
-    const className =
-      classes.find(c => String(c.id) === String(student.class_id));
+  container.innerHTML =
+    students.map(student => {
 
-    const classText =
-      className ? className.name || className.Name || "" : "";
+      const className =
+        classes.find(
+          c =>
+            String(c.id) ===
+            String(student.class_id)
+        );
 
-    return `
-      <p>
-        ${escapeHtml(classText)}
-        #${student.student_number}
-      </p>
-    `;
 
-  }).join("");
+      const classText =
+        className
+          ? className.name ||
+            className.Name ||
+            className.class_name ||
+            className["Class Name"] ||
+            className.id
+          : "";
+
+
+      return `
+
+        <div class="student-card">
+
+          <strong>
+            ${escapeHtml(
+              String(classText)
+            )}
+          </strong>
+
+          <br>
+
+          Student #${
+            student.student_number
+          }
+
+        </div>
+
+      `;
+
+    }).join("");
+
 }
+
 
 /* CHECKED OUT */
 
 function displayCheckouts() {
-  const container = document.getElementById("checkoutList");
+
+  const container =
+    document.getElementById(
+      "checkoutList"
+    );
+
 
   if (!checkouts.length) {
-    container.innerHTML = "<p>Nothing is currently checked out.</p>";
+
+    container.innerHTML =
+      "<p>Nothing is currently checked out.</p>";
+
     return;
+
   }
 
-  container.innerHTML = checkouts.map(checkout => {
 
-    const book = books.find(
-      b => String(b.id) === String(checkout.book_id)
-    );
+  container.innerHTML =
+    checkouts.map(checkout => {
 
-    const student = students.find(
-      s => String(s.id) === String(checkout.student_id)
-    );
+      const book =
+        books.find(
+          b =>
+            String(b.id) ===
+            String(checkout.book_id)
+        );
 
-    const className = student
-      ? classes.find(
-          c => String(c.id) === String(student.class_id)
-        )
-      : null;
 
-    const classText = className
-      ? className.name || className.Name || ""
-      : "";
+      const student =
+        students.find(
+          s =>
+            String(s.id) ===
+            String(checkout.student_id)
+        );
 
-    return `
-      <div class="book">
-        <h3>
-          ${escapeHtml(book ? book["Title"] : "Unknown Book")}
-        </h3>
 
-        <p>
-          <strong>Student:</strong>
-          ${escapeHtml(classText)} #${student ? student.student_number : "?"}
-        </p>
+      const className =
+        student
+          ? classes.find(
+              c =>
+                String(c.id) ===
+                String(student.class_id)
+            )
+          : null;
 
-        <p>
-          <strong>Checked out:</strong>
-          ${escapeHtml(checkout["Check Out Date"] || "")}
-        </p>
-      </div>
-    `;
 
-  }).join("");
+      const classText =
+        className
+          ? className.name ||
+            className.Name ||
+            className.class_name ||
+            className["Class Name"] ||
+            className.id
+          : "";
+
+
+      return `
+
+        <div class="checkout-item">
+
+          <div class="checkout-info">
+
+            <h3>
+              ${escapeHtml(
+                book
+                  ? book["Title"]
+                  : "Unknown Book"
+              )}
+            </h3>
+
+            <p>
+              <strong>Student:</strong>
+              ${escapeHtml(
+                String(classText)
+              )}
+              #${
+                student
+                  ? student.student_number
+                  : "?"
+              }
+            </p>
+
+            <p>
+              <strong>Checked out:</strong>
+              ${escapeHtml(
+                checkout["Check Out Date"] ||
+                ""
+              )}
+            </p>
+
+          </div>
+
+
+          <button
+            class="return-button"
+            onclick="returnBook('${
+              checkout.id
+            }')">
+
+            ↩️ Return
+
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
+
 }
+
 
 /* NAVIGATION */
 
-function showPage(pageId, button) {
+function showPage(
+  pageId,
+  button
+) {
 
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.remove("active");
-  });
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
 
-  document.getElementById(pageId).classList.add("active");
+      page.classList.remove(
+        "active"
+      );
 
-  document.querySelectorAll("nav button").forEach(btn => {
-    btn.classList.remove("active");
-  });
+    });
 
-  button.classList.add("active");
+
+  document
+    .getElementById(pageId)
+    .classList.add("active");
+
+
+  document
+    .querySelectorAll("nav button")
+    .forEach(btn => {
+
+      btn.classList.remove(
+        "active"
+      );
+
+    });
+
+
+  button.classList.add(
+    "active"
+  );
+
 }
 
-/* SECURITY */
+
+/* ESCAPE HTML */
 
 function escapeHtml(value) {
+
   return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
 }
+
 
 /* START */
 
 checkLogin();
+
 </script>
 
 </body>
