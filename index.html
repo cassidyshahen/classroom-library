@@ -3206,6 +3206,15 @@ function renderLibrary(){
           <div class="book-action-buttons">
 
             <button
+              class="primary-button"
+              style="padding:7px 11px;"
+              onclick="startCheckoutFromLibrary(${book.id})"
+              ${available<=0 ? "disabled" : ""}
+            >
+              ${available>0 ? "Check Out" : "Unavailable"}
+            </button>
+
+            <button
               class="edit-button"
               onclick="openEditBook(${book.id})"
             >
