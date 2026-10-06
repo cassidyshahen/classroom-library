@@ -2251,25 +2251,6 @@ async function saveNewBook(){
 
   try{
 
-    /*
-      Do one final smart duplicate check here too.
-
-      This protects against accidentally creating a duplicate
-      if the teacher typed a new title, clicked "Add as New Book",
-      and the title actually closely matches something already
-      in the library.
-    */
-
-    const matches=
-      findPossibleBookMatches(
-        data.title,
-        data.author,
-        data.category,
-        data.series,
-        data.seriesNumber
-      );
-
-
     const exactMatch=
       books.find(book=>
         normalizeBookText(book.Title)===
