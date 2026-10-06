@@ -5525,6 +5525,10 @@ function showPage(pageId){
     }
   );
 
+  if(pageId==="library"){
+    setLibraryView("online");
+  }
+
   const page=
     document.getElementById(
       pageId
