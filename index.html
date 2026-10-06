@@ -3708,7 +3708,7 @@ async function checkoutBook(){
 }
 
 
-async function returnBook(checkoutId, button=null){
+async function returnBook(checkoutId, button=null, updateLibraryCard=false){
 
   if(
     !confirm(
@@ -3717,9 +3717,31 @@ async function returnBook(checkoutId, button=null){
   )
     return;
 
+  let statusCell=null;
+  let previousStatusHtml="";
+  let returnedDateCell=null;
+  let previousReturnedDateHtml="";
+
   if(button){
     button.disabled=true;
     button.style.display="none";
+
+    if(updateLibraryCard){
+      const row=button.closest("tr");
+      if(row){
+        const cells=row.querySelectorAll("td");
+        returnedDateCell=cells[2]||null;
+        statusCell=cells[3]||null;
+        if(returnedDateCell){
+          previousReturnedDateHtml=returnedDateCell.innerHTML;
+          returnedDateCell.textContent=formatDate(getTodayEastern());
+        }
+        if(statusCell){
+          previousStatusHtml=statusCell.innerHTML;
+          statusCell.innerHTML='<span class="history-status-returned">Returned</span>';
+        }
+      }
+    }
   }
 
   try{
@@ -3755,6 +3777,8 @@ async function returnBook(checkoutId, button=null){
       button.disabled=false;
       button.style.display="";
     }
+    if(statusCell)statusCell.innerHTML=previousStatusHtml;
+    if(returnedDateCell)returnedDateCell.innerHTML=previousReturnedDateHtml;
 
     alert(
       "Could not return the book. Please try again."
@@ -5197,7 +5221,7 @@ function showStudentHistory(studentId){
               ${!returned ? `
               <button
                 class="return-button"
-                onclick="returnBook(${checkout.id}, this)"
+                onclick="returnBook(${checkout.id}, this, true)"
               >
                 Return Book
               </button>` : ""}
