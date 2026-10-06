@@ -201,6 +201,12 @@ nav{padding:8px}
       <label for="studentSelect">Student</label>
       <select id="studentSelect" disabled><option value="">Select a student...</option></select>
     </div>
+
+    <div class="form-group">
+      <label for="bookSearch">Book Search (optional)</label>
+      <input type="text" id="bookSearch" placeholder="Search by title or author...">
+    </div>
+
     <div class="form-group">
       <label for="bookSelect">Book</label>
       <select id="bookSelect" disabled><option value="">Select an available book...</option></select>
@@ -506,9 +512,20 @@ function populateStudents(){
 
 function populateBooks(){
   const bookSelect=document.getElementById("bookSelect");
+  const bookSearch=document.getElementById("bookSearch").value.toLowerCase().trim();
+
   bookSelect.innerHTML='<option value="">Select an available book...</option>';
 
-  const availableBooks=books.filter(book=>getAvailableCopies(book)>0);
+  const availableBooks=books.filter(book=>{
+    if(getAvailableCopies(book)<=0)return false;
+
+    if(!bookSearch)return true;
+
+    const title=String(book.Title||"").toLowerCase();
+    const author=String(book.Author||"").toLowerCase();
+
+    return title.includes(bookSearch)||author.includes(bookSearch);
+  });
 
   availableBooks.forEach(book=>{
     const option=document.createElement("option");
@@ -522,6 +539,10 @@ function populateBooks(){
 
     bookSelect.appendChild(option);
   });
+
+  if(availableBooks.length===0&&bookSearch){
+    bookSelect.innerHTML='<option value="">No matching available books...</option>';
+  }
 
   bookSelect.disabled=availableBooks.length===0;
   updateCheckoutButton();
@@ -565,6 +586,7 @@ async function checkoutBook(){
     document.getElementById("classSelect").value="";
     document.getElementById("studentSelect").innerHTML='<option value="">Select a student...</option>';
     document.getElementById("studentSelect").disabled=true;
+    document.getElementById("bookSearch").value="";
     document.getElementById("bookSelect").innerHTML='<option value="">Select an available book...</option>';
     document.getElementById("bookSelect").disabled=true;
 
@@ -1162,6 +1184,8 @@ document.getElementById("studentSelect").addEventListener("change",()=>{
   populateBooks();
   updateCheckoutButton();
 });
+
+document.getElementById("bookSearch").addEventListener("input",populateBooks);
 
 document.getElementById("bookSelect").addEventListener("change",updateCheckoutButton);
 
