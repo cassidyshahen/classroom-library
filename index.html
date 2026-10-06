@@ -1639,6 +1639,7 @@ let books=[];
 let students=[];
 let classes=[];
 let checkouts=[];
+let seriesCovers=[];
 
 let selectedStudentClass="7S";
 let currentStudentHistoryStudentId=null;
@@ -2927,7 +2928,8 @@ async function loadData(){
       booksResult,
       studentsResult,
       classesResult,
-      checkoutsResult
+      checkoutsResult,
+      seriesResult
     ]=
       await Promise.all([
 
@@ -2953,7 +2955,12 @@ async function loadData(){
           .order(
             "Check Out Date",
             {ascending:false}
-          )
+          ),
+
+        supabaseClient
+          .from("Series")
+          .select("*")
+          .order("Name")
       ]);
 
     if(booksResult.error)
@@ -2968,6 +2975,9 @@ async function loadData(){
     if(checkoutsResult.error)
       throw checkoutsResult.error;
 
+    if(seriesResult.error)
+      throw seriesResult.error;
+
     books=
       booksResult.data||[];
 
@@ -2979,6 +2989,9 @@ async function loadData(){
 
     checkouts=
       checkoutsResult.data||[];
+
+    seriesCovers=
+      seriesResult.data||[];
 
     updateDashboard();
     populateClasses();
@@ -3561,8 +3574,8 @@ function renderSeriesBrowser(){
     optionsGrid.innerHTML=names.map(name=>{
       const seriesBooks=books.filter(b=>String(b.Series||"").trim()===name);
       const count=seriesBooks.length;
-      const storageKey="classroomSeriesImage:"+name;
-      const savedImage=localStorage.getItem(storageKey)||"";
+      const seriesRecord=seriesCovers.find(item=>String(item.Name||"").trim()===name);
+      const savedImage=String(seriesRecord?.["Cover URL"]||"").trim();
       const safeName=name.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
       const imageHtml=savedImage
         ? `<img class="series-option-image" src="${savedImage}" alt="${name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="series-option-placeholder" style="display:none;">📚</div>`
@@ -3609,20 +3622,55 @@ function renderSeriesBrowser(){
   });
 }
 
-function saveSeriesImage(name){
+async function saveSeriesImage(name){
   const input=document.getElementById("seriesImageInput-"+encodeURIComponent(name));
   if(!input)return;
 
   const clean=String(input.value||"").trim();
-  const key="classroomSeriesImage:"+name;
+  const button=input.nextElementSibling;
+  const originalText=button ? button.textContent : "Save";
 
-  if(clean){
-    localStorage.setItem(key,clean);
-  }else{
-    localStorage.removeItem(key);
+  if(button){
+    button.disabled=true;
+    button.textContent="Saving...";
   }
 
-  renderSeriesBrowser();
+  try{
+    const existing=seriesCovers.find(item=>String(item.Name||"").trim()===name);
+    let result;
+
+    if(existing){
+      result=await supabaseClient
+        .from("Series")
+        .update({"Cover URL":clean||null})
+        .eq("id",existing.id)
+        .select()
+        .single();
+    }else{
+      result=await supabaseClient
+        .from("Series")
+        .insert({"Name":name,"Cover URL":clean||null})
+        .select()
+        .single();
+    }
+
+    if(result.error)throw result.error;
+
+    const saved=result.data;
+    const index=seriesCovers.findIndex(item=>String(item.Name||"").trim()===name);
+    if(index>=0)seriesCovers[index]=saved;
+    else seriesCovers.push(saved);
+
+    localStorage.removeItem("classroomSeriesImage:"+name);
+    renderSeriesBrowser();
+  }catch(error){
+    console.error("Series image save error:",error);
+    alert("Could not save the series cover. Please try again.");
+    if(button){
+      button.disabled=false;
+      button.textContent=originalText;
+    }
+  }
 }
 
 function openBrowseSeries(name){
