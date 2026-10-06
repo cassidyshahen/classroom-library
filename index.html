@@ -707,6 +707,51 @@ tr:hover td{background:#f8fafc}
 .series-option-icon{font-size:28px;margin-bottom:10px}
 .series-option-name{font-size:15px;font-weight:800;color:#1e293b;line-height:1.25;text-align:center}
 .series-option-count{font-size:11px;color:#64748b;margin-top:3px;text-align:center}
+.series-status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  width:max-content;
+  max-width:100%;
+  margin:9px auto 0;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.01em;
+  line-height:1;
+}
+.series-status.complete{
+  background:#ecfdf5;
+  color:#047857;
+  border:1px solid #a7f3d0;
+  box-shadow:0 1px 3px rgba(4,120,87,.08);
+}
+.series-status.incomplete{
+  background:#f8fafc;
+  color:#64748b;
+  border:1px solid #e2e8f0;
+}
+.series-status-icon{
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 15px;
+  font-size:9px;
+  font-weight:900;
+}
+.series-status.complete .series-status-icon{
+  background:#10b981;
+  color:white;
+}
+.series-status.incomplete .series-status-icon{
+  background:#cbd5e1;
+  color:white;
+}
 .series-browser-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
 .series-browser-header h3{margin:0;color:#1e293b}
 .series-book-count{font-size:13px;color:#64748b;margin-top:3px}
@@ -3713,7 +3758,7 @@ function renderSeriesBrowser(){
           <div class="series-option-image-wrap">${imageHtml}</div>
           <div class="series-option-name">${name}</div>
           <div class="series-option-count">${count} ${count===1 ? "book" : "books"}</div>
-          <div class="series-status ${seriesRecord?.Complete ? "complete" : "incomplete"}">${seriesRecord?.Complete ? "✓ Complete Set" : "Incomplete Set"}</div>
+          <div class="series-status ${seriesRecord?.Complete ? "complete" : "incomplete"}"><span class="series-status-icon">${seriesRecord?.Complete ? "✓" : "•"}</span><span>${seriesRecord?.Complete ? "Complete Set" : "Incomplete Set"}</span></div>
         </button>
         <div class="series-image-editor hidden" id="seriesImageEditor-${encodeURIComponent(name)}" onclick="event.stopPropagation();">
           <input class="series-image-url-input" id="seriesImageInput-${encodeURIComponent(name)}" type="url" placeholder="Paste image URL..." value="${savedImage.replace(/"/g,"&quot;")}">
