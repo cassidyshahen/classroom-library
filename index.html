@@ -903,36 +903,25 @@ nav{padding:8px}
       </p>
 
       <div class="form-group">
+  <label for="newBookCoverInput">Book Cover Image URL (Optional)</label>
+  <input
+    type="url"
+    id="newBookCoverInput"
+    placeholder="Paste a cover image URL"
+  >
+  <div class="copy-note">
+    Optional. Add a direct link to the book cover image.
+  </div>
+</div>
 
-        <label for="newBookAuthorInput">Author</label>
-
-        <input
-          type="text"
-          id="newBookAuthorInput"
-          placeholder="Author"
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="newBookCategoryInput">Category</label>
-
-        <select id="newBookCategoryInput">
-
-          <option value="">Select a category...</option>
-          <option value="Series">Series</option>
-          <option value="Standalone">Standalone</option>
-
-        </select>
-
-      </div>
-
-
-      <div class="form-group hidden" id="newBookSeriesGroup">
-
-        <label for="newBookSeriesInput">Series</label>
+<div class="form-group">
+  <label for="newBookCategoryInput">Category</label>
+  <select id="newBookCategoryInput">
+    <option value="">Select a category...</option>
+    <option value="Series">Series</option>
+    <option value="Standalone">Standalone</option>
+  </select>
+</div>
 
         <input
           type="text"
