@@ -965,6 +965,8 @@ tbody tr{transition:background .12s ease}
 #editModal .edit-modal-delete{margin-left:auto;padding:12px 16px;border-radius:9px}
 #studentHistory .return-button{padding:7px 12px;border-radius:8px}
 @media(max-width:600px){#editModal .edit-modal-delete{margin-left:0;width:100%;order:3}}
+
+#history .history-class-tabs{margin:0 0 16px}
 </style>
 </head>
 
@@ -1422,6 +1424,11 @@ tbody tr{transition:background .12s ease}
 
   <h2>Checkout History</h2>
 
+  <div class="student-tabs history-class-tabs">
+    <button class="student-tab history-class-tab active" data-history-class="7S">7S</button>
+    <button class="student-tab history-class-tab" data-history-class="7K">7K</button>
+  </div>
+
   <div class="search-box">
 
     <input
@@ -1833,6 +1840,7 @@ let checkouts=[];
 let seriesCovers=[];
 
 let selectedStudentClass="7S";
+let selectedHistoryClass="7S";
 let currentStudentHistoryStudentId=null;
 let editingCheckoutId=null;
 let selectedBookId="";
@@ -5672,7 +5680,15 @@ function renderHistory(){
   tbody.innerHTML="";
 
   let filteredCheckouts=
-    [...checkouts];
+    checkouts.filter(checkout=>{
+      const student=getStudent(checkout.student_id);
+      if(!student)return false;
+      return getClassName(student.class_id).toLowerCase()===selectedHistoryClass.toLowerCase();
+    });
+
+  document.querySelectorAll(".history-class-tab").forEach(tab=>{
+    tab.classList.toggle("active",tab.dataset.historyClass.toLowerCase()===selectedHistoryClass.toLowerCase());
+  });
 
   if(search){
 
@@ -6269,6 +6285,21 @@ document.getElementById(
 ).addEventListener(
   "input",
   renderHistory
+);
+
+
+document.querySelectorAll(
+  ".history-class-tab"
+).forEach(
+  tab=>{
+    tab.addEventListener(
+      "click",
+      ()=>{
+        selectedHistoryClass=tab.dataset.historyClass;
+        renderHistory();
+      }
+    );
+  }
 );
 
 
