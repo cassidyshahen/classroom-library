@@ -1082,6 +1082,7 @@ tr:hover td{background:#f8fafc}
       <div id="seriesSortControls" class="series-sort-controls">
         <label for="seriesSortSelect">Sort series:</label>
         <select id="seriesSortSelect">
+          <option value="status">Complete / Incomplete</option>
           <option value="az">A–Z</option>
           <option value="za">Z–A</option>
           <option value="count-desc"># of Books: Most to Least</option>
@@ -3608,9 +3609,15 @@ function renderSeriesBrowser(){
     booksGrid.classList.add("hidden");
     optionsGrid.classList.remove("hidden");
     const names=[...new Set(books.map(b=>String(b.Series||"").trim()).filter(Boolean))];
-    const sortValue=document.getElementById("seriesSortSelect")?.value||"az";
+    const sortValue=document.getElementById("seriesSortSelect")?.value||"status";
     const seriesCount=name=>books.filter(b=>String(b.Series||"").trim()===name).length;
     names.sort((a,b)=>{
+      if(sortValue==="status"){
+        const aComplete=!!seriesCovers.find(item=>String(item.Name||"").trim()===a)?.Complete;
+        const bComplete=!!seriesCovers.find(item=>String(item.Name||"").trim()===b)?.Complete;
+        if(aComplete!==bComplete)return aComplete ? -1 : 1;
+        return a.localeCompare(b);
+      }
       if(sortValue==="za")return b.localeCompare(a);
       if(sortValue==="count-desc")return seriesCount(b)-seriesCount(a)||a.localeCompare(b);
       if(sortValue==="count-asc")return seriesCount(a)-seriesCount(b)||a.localeCompare(b);
