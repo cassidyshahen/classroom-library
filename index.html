@@ -1011,6 +1011,7 @@ tr:hover td{background:#f8fafc}
     <div class="online-browse-tabs">
       <button id="browseBooksTab" class="online-browse-tab active" type="button">All Books</button>
       <button id="browseSeriesTab" class="online-browse-tab" type="button">Browse by Series</button>
+      <button id="browseGenreTab" class="online-browse-tab" type="button">Browse by Genre</button>
     </div>
 
     <div id="onlineBooksBrowse">
@@ -1027,6 +1028,18 @@ tr:hover td{background:#f8fafc}
       </div>
       <div id="seriesOptionsGrid" class="series-options-grid"></div>
       <div id="seriesBooksGrid" class="online-library-grid hidden"></div>
+    </div>
+
+    <div id="onlineGenreBrowse" class="hidden">
+      <div id="genreBrowserHeader" class="series-browser-header hidden">
+        <button id="backToGenresButton" class="series-back-button" type="button">← All Genres</button>
+        <div>
+          <h3 id="selectedGenreTitle"></h3>
+          <div id="selectedGenreCount" class="series-book-count"></div>
+        </div>
+      </div>
+      <div id="genreOptionsGrid" class="series-options-grid"></div>
+      <div id="genreBooksGrid" class="online-library-grid hidden"></div>
     </div>
   </div>
 
@@ -3400,6 +3413,7 @@ async function returnBook(checkoutId){
 
 let onlineBrowseMode="books";
 let selectedBrowseSeries="";
+let selectedBrowseGenre="";
 
 function getOnlineBookCardHtml(book){
   const available=getAvailableCopies(book);
@@ -3510,15 +3524,77 @@ function openBrowseSeries(name){
   renderSeriesBrowser();
 }
 
+function renderGenreBrowser(){
+  const optionsGrid=document.getElementById("genreOptionsGrid");
+  const booksGrid=document.getElementById("genreBooksGrid");
+  const header=document.getElementById("genreBrowserHeader");
+  if(!optionsGrid||!booksGrid||!header)return;
+
+  if(!selectedBrowseGenre){
+    header.classList.add("hidden");
+    booksGrid.classList.add("hidden");
+    optionsGrid.classList.remove("hidden");
+
+    const genres=[...new Set(
+      books.map(book=>String(book.Category||"").trim()).filter(Boolean)
+    )].sort();
+
+    optionsGrid.innerHTML=genres.map(genre=>{
+      const count=books.filter(book=>String(book.Category||"").trim()===genre).length;
+      const safeGenre=genre.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+      return `<button class="series-option-card" type="button" onclick="openBrowseGenre('${safeGenre}')">
+        <div class="series-option-placeholder">📖</div>
+        <div class="series-option-name">${genre}</div>
+        <div class="series-option-count">${count} ${count===1 ? "book" : "books"}</div>
+      </button>`;
+    }).join("");
+    return;
+  }
+
+  const genreBooks=books
+    .filter(book=>String(book.Category||"").trim()===selectedBrowseGenre)
+    .sort((a,b)=>String(a.Title||"").localeCompare(String(b.Title||"")));
+
+  optionsGrid.classList.add("hidden");
+  booksGrid.classList.remove("hidden");
+  header.classList.remove("hidden");
+  document.getElementById("selectedGenreTitle").textContent=selectedBrowseGenre;
+  document.getElementById("selectedGenreCount").textContent=
+    `${genreBooks.length} ${genreBooks.length===1 ? "book" : "books"} in this genre`;
+
+  booksGrid.innerHTML="";
+  genreBooks.forEach(book=>{
+    const card=document.createElement("div");
+    card.className="online-book-card";
+    card.innerHTML=getOnlineBookCardHtml(book);
+    booksGrid.appendChild(card);
+  });
+}
+
+function openBrowseGenre(name){
+  selectedBrowseGenre=name;
+  renderGenreBrowser();
+}
+
 function setOnlineBrowseMode(mode){
   onlineBrowseMode=mode;
+
+  const booksMode=mode==="books";
   const seriesMode=mode==="series";
-  document.getElementById("onlineBooksBrowse").classList.toggle("hidden",seriesMode);
+  const genreMode=mode==="genre";
+
+  document.getElementById("onlineBooksBrowse").classList.toggle("hidden",!booksMode);
   document.getElementById("onlineSeriesBrowse").classList.toggle("hidden",!seriesMode);
-  document.getElementById("browseBooksTab").classList.toggle("active",!seriesMode);
+  document.getElementById("onlineGenreBrowse").classList.toggle("hidden",!genreMode);
+
+  document.getElementById("browseBooksTab").classList.toggle("active",booksMode);
   document.getElementById("browseSeriesTab").classList.toggle("active",seriesMode);
-  document.getElementById("onlineLibraryFilters").classList.toggle("hidden",seriesMode);
+  document.getElementById("browseGenreTab").classList.toggle("active",genreMode);
+
+  document.getElementById("onlineLibraryFilters").classList.toggle("hidden",!booksMode);
+
   if(seriesMode)renderSeriesBrowser();
+  else if(genreMode)renderGenreBrowser();
   else renderLibrary();
 }
 
@@ -5640,7 +5716,7 @@ function setLibraryView(view){
 
   tableView.classList.toggle("hidden",online);
   onlineView.classList.toggle("hidden",!online);
-  document.getElementById("onlineLibraryFilters").classList.toggle("hidden",!online||onlineBrowseMode==="series");
+  document.getElementById("onlineLibraryFilters").classList.toggle("hidden",!online||onlineBrowseMode!=="books");
   tableButton.classList.toggle("active",!online);
   onlineButton.classList.toggle("active",online);
 
@@ -5652,9 +5728,14 @@ document.getElementById("tableViewButton").addEventListener("click",()=>setLibra
 document.getElementById("onlineLibraryViewButton").addEventListener("click",()=>setLibraryView("online"));
 document.getElementById("browseBooksTab").addEventListener("click",()=>setOnlineBrowseMode("books"));
 document.getElementById("browseSeriesTab").addEventListener("click",()=>setOnlineBrowseMode("series"));
+document.getElementById("browseGenreTab").addEventListener("click",()=>setOnlineBrowseMode("genre"));
 document.getElementById("backToSeriesButton").addEventListener("click",()=>{
   selectedBrowseSeries="";
   renderSeriesBrowser();
+});
+document.getElementById("backToGenresButton").addEventListener("click",()=>{
+  selectedBrowseGenre="";
+  renderGenreBrowser();
 });
 
 if(localStorage.getItem("classroomLibraryView")==="online"){
