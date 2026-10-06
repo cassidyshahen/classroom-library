@@ -267,6 +267,18 @@
       background: #f8fafc;
     }
 
+    /* CLICKABLE STUDENT ROWS */
+
+    .clickable-row {
+      cursor: pointer;
+    }
+
+    .clickable-row:hover td {
+      background: #e2e8f0;
+    }
+
+    /* RETURN BUTTON */
+
     .return-button {
       background: #16a34a;
       color: white;
@@ -452,6 +464,7 @@
             Use <strong>Check Out</strong> to lend a book to a student.
             Use <strong>Checked Out</strong> to see currently borrowed books.
             Use <strong>History</strong> to see every checkout and return.
+            Click a student on the <strong>Students</strong> page to see that student's personal history.
           </p>
         </div>
       </section>
@@ -565,6 +578,40 @@
             </table>
           </div>
         </div>
+      </section>
+
+
+      <!-- INDIVIDUAL STUDENT HISTORY -->
+
+      <section id="studentHistory" class="page">
+
+        <button
+          id="backToStudentsButton"
+          class="primary-button"
+          style="margin-bottom: 20px;"
+        >
+          ← Back to Students
+        </button>
+
+        <h2 id="studentHistoryTitle">Student History</h2>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Book</th>
+                  <th>Checked Out</th>
+                  <th>Returned</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody id="studentHistoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
       </section>
 
 
@@ -1544,6 +1591,20 @@
               "tr"
             );
 
+          /* Make the entire student row clickable */
+          row.classList.add(
+            "clickable-row"
+          );
+
+          row.addEventListener(
+            "click",
+            () => {
+              showStudentHistory(
+                student.id
+              );
+            }
+          );
+
 
           row.innerHTML = `
 
@@ -1560,6 +1621,147 @@
             row
           );
         }
+      );
+    }
+
+
+    /* ============================================================
+       INDIVIDUAL STUDENT HISTORY
+    ============================================================ */
+
+    function showStudentHistory(
+      studentId
+    ) {
+
+      const student =
+        getStudent(
+          studentId
+        );
+
+
+      if (!student) {
+        return;
+      }
+
+
+      const className =
+        getClassName(
+          student.class_id
+        );
+
+
+      document.getElementById(
+        "studentHistoryTitle"
+      ).textContent =
+        `Student #${student.student_number} — ${className}`;
+
+
+      const tbody =
+        document.getElementById(
+          "studentHistoryTableBody"
+        );
+
+
+      tbody.innerHTML = "";
+
+
+      const studentCheckouts =
+        checkouts.filter(
+          checkout =>
+            String(
+              checkout.student_id
+            ) ===
+            String(studentId)
+        );
+
+
+      if (
+        studentCheckouts.length ===
+        0
+      ) {
+
+        tbody.innerHTML = `
+
+          <tr>
+            <td colspan="4">
+              This student has not checked out any books yet.
+            </td>
+          </tr>
+
+        `;
+
+      } else {
+
+        studentCheckouts.forEach(
+          checkout => {
+
+            const book =
+              books.find(
+                b =>
+                  String(b.id) ===
+                  String(checkout.book_id)
+              );
+
+
+            const returned =
+              Boolean(
+                checkout["Return Date"]
+              );
+
+
+            const row =
+              document.createElement(
+                "tr"
+              );
+
+
+            row.innerHTML = `
+
+              <td>
+                ${
+                  book
+                    ? book.Title
+                    : "Unknown Book"
+                }
+              </td>
+
+              <td>
+                ${formatDate(
+                  checkout["Check Out Date"]
+                )}
+              </td>
+
+              <td>
+                ${
+                  returned
+                    ? formatDate(
+                        checkout["Return Date"]
+                      )
+                    : "—"
+                }
+              </td>
+
+              <td>
+                ${
+                  returned
+                    ? `<span class="history-status-returned">Returned</span>`
+                    : `<span class="history-status-out">Checked Out</span>`
+                }
+              </td>
+
+            `;
+
+
+            tbody.appendChild(
+              row
+            );
+          }
+        );
+      }
+
+
+      showPage(
+        "studentHistory"
       );
     }
 
@@ -1887,7 +2089,9 @@
        NAVIGATION
     ============================================================ */
 
-    function showPage(pageId) {
+    function showPage(
+      pageId
+    ) {
 
       document
         .querySelectorAll(".page")
@@ -2244,6 +2448,20 @@
       .addEventListener(
         "input",
         renderHistory
+      );
+
+
+    document
+      .getElementById(
+        "backToStudentsButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          showPage(
+            "students"
+          );
+        }
       );
 
 
