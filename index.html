@@ -532,6 +532,54 @@ tr:hover td{background:#f8fafc}
   .library-management-table .book-action-buttons button{width:100%}
 }
 
+.online-library-filters{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(150px,1fr)) auto;
+  gap:12px;
+  align-items:end;
+  background:white;
+  padding:16px;
+  margin-bottom:18px;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  box-shadow:0 2px 8px rgba(15,23,42,.05);
+}
+
+.online-filter-group label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  color:#475569;
+  margin-bottom:6px;
+}
+
+.online-filter-group select{
+  width:100%;
+  padding:10px 11px;
+  border:1px solid #cbd5e1;
+  border-radius:7px;
+  background:white;
+  color:#1e293b;
+}
+
+.clear-filter-button{
+  border:1px solid #cbd5e1;
+  background:#f8fafc;
+  color:#334155;
+  padding:10px 13px;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:700;
+}
+.clear-filter-button:hover{background:#f1f5f9}
+
+@media(max-width:800px){
+  .online-library-filters{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  .online-library-filters{grid-template-columns:1fr}
+}
+
 .online-library-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
@@ -801,6 +849,35 @@ tr:hover td{background:#f8fafc}
       placeholder="Search by title, author, series, or category..."
     >
 
+  </div>
+
+  <div id="onlineLibraryFilters" class="online-library-filters hidden">
+    <div class="online-filter-group">
+      <label for="onlineCategoryFilter">Category</label>
+      <select id="onlineCategoryFilter">
+        <option value="">All Categories</option>
+      </select>
+    </div>
+
+    <div class="online-filter-group">
+      <label for="onlineSeriesFilter">Series</label>
+      <select id="onlineSeriesFilter">
+        <option value="">All Series</option>
+      </select>
+    </div>
+
+    <div class="online-filter-group">
+      <label for="onlineAvailabilityFilter">Availability</label>
+      <select id="onlineAvailabilityFilter">
+        <option value="">All Books</option>
+        <option value="available">Available Now</option>
+        <option value="out">Checked Out</option>
+      </select>
+    </div>
+
+    <button id="clearOnlineFiltersButton" class="clear-filter-button" type="button">
+      Clear Filters
+    </button>
   </div>
 
   <div id="libraryTableView" class="card">
@@ -3205,7 +3282,39 @@ async function returnBook(checkoutId){
    LIBRARY
 ============================================================ */
 
+function populateOnlineLibraryFilters(){
+  const categorySelect=document.getElementById("onlineCategoryFilter");
+  const seriesSelect=document.getElementById("onlineSeriesFilter");
+
+  if(!categorySelect||!seriesSelect)return;
+
+  const currentCategory=categorySelect.value;
+  const currentSeries=seriesSelect.value;
+
+  const categories=[...new Set(
+    books.map(book=>String(book.Category||"").trim()).filter(Boolean)
+  )].sort();
+
+  const series=[...new Set(
+    books.map(book=>String(book.Series||"").trim()).filter(Boolean)
+  )].sort();
+
+  categorySelect.innerHTML=
+    '<option value="">All Categories</option>'+
+    categories.map(value=>`<option value="${value}">${value}</option>`).join("");
+
+  seriesSelect.innerHTML=
+    '<option value="">All Series</option>'+
+    series.map(value=>`<option value="${value}">${value}</option>`).join("");
+
+  if(categories.includes(currentCategory))categorySelect.value=currentCategory;
+  if(series.includes(currentSeries))seriesSelect.value=currentSeries;
+}
+
+
 function renderLibrary(){
+
+  populateOnlineLibraryFilters();
 
   const tbody=
     document.getElementById(
@@ -3224,28 +3333,48 @@ function renderLibrary(){
       .toLowerCase()
       .trim();
 
+  const categoryFilter=
+    document.getElementById("onlineCategoryFilter")?.value||"";
+
+  const seriesFilter=
+    document.getElementById("onlineSeriesFilter")?.value||"";
+
+  const availabilityFilter=
+    document.getElementById("onlineAvailabilityFilter")?.value||"";
+
+  const onlineMode=
+    !document.getElementById("onlineLibraryView")?.classList.contains("hidden");
+
   const filteredBooks=
     books.filter(
       book=>{
 
-        if(!search)
-          return true;
+        const matchesSearch=
+          !search||
+          String(book.Title||"").toLowerCase().includes(search)||
+          String(book.Author||"").toLowerCase().includes(search)||
+          String(book.Category||"").toLowerCase().includes(search)||
+          String(book.Series||"").toLowerCase().includes(search);
 
-        return String(book.Title||"")
-          .toLowerCase()
-          .includes(search)||
+        if(!matchesSearch)return false;
 
-          String(book.Author||"")
-            .toLowerCase()
-            .includes(search)||
+        if(onlineMode){
+          if(categoryFilter&&String(book.Category||"")!==categoryFilter)
+            return false;
 
-          String(book.Category||"")
-            .toLowerCase()
-            .includes(search)||
+          if(seriesFilter&&String(book.Series||"")!==seriesFilter)
+            return false;
 
-          String(book.Series||"")
-            .toLowerCase()
-            .includes(search);
+          const available=getAvailableCopies(book);
+
+          if(availabilityFilter==="available"&&available<=0)
+            return false;
+
+          if(availabilityFilter==="out"&&available>0)
+            return false;
+        }
+
+        return true;
       }
     );
 
@@ -5248,6 +5377,18 @@ document.getElementById(
   renderLibrary
 );
 
+["onlineCategoryFilter","onlineSeriesFilter","onlineAvailabilityFilter"].forEach(id=>{
+  document.getElementById(id).addEventListener("change",renderLibrary);
+});
+
+document.getElementById("clearOnlineFiltersButton").addEventListener("click",()=>{
+  document.getElementById("onlineCategoryFilter").value="";
+  document.getElementById("onlineSeriesFilter").value="";
+  document.getElementById("onlineAvailabilityFilter").value="";
+  document.getElementById("librarySearch").value="";
+  renderLibrary();
+});
+
 function setLibraryView(view){
   const tableView=document.getElementById("libraryTableView");
   const onlineView=document.getElementById("onlineLibraryView");
@@ -5258,6 +5399,7 @@ function setLibraryView(view){
 
   tableView.classList.toggle("hidden",online);
   onlineView.classList.toggle("hidden",!online);
+  document.getElementById("onlineLibraryFilters").classList.toggle("hidden",!online);
   tableButton.classList.toggle("active",!online);
   onlineButton.classList.toggle("active",online);
 
