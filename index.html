@@ -3830,7 +3830,7 @@ function renderLibrary(){
         if(!matchesSearch)return false;
 
         if(onlineMode){
-          if(categoryFilter&&String(book.Category||"")!==categoryFilter)
+          if(categoryFilter&&String(book.Genre||"")!==categoryFilter)
             return false;
 
           if(seriesFilter&&String(book.Series||"")!==seriesFilter)
