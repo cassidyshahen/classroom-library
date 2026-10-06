@@ -3708,7 +3708,7 @@ async function checkoutBook(){
 }
 
 
-async function returnBook(checkoutId){
+async function returnBook(checkoutId, button=null){
 
   if(
     !confirm(
@@ -3716,6 +3716,11 @@ async function returnBook(checkoutId){
     )
   )
     return;
+
+  if(button){
+    button.disabled=true;
+    button.style.display="none";
+  }
 
   try{
 
@@ -3745,6 +3750,11 @@ async function returnBook(checkoutId){
       "Return error:",
       error
     );
+
+    if(button){
+      button.disabled=false;
+      button.style.display="";
+    }
 
     alert(
       "Could not return the book. Please try again."
@@ -5187,7 +5197,7 @@ function showStudentHistory(studentId){
               ${!returned ? `
               <button
                 class="return-button"
-                onclick="returnBook(${checkout.id})"
+                onclick="returnBook(${checkout.id}, this)"
               >
                 Return Book
               </button>` : ""}
