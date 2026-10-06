@@ -634,9 +634,27 @@ tr:hover td{background:#f8fafc}
   cursor:pointer;
   color:inherit;
 }
-.series-image-button{
-  width:100%;
+.series-image-editor{
+  display:flex;
+  gap:7px;
   margin-top:12px;
+}
+.series-image-url-input{
+  min-width:0;
+  flex:1;
+  padding:8px 9px;
+  border:1px solid #cbd5e1;
+  border-radius:7px;
+  font-size:12px;
+  background:white;
+}
+.series-image-url-input:focus{
+  outline:2px solid #bfdbfe;
+  border-color:#3b82f6;
+}
+.series-image-button{
+  width:auto;
+  margin-top:0;
   padding:8px 10px;
   border:1px solid #cbd5e1;
   border-radius:7px;
@@ -3475,9 +3493,18 @@ function renderSeriesBrowser(){
           <div class="series-option-name">${name}</div>
           <div class="series-option-count">${count} ${count===1 ? "book" : "books"}</div>
         </button>
-        <button class="series-image-button" type="button" onclick="event.stopPropagation();setSeriesImage('${safeName}')">
-          ${savedImage ? "Change Image" : "+ Add Image"}
-        </button>
+        <div class="series-image-editor" onclick="event.stopPropagation();">
+          <input
+            class="series-image-url-input"
+            id="seriesImageInput-${encodeURIComponent(name)}"
+            type="url"
+            placeholder="Paste image URL..."
+            value="${savedImage.replace(/"/g,"&quot;")}"
+          >
+          <button class="series-image-button" type="button" onclick="saveSeriesImage('${safeName}')">
+            Save
+          </button>
+        </div>
       </div>`;
     }).join("");
     return;
@@ -3501,14 +3528,12 @@ function renderSeriesBrowser(){
   });
 }
 
-function setSeriesImage(name){
+function saveSeriesImage(name){
+  const input=document.getElementById("seriesImageInput-"+encodeURIComponent(name));
+  if(!input)return;
+
+  const clean=String(input.value||"").trim();
   const key="classroomSeriesImage:"+name;
-  const current=localStorage.getItem(key)||"";
-  const url=prompt("Paste an image URL for "+name+":",current);
-
-  if(url===null)return;
-
-  const clean=String(url).trim();
 
   if(clean){
     localStorage.setItem(key,clean);
