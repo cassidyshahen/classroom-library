@@ -51,6 +51,9 @@ main{max-width:1200px;margin:0 auto;padding:25px}
 .form-group{margin-bottom:18px}
 .form-group label{display:block;font-weight:bold;margin-bottom:7px}
 .form-group select,.form-group input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;background:white}
+.genre-checkbox-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;padding:10px;border:1px solid #cbd5e1;border-radius:7px;background:#f8fafc}
+.genre-checkbox-grid label{display:flex;align-items:center;gap:7px;margin:0;font-size:13px;font-weight:600}
+.genre-checkbox-grid input{width:auto;padding:0}
 
 .primary-button{background:#2563eb;color:white;border:none;padding:12px 20px;border-radius:7px;cursor:pointer;font-weight:bold}
 .primary-button:hover{background:#1d4ed8}
@@ -1532,26 +1535,25 @@ tr:hover td{background:#f8fafc}
 
       <div class="form-group">
         <label for="newBookGenreInput">Genre</label>
-        <select id="newBookGenreInput">
-          <option value="">Select a genre...</option>
-          <option>Action & Adventure</option>
-          <option>Fantasy</option>
-          <option>Science Fiction</option>
-          <option>Mystery</option>
-          <option>Thriller / Suspense</option>
-          <option>Horror</option>
-          <option>Historical Fiction</option>
-          <option>Realistic Fiction</option>
-          <option>Sports</option>
-          <option>Graphic Novel</option>
-          <option>Humor</option>
-          <option>Romance</option>
-          <option>Classics</option>
-          <option>Nonfiction</option>
-          <option>Memoir / Biography</option>
-          <option>Poetry</option>
-          <option>Other</option>
-        </select>
+        <div id="newBookGenreInput" class="genre-checkbox-grid">
+          <label><input type="checkbox" value="Action & Adventure"> Action & Adventure</label>
+          <label><input type="checkbox" value="Fantasy"> Fantasy</label>
+          <label><input type="checkbox" value="Science Fiction"> Science Fiction</label>
+          <label><input type="checkbox" value="Mystery"> Mystery</label>
+          <label><input type="checkbox" value="Thriller / Suspense"> Thriller / Suspense</label>
+          <label><input type="checkbox" value="Horror"> Horror</label>
+          <label><input type="checkbox" value="Historical Fiction"> Historical Fiction</label>
+          <label><input type="checkbox" value="Realistic Fiction"> Realistic Fiction</label>
+          <label><input type="checkbox" value="Sports"> Sports</label>
+          <label><input type="checkbox" value="Graphic Novel"> Graphic Novel</label>
+          <label><input type="checkbox" value="Humor"> Humor</label>
+          <label><input type="checkbox" value="Romance"> Romance</label>
+          <label><input type="checkbox" value="Classics"> Classics</label>
+          <label><input type="checkbox" value="Nonfiction"> Nonfiction</label>
+          <label><input type="checkbox" value="Memoir / Biography"> Memoir / Biography</label>
+          <label><input type="checkbox" value="Poetry"> Poetry</label>
+          <label><input type="checkbox" value="Other"> Other</label>
+        </div>
       </div>
 
 
@@ -2641,10 +2643,8 @@ function collectNewBookData(){
       "newBookCategoryInput"
     ).value;
 
-  const genre=
-    document.getElementById(
-      "newBookGenreInput"
-    ).value;
+  const genres=[...document.querySelectorAll("#newBookGenreInput input:checked")].map(input=>input.value);
+  const genre=genres[0]||"";
 
   const series=
     document.getElementById(
@@ -2744,6 +2744,7 @@ function collectNewBookData(){
     author,
     category,
     genre,
+    genres,
     series,
     seriesNumber,
     copies
@@ -2884,6 +2885,7 @@ async function insertNewBook(data){
           "Author":data.author,
           "Category":data.category,
           "Genre":data.genre||null,
+          "Genres":data.genres||[],
 
           "Series":
             data.category==="Series"
@@ -3556,6 +3558,8 @@ let onlineBrowseMode="books";
 let selectedBrowseSeries="";
 let selectedBrowseGenre="";
 
+function getBookGenres(book){return Array.isArray(book.Genres)&&book.Genres.length?book.Genres.filter(Boolean):(book.Genre?[book.Genre]:[]);}
+
 function getOnlineBookCardHtml(book){
   const available=getAvailableCopies(book);
   const coverUrl=book["Cover URL"]||book.CoverURL||"";
@@ -3581,7 +3585,7 @@ function getOnlineBookCardHtml(book){
       <div class="online-book-title">${book.Title||""}</div>
       <div class="online-book-author">${book.Author||""}</div>
       <div class="online-book-series">${seriesText}</div>
-      ${book.Genre ? `<div class="online-book-genre">${book.Genre}</div>` : ""}
+      ${getBookGenres(book).map(g=>`<div class="online-book-genre">${g}</div>`).join("")}
       <div class="online-book-bottom">
         <div class="online-book-availability ${available>0 ? "available-good" : "available-none"}">
           ${available>0 ? `${available} of ${book.Copies||0} available` : "Checked out"}
@@ -3595,7 +3599,7 @@ function getOnlineBookCardHtml(book){
     </div>`;
 }
 
-function openBookDetails(bookId){const book=books.find(b=>String(b.id)===String(bookId));if(!book)return;const history=checkouts.filter(x=>String(x.book_id)===String(bookId)).sort((a,b)=>String(b["Check Out Date"]||"").localeCompare(String(a["Check Out Date"]||"")));const active=history.filter(x=>!x["Return Date"]);const available=getAvailableCopies(book);const cover=String(book["Cover URL"]||book.CoverURL||"").trim();const tags=[book.Genre,book.Category,book.Series?(book.Series+(book["Series #"]?" • Book "+book["Series #"]:"")):""].filter(Boolean);const currentText=active.length?active.map(x=>{const s=students.find(v=>String(v.id)===String(x.student_id));return s?getClassName(s.class_id)+" • Student #"+s.student_number:"Student";}).join(", "):"None";document.getElementById("bookDetailsContent").innerHTML='<div class="book-details-layout"><div>'+(cover?'<img class="book-details-cover" src="'+cover+'" alt="">':'<div class="book-details-cover-placeholder">📖</div>')+'</div><div><h2 class="book-details-title">'+(book.Title||"")+'</h2><div class="book-details-author">'+(book.Author||"")+'</div><div class="book-details-tags">'+tags.map(t=>'<span class="book-detail-tag">'+t+'</span>').join("")+'</div><div class="book-details-stats"><div class="book-detail-stat"><strong>'+history.length+'</strong><span>Total Checkouts</span></div><div class="book-detail-stat"><strong>'+available+'</strong><span>Available</span></div><div class="book-detail-stat"><strong>'+(book.Copies||0)+'</strong><span>Total Copies</span></div></div><div style="font-size:13px;margin-bottom:14px;"><strong>Currently checked out to:</strong> '+currentText+'</div><h3 style="margin-bottom:8px;">Checkout History</h3><div class="book-history-list">'+(history.length?history.map(x=>{const s=students.find(v=>String(v.id)===String(x.student_id));const who=s?getClassName(s.class_id)+" • Student #"+s.student_number:"Student";return '<div class="book-history-row"><span>'+who+'</span><span>'+formatDate(x["Check Out Date"])+' → '+(x["Return Date"]?formatDate(x["Return Date"]):"Checked Out")+'</span></div>';}).join(""):'<div class="dashboard-empty">No checkout history yet.</div>')+'</div></div></div>';document.getElementById("bookDetailsModal").classList.remove("hidden");}
+function openBookDetails(bookId){const book=books.find(b=>String(b.id)===String(bookId));if(!book)return;const history=checkouts.filter(x=>String(x.book_id)===String(bookId)).sort((a,b)=>String(b["Check Out Date"]||"").localeCompare(String(a["Check Out Date"]||"")));const active=history.filter(x=>!x["Return Date"]);const available=getAvailableCopies(book);const cover=String(book["Cover URL"]||book.CoverURL||"").trim();const tags=[...getBookGenres(book),book.Category,book.Series?(book.Series+(book["Series #"]?" • Book "+book["Series #"]:"")):""].filter(Boolean);const currentText=active.length?active.map(x=>{const s=students.find(v=>String(v.id)===String(x.student_id));return s?getClassName(s.class_id)+" • Student #"+s.student_number:"Student";}).join(", "):"None";document.getElementById("bookDetailsContent").innerHTML='<div class="book-details-layout"><div>'+(cover?'<img class="book-details-cover" src="'+cover+'" alt="">':'<div class="book-details-cover-placeholder">📖</div>')+'</div><div><h2 class="book-details-title">'+(book.Title||"")+'</h2><div class="book-details-author">'+(book.Author||"")+'</div><div class="book-details-tags">'+tags.map(t=>'<span class="book-detail-tag">'+t+'</span>').join("")+'</div><div class="book-details-stats"><div class="book-detail-stat"><strong>'+history.length+'</strong><span>Total Checkouts</span></div><div class="book-detail-stat"><strong>'+available+'</strong><span>Available</span></div><div class="book-detail-stat"><strong>'+(book.Copies||0)+'</strong><span>Total Copies</span></div></div><div style="font-size:13px;margin-bottom:14px;"><strong>Currently checked out to:</strong> '+currentText+'</div><h3 style="margin-bottom:8px;">Checkout History</h3><div class="book-history-list">'+(history.length?history.map(x=>{const s=students.find(v=>String(v.id)===String(x.student_id));const who=s?getClassName(s.class_id)+" • Student #"+s.student_number:"Student";return '<div class="book-history-row"><span>'+who+'</span><span>'+formatDate(x["Check Out Date"])+' → '+(x["Return Date"]?formatDate(x["Return Date"]):"Checked Out")+'</span></div>';}).join(""):'<div class="dashboard-empty">No checkout history yet.</div>')+'</div></div></div>';document.getElementById("bookDetailsModal").classList.remove("hidden");}
 function closeBookDetails(){document.getElementById("bookDetailsModal").classList.add("hidden");}
 
 function renderSeriesBrowser(){
@@ -3746,11 +3750,11 @@ function renderGenreBrowser(){
     optionsGrid.classList.remove("hidden");
 
     const genres=[...new Set(
-      books.map(book=>String(book.Genre||"").trim()).filter(Boolean)
+      books.flatMap(book=>getBookGenres(book)).map(g=>String(g).trim()).filter(Boolean)
     )].sort();
 
     optionsGrid.innerHTML=genres.map(genre=>{
-      const count=books.filter(book=>String(book.Genre||"").trim()===genre).length;
+      const count=books.filter(book=>getBookGenres(book).includes(genre)).length;
       const safeGenre=genre.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
       const icons={"Action & Adventure":"🧭","Fantasy":"🐉","Science Fiction":"🚀","Mystery":"🔎","Thriller / Suspense":"⚡","Horror":"👻","Historical Fiction":"🏛️","Realistic Fiction":"🏡","Sports":"🏆","Graphic Novel":"💥","Humor":"😄","Romance":"💗","Classics":"📜","Nonfiction":"🌎","Memoir / Biography":"👤","Poetry":"✒️","Other":"📚"};
       return `<button class="genre-option-card" type="button" onclick="openBrowseGenre('${safeGenre}')"><div class="genre-option-icon">${icons[genre]||"📚"}</div><div class="genre-option-name">${genre}</div><div class="genre-option-count">${count} ${count===1 ? "book" : "books"}</div></button>`;
@@ -3759,7 +3763,7 @@ function renderGenreBrowser(){
   }
 
   const genreBooks=books
-    .filter(book=>String(book.Genre||"").trim()===selectedBrowseGenre)
+    .filter(book=>getBookGenres(book).includes(selectedBrowseGenre))
     .sort((a,b)=>String(a.Title||"").localeCompare(String(b.Title||"")));
 
   optionsGrid.classList.add("hidden");
@@ -3816,7 +3820,7 @@ function populateOnlineLibraryFilters(){
   const currentSeries=seriesSelect.value;
 
   const categories=[...new Set(
-    books.map(book=>String(book.Genre||"").trim()).filter(Boolean)
+    books.flatMap(book=>getBookGenres(book)).map(g=>String(g).trim()).filter(Boolean)
   )].sort();
 
   const series=[...new Set(
@@ -3878,13 +3882,13 @@ function renderLibrary(){
           String(book.Title||"").toLowerCase().includes(search)||
           String(book.Author||"").toLowerCase().includes(search)||
           String(book.Category||"").toLowerCase().includes(search)||
-          String(book.Genre||"").toLowerCase().includes(search)||
+          getBookGenres(book).join(" ").toLowerCase().includes(search)||
           String(book.Series||"").toLowerCase().includes(search);
 
         if(!matchesSearch)return false;
 
         if(onlineMode){
-          if(categoryFilter&&String(book.Genre||"")!==categoryFilter)
+          if(categoryFilter&&!getBookGenres(book).includes(categoryFilter))
             return false;
 
           if(seriesFilter&&String(book.Series||"")!==seriesFilter)
@@ -3967,7 +3971,7 @@ function renderLibrary(){
           <span class="library-category-badge">${book.Category||"—"}</span>
         </td>
 
-        <td><span class="library-category-badge">${book.Genre||"—"}</span></td>
+        <td>${getBookGenres(book).length?getBookGenres(book).map(g=>`<span class="library-category-badge">${g}</span>`).join(" "):"—"}</td>
 
         <td class="library-series-cell">${book.Series||"—"}</td>
 
@@ -4192,6 +4196,8 @@ function resetBookModal(){
     "newBookAuthorInput"
   ).value="";
 
+  document.querySelectorAll("#newBookGenreInput input").forEach(input=>input.checked=false);
+
   document.getElementById(
     "newBookCategoryInput"
   ).value="";
@@ -4296,10 +4302,10 @@ function openEditBook(bookId){
   ).value=
     book.Category||"";
 
-  document.getElementById(
-    "newBookGenreInput"
-  ).value=
-    book.Genre||"";
+  document.querySelectorAll("#newBookGenreInput input").forEach(input=>{
+    const genres=Array.isArray(book.Genres)&&book.Genres.length?book.Genres:(book.Genre?[book.Genre]:[]);
+    input.checked=genres.includes(input.value);
+  });
 
   document.getElementById(
     "newBookSeriesInput"
@@ -4385,10 +4391,8 @@ async function saveEditedBook(){
       "newBookCategoryInput"
     ).value;
 
-  const genre=
-    document.getElementById(
-      "newBookGenreInput"
-    ).value;
+  const genres=[...document.querySelectorAll("#newBookGenreInput input:checked")].map(input=>input.value);
+  const genre=genres[0]||"";
 
   const series=
     document.getElementById(
@@ -4581,6 +4585,7 @@ async function saveEditedBook(){
       "Author":author,
       "Category":category,
       "Genre":genre||null,
+      "Genres":genres,
 
       "Series":
         category==="Series"
