@@ -41,6 +41,10 @@ main{max-width:1200px;margin:0 auto;padding:25px}
 .stat-card .number{font-size:32px;font-weight:bold;margin-bottom:5px}
 .stat-card .label{color:#64748b}
 
+.dashboard-hero{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px;padding:24px 26px;border-radius:16px;background:linear-gradient(135deg,#1e293b,#334155);color:white;box-shadow:0 8px 24px rgba(15,23,42,.14)}
+.dashboard-hero h2{margin:0 0 6px;font-size:28px}.dashboard-hero p{margin:0;color:#cbd5e1}.dashboard-quick-actions{display:flex;gap:10px;flex-wrap:wrap}.dashboard-action{border:0;border-radius:8px;padding:11px 15px;font-weight:700;cursor:pointer;background:white;color:#1e293b}.dashboard-action.primary{background:#2563eb;color:white}.dashboard-action:hover{transform:translateY(-1px)}
+.dashboard-stat{position:relative;overflow:hidden;border:1px solid #e2e8f0;padding:20px 22px}.dashboard-stat-icon{font-size:22px;margin-bottom:14px}.dashboard-stat .number{font-size:30px}.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.dashboard-panel{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}.dashboard-panel h3{margin:0 0 14px}.dashboard-list{display:flex;flex-direction:column;gap:10px}.dashboard-list-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:#f8fafc}.dashboard-list-cover{width:34px;height:48px;object-fit:cover;border-radius:4px;background:#e2e8f0;flex:0 0 auto}.dashboard-list-title{font-weight:700;font-size:14px}.dashboard-list-meta{font-size:12px;color:#64748b;margin-top:2px}.dashboard-rank{font-weight:800;color:#64748b;width:22px}.dashboard-empty{color:#64748b;font-size:14px;padding:10px 0}
+
 .card{background:white;padding:22px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
 
 .form-group{margin-bottom:18px}
@@ -805,6 +809,8 @@ tr:hover td{background:#f8fafc}
   .library-actions button{flex:1}
 }
 
+@media(max-width:800px){.dashboard-hero{align-items:flex-start;flex-direction:column}.dashboard-grid{grid-template-columns:1fr}}
+
 @media(max-width:600px){
   .series-options-grid{grid-template-columns:1fr}
   header{padding:13px 15px}
@@ -859,43 +865,34 @@ tr:hover td{background:#f8fafc}
 
 <section id="dashboard" class="page active">
 
-  <h2>Dashboard</h2>
-
-  <div class="stats">
-
-    <div class="stat-card">
-      <div class="number" id="totalBooks">0</div>
-      <div class="label">Total Books</div>
+  <div class="dashboard-hero">
+    <div>
+      <h2>Classroom Library</h2>
+      <p>Your library at a glance.</p>
     </div>
-
-    <div class="stat-card">
-      <div class="number" id="availableBooks">0</div>
-      <div class="label">Available</div>
+    <div class="dashboard-quick-actions">
+      <button class="dashboard-action primary" type="button" onclick="showPage('checkout')">+ Check Out a Book</button>
+      <button class="dashboard-action" type="button" onclick="showPage('checkedout')">↩ Return a Book</button>
+      <button class="dashboard-action" type="button" onclick="showPage('library');openAddBook()">+ Add a Book</button>
     </div>
-
-    <div class="stat-card">
-      <div class="number" id="checkedOutBooks">0</div>
-      <div class="label">Checked Out</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="number" id="totalStudents">0</div>
-      <div class="label">Students</div>
-    </div>
-
   </div>
 
-  <div class="card">
+  <div class="stats">
+    <div class="stat-card dashboard-stat"><div class="dashboard-stat-icon">📚</div><div class="number" id="totalBooks">0</div><div class="label">Total Books</div></div>
+    <div class="stat-card dashboard-stat"><div class="dashboard-stat-icon">✓</div><div class="number" id="availableBooks">0</div><div class="label">Available</div></div>
+    <div class="stat-card dashboard-stat"><div class="dashboard-stat-icon">↗</div><div class="number" id="checkedOutBooks">0</div><div class="label">Checked Out</div></div>
+    <div class="stat-card dashboard-stat"><div class="dashboard-stat-icon">👥</div><div class="number" id="totalStudents">0</div><div class="label">Students</div></div>
+  </div>
 
-    <h3>Welcome!</h3>
-
-    <p>
-      Use <strong>Check Out</strong> to lend a book to a student.
-      Use <strong>Checked Out</strong> to see currently borrowed books.
-      Use <strong>History</strong> to see every checkout and return.
-      Click a student on the <strong>Students</strong> page to see that student's personal history.
-    </p>
-
+  <div class="dashboard-grid">
+    <div class="dashboard-panel">
+      <h3>Recently Checked Out</h3>
+      <div id="dashboardRecentCheckouts" class="dashboard-list"></div>
+    </div>
+    <div class="dashboard-panel">
+      <h3>Most Popular Books</h3>
+      <div id="dashboardPopularBooks" class="dashboard-list"></div>
+    </div>
   </div>
 
 </section>
@@ -3058,6 +3055,27 @@ function updateDashboard(){
     "totalStudents"
   ).textContent=
     students.length;
+
+  const recent=document.getElementById("dashboardRecentCheckouts");
+  if(recent){
+    const items=[...checkouts].sort((a,b)=>String(b["Check Out Date"]||"").localeCompare(String(a["Check Out Date"]||""))).slice(0,5);
+    recent.innerHTML=items.length ? items.map(item=>{
+      const book=books.find(b=>String(b.id)===String(item.book_id));
+      const cover=String(book?.["Cover URL"]||"").trim();
+      return '<div class="dashboard-list-item">'+(cover?'<img class="dashboard-list-cover" src="'+cover+'" alt="">':'<div class="dashboard-list-cover"></div>')+'<div><div class="dashboard-list-title">'+(book?.Title||"Unknown Book")+'</div><div class="dashboard-list-meta">'+formatDate(item["Check Out Date"])+'</div></div></div>';
+    }).join("") : '<div class="dashboard-empty">No checkouts yet.</div>';
+  }
+
+  const popular=document.getElementById("dashboardPopularBooks");
+  if(popular){
+    const counts={};
+    checkouts.forEach(item=>{counts[String(item.book_id)]=(counts[String(item.book_id)]||0)+1;});
+    const items=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    popular.innerHTML=items.length ? items.map(([bookId,count],index)=>{
+      const book=books.find(b=>String(b.id)===String(bookId));
+      return '<div class="dashboard-list-item"><div class="dashboard-rank">#'+(index+1)+'</div><div><div class="dashboard-list-title">'+(book?.Title||"Unknown Book")+'</div><div class="dashboard-list-meta">'+count+' checkout'+(count===1?"":"s")+'</div></div></div>';
+    }).join("") : '<div class="dashboard-empty">Popular books will appear after checkouts.</div>';
+  }
 }
 
 
