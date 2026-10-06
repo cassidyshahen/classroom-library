@@ -82,6 +82,7 @@ tr:hover td{background:#f8fafc}
 .history-actions{display:flex;gap:7px;white-space:nowrap}
 .edit-button{background:#2563eb;color:white;border:none;padding:7px 11px;border-radius:5px;cursor:pointer}
 .edit-button:hover{background:#1d4ed8}
+
 .delete-button{background:#dc2626;color:white;border:none;padding:7px 11px;border-radius:5px;cursor:pointer}
 .delete-button:hover{background:#b91c1c}
 
@@ -275,7 +276,13 @@ nav{padding:8px}
     <div class="table-container">
       <table>
         <thead>
-          <tr><th>Book</th><th>Student</th><th>Class</th><th>Checked Out</th><th>Action</th></tr>
+          <tr>
+            <th>Book</th>
+            <th>Student</th>
+            <th>Class</th>
+            <th>Checked Out</th>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody id="checkedOutTableBody"></tbody>
       </table>
@@ -953,12 +960,30 @@ function renderCheckedOut(){
       <td>${formatDate(checkout["Check Out Date"])}</td>
 
       <td>
-        <button
-          class="return-button"
-          onclick="returnBook(${checkout.id})"
-        >
-          Return
-        </button>
+        <div class="history-actions">
+
+          <button
+            class="edit-button"
+            onclick="openEditCheckout(${checkout.id})"
+          >
+            Edit
+          </button>
+
+          <button
+            class="return-button"
+            onclick="returnBook(${checkout.id})"
+          >
+            Return
+          </button>
+
+          <button
+            class="delete-button"
+            onclick="deleteCheckout(${checkout.id})"
+          >
+            Delete
+          </button>
+
+        </div>
       </td>
     `;
 
