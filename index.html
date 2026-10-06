@@ -463,6 +463,19 @@ tr:hover td{background:#f8fafc}
 .online-book-series{font-size:12px;color:#475569;margin-bottom:10px}
 .online-book-bottom{margin-top:auto}
 .online-book-availability{font-size:13px;font-weight:bold;margin-bottom:11px}
+.online-checkout-button{
+  width:100%;
+  background:#2563eb;
+  color:white;
+  border:none;
+  padding:9px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+  margin-bottom:7px;
+}
+.online-checkout-button:hover{background:#1d4ed8}
+.online-checkout-button:disabled{background:#cbd5e1;color:#64748b;cursor:not-allowed}
 .online-book-actions{display:flex;gap:7px}
 .online-book-actions button{flex:1}
 .online-library-empty{background:white;border-radius:10px;padding:30px;text-align:center;color:#64748b}
@@ -2821,6 +2834,45 @@ function populateBooks(){
 }
 
 
+function startCheckoutFromLibrary(bookId){
+
+  const book=
+    books.find(
+      b=>String(b.id)===String(bookId)
+    );
+
+  if(!book||getAvailableCopies(book)<=0)
+    return;
+
+  showPage("checkout");
+
+  selectedBookId=book.id;
+
+  const input=
+    document.getElementById(
+      "bookSelect"
+    );
+
+  let text=
+    book.Title||"";
+
+  if(book.Author)
+    text+=` — ${book.Author}`;
+
+  text+=
+    ` (${getAvailableCopies(book)} available)`;
+
+  input.value=text;
+
+  document.getElementById(
+    "bookDropdownList"
+  ).classList.add("hidden");
+
+  updateCheckoutButton();
+
+}
+
+
 function clearBookSelection(){
 
   selectedBookId="";
@@ -3221,6 +3273,13 @@ function renderLibrary(){
                   ? `${available} of ${book.Copies||0} available`
                   : "Checked out"}
               </div>
+              <button
+                class="online-checkout-button"
+                onclick="startCheckoutFromLibrary(${book.id})"
+                ${available<=0 ? "disabled" : ""}
+              >
+                ${available>0 ? "Check Out" : "Unavailable"}
+              </button>
               <div class="online-book-actions">
                 <button class="edit-button" onclick="openEditBook(${book.id})">Edit</button>
                 <button class="delete-button" onclick="deleteBook(${book.id})">Delete</button>
