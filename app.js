@@ -15,11 +15,8 @@ const LOGIN_TIME_KEY="classroomLibraryLoginTime";
 
 
 let books=[];
-
 let students=[];
-
 let classes=[];
-
 let checkouts=[];
 
 
@@ -415,14 +412,6 @@ function titleSimilarity(first,second){
 }
 
 
-/*
-  Returns the best matching books for the title currently
-  being typed.
-
-  This is deliberately title-focused because at this stage
-  the teacher has NOT filled out the author/category fields.
-*/
-
 function findTitleMatches(title){
 
   if(!title.trim())
@@ -443,11 +432,6 @@ function findTitleMatches(title){
         existingTitle
       );
 
-
-    /*
-      Search matching is slightly more forgiving than the
-      final duplicate check because the user is still typing.
-    */
 
     if(titleScore>=.48){
 
@@ -509,11 +493,8 @@ function renderBookSearchResults(){
   area.innerHTML="";
 
 
-  if(!title){
-
+  if(!title)
     return;
-
-  }
 
 
   const matches=
@@ -1076,6 +1057,13 @@ function returnToBookSearch(){
   ).innerHTML="";
 
 
+  document.getElementById(
+    "backToBookSearchButton"
+  ).classList.remove(
+    "hidden"
+  );
+
+
   renderBookSearchResults();
 
 
@@ -1135,6 +1123,49 @@ function updateNewBookCategoryFields(){
 }
 
 
+/* ============================================================
+   COVER IMAGE HELPERS
+============================================================ */
+
+function getBookCoverUrl(book){
+
+  if(!book)
+    return "";
+
+  return String(
+    book["Cover URL"]||
+    book.CoverURL||
+    book.cover_url||
+    ""
+  ).trim();
+
+}
+
+
+function getBookCoverHtml(book){
+
+  const coverUrl=
+    getBookCoverUrl(book);
+
+  if(!coverUrl)
+    return "";
+
+  return `
+    <img
+      src="${coverUrl}"
+      alt="${book.Title||"Book cover"}"
+      class="book-cover-thumbnail"
+      onerror="this.style.display='none'"
+    >
+  `;
+
+}
+
+
+/* ============================================================
+   COLLECT NEW BOOK DATA
+============================================================ */
+
 function collectNewBookData(){
 
   const title=
@@ -1173,6 +1204,18 @@ function collectNewBookData(){
     document.getElementById(
       "newBookSeriesNumberInput"
     ).value;
+
+
+  const coverInput=
+    document.getElementById(
+      "newBookCoverInput"
+    );
+
+
+  const coverUrl=
+    coverInput
+      ? coverInput.value.trim()
+      : "";
 
 
   if(!title){
@@ -1275,11 +1318,16 @@ function collectNewBookData(){
     category,
     series,
     seriesNumber,
-    copies
+    copies,
+    coverUrl
   };
 
 }
 
+
+/* ============================================================
+   SAVE NEW BOOK
+============================================================ */
 
 async function saveNewBook(){
 
@@ -1345,12 +1393,23 @@ async function saveNewBook(){
           data.copies;
 
 
+        const updateData={
+          "Copies":newCopies
+        };
+
+
+        if(data.coverUrl){
+
+          updateData["Cover URL"]=
+            data.coverUrl;
+
+        }
+
+
         const {error}=
           await supabaseClient
             .from("Books")
-            .update({
-              "Copies":newCopies
-            })
+            .update(updateData)
             .eq(
               "id",
               exactMatch.id
@@ -1409,6 +1468,10 @@ async function saveNewBook(){
 }
 
 
+/* ============================================================
+   INSERT NEW BOOK
+============================================================ */
+
 async function insertNewBook(data){
 
   const button=
@@ -1429,30 +1492,36 @@ async function insertNewBook(data){
 
   try{
 
+    const bookData={
+
+      "Title":data.title,
+
+      "Author":data.author,
+
+      "Category":data.category,
+
+      "Series":
+        data.category==="Series"
+          ? data.series
+          : null,
+
+      "Series #":
+        data.category==="Series"
+          ? data.seriesNumber
+          : null,
+
+      "Copies":data.copies,
+
+      "Cover URL":
+        data.coverUrl||null
+
+    };
+
+
     const {error}=
       await supabaseClient
         .from("Books")
-        .insert({
-
-          "Title":data.title,
-
-          "Author":data.author,
-
-          "Category":data.category,
-
-          "Series":
-            data.category==="Series"
-              ? data.series
-              : null,
-
-          "Series #":
-            data.category==="Series"
-              ? data.seriesNumber
-              : null,
-
-          "Copies":data.copies
-
-        });
+        .insert(bookData);
 
 
     if(error)
@@ -1481,7 +1550,7 @@ async function insertNewBook(data){
 
 
     showBookModalMessage(
-      "Could not save the book. Please make sure the Books permissions were added in Supabase.",
+      "Could not save the book. Please make sure the Books permissions and Cover URL column are set up correctly in Supabase.",
       "error"
     );
 
@@ -2208,6 +2277,13 @@ function renderLibrary(){
 
     row.innerHTML=`
 
+      <td>
+        ${
+          getBookCoverHtml(book)||
+          '<div class="book-cover-placeholder">📚</div>'
+        }
+      </td>
+
       <td>${book.Title||""}</td>
 
       <td>${book.Author||""}</td>
@@ -2236,14 +2312,14 @@ function renderLibrary(){
 
           <button
             class="edit-button"
-            onclick="openEditBook(${book.id})"
+            type="button"
           >
             Edit
           </button>
 
           <button
             class="delete-button"
-            onclick="deleteBook(${book.id})"
+            type="button"
           >
             Delete
           </button>
@@ -2253,6 +2329,30 @@ function renderLibrary(){
       </td>
 
     `;
+
+
+    const actionButtons=
+      row.querySelectorAll(
+        ".book-action-buttons button"
+      );
+
+
+    actionButtons[0].addEventListener(
+      "click",
+      event=>{
+        event.stopPropagation();
+        openEditBook(book.id);
+      }
+    );
+
+
+    actionButtons[1].addEventListener(
+      "click",
+      event=>{
+        event.stopPropagation();
+        deleteBook(book.id);
+      }
+    );
 
 
     tbody.appendChild(row);
@@ -2311,6 +2411,7 @@ function updateSeriesOptions(){
 function resetBookModal(){
 
   editingBookId=null;
+
   selectedExistingBookId=null;
 
 
@@ -2335,6 +2436,13 @@ function resetBookModal(){
   document.getElementById(
     "newBookDetailsSection"
   ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "backToBookSearchButton"
+  ).classList.remove(
     "hidden"
   );
 
@@ -2374,6 +2482,34 @@ function resetBookModal(){
   ).value="";
 
 
+  const coverInput=
+    document.getElementById(
+      "newBookCoverInput"
+    );
+
+
+  if(coverInput)
+    coverInput.value="";
+
+
+  document.querySelector(
+    "#newBookDetailsSection h3"
+  ).textContent=
+    "New Book Details";
+
+
+  document.querySelector(
+    "#newBookDetailsSection p"
+  ).textContent=
+    "This book isn't already in your library. Enter the information below to add it.";
+
+
+  document.getElementById(
+    "saveNewBookButton"
+  ).textContent=
+    "Add New Book";
+
+
   updateNewBookCategoryFields();
 
 }
@@ -2410,7 +2546,8 @@ function openEditBook(bookId){
     return;
 
 
-  editingBookId=bookId;
+  editingBookId=book.id;
+
   selectedExistingBookId=null;
 
 
@@ -2419,10 +2556,6 @@ function openEditBook(bookId){
   ).textContent=
     "Edit Book";
 
-
-  /*
-    Editing uses the full details form.
-  */
 
   document.getElementById(
     "quickAddSection"
@@ -2493,6 +2626,20 @@ function openEditBook(bookId){
     Number(book.Copies||1);
 
 
+  const coverInput=
+    document.getElementById(
+      "newBookCoverInput"
+    );
+
+
+  if(coverInput){
+
+    coverInput.value=
+      getBookCoverUrl(book);
+
+  }
+
+
   document.getElementById(
     "bookModalMessage"
   ).innerHTML="";
@@ -2500,10 +2647,6 @@ function openEditBook(bookId){
 
   updateNewBookCategoryFields();
 
-
-  /*
-    Change the save button's text.
-  */
 
   document.getElementById(
     "saveNewBookButton"
@@ -2517,12 +2660,40 @@ function openEditBook(bookId){
     "hidden"
   );
 
+
+  /*
+    The title input normally lives in the quick-add
+    section. During editing that section is hidden,
+    so temporarily show only the title field.
+  */
+
+  const titleInput=
+    document.getElementById(
+      "bookTitleInput"
+    );
+
+
+  if(titleInput){
+
+    titleInput.style.display="block";
+
+
+    const titleGroup=
+      titleInput.closest(".form-group");
+
+
+    if(titleGroup)
+      titleGroup.style.display="block";
+
+  }
+
 }
 
 
 function closeBookModal(){
 
   editingBookId=null;
+
   selectedExistingBookId=null;
 
 
@@ -2540,7 +2711,7 @@ function showBookModalMessage(message,type){
   document.getElementById(
     "bookModalMessage"
   ).innerHTML=
-    `<div class="message type">{message}</div>`;
+    `<div class="message ${type}">${message}</div>`;
 
 }
 
@@ -2591,6 +2762,18 @@ async function saveEditedBook(){
         "bookCopiesInput"
       ).value
     );
+
+
+  const coverInput=
+    document.getElementById(
+      "newBookCoverInput"
+    );
+
+
+  const coverUrl=
+    coverInput
+      ? coverInput.value.trim()
+      : "";
 
 
   if(!title){
@@ -2787,7 +2970,10 @@ async function saveEditedBook(){
               ? seriesNumber
               : null,
 
-          "Copies":copies
+          "Copies":copies,
+
+          "Cover URL":
+            coverUrl||null
 
         })
         .eq(
@@ -2824,9 +3010,7 @@ async function saveEditedBook(){
     button.disabled=false;
 
     button.textContent=
-      editingBookId
-        ? "Save Changes"
-        : "Add New Book";
+      "Save Changes";
 
   }
 
@@ -3489,9 +3673,7 @@ async function deleteCheckout(checkoutId){
 
   const confirmed=
     confirm(
-
       `Delete this checkout record?\n\nBook: ${book}\nStudent: ${studentText}\n\nThis cannot be undone.`
-
     );
 
 
@@ -4393,10 +4575,6 @@ document.getElementById(
 );
 
 
-/*
-  As the teacher types the title, search the existing library
-  immediately.
-*/
 document.getElementById(
   "bookTitleInput"
 ).addEventListener(
@@ -4415,10 +4593,6 @@ document.getElementById(
 );
 
 
-/*
-  Pressing Enter in the title field does not accidentally submit
-  anything. It simply leaves the teacher in the search flow.
-*/
 document.getElementById(
   "bookTitleInput"
 ).addEventListener(
@@ -4521,4 +4695,3 @@ document.getElementById(
 
   }
 );
-
