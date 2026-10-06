@@ -3637,9 +3637,11 @@ function renderSeriesBrowser(){
           <div class="series-option-image-wrap">${imageHtml}</div>
           <div class="series-option-name">${name}</div>
           <div class="series-option-count">${count} ${count===1 ? "book" : "books"}</div>
+          <div class="series-status ${seriesRecord?.Complete ? "complete" : "incomplete"}">${seriesRecord?.Complete ? "✓ Complete Set" : "Incomplete Set"}</div>
         </button>
         <div class="series-image-editor hidden" id="seriesImageEditor-${encodeURIComponent(name)}" onclick="event.stopPropagation();">
           <input class="series-image-url-input" id="seriesImageInput-${encodeURIComponent(name)}" type="url" placeholder="Paste image URL..." value="${savedImage.replace(/"/g,"&quot;")}">
+          <label class="series-complete-row"><input id="seriesCompleteInput-${encodeURIComponent(name)}" type="checkbox" ${seriesRecord?.Complete ? "checked" : ""}> Complete Set</label>
           <button class="series-image-button" type="button" onclick="saveSeriesImage('${safeName}')">Save</button>
         </div>
       </div>`;
@@ -3672,7 +3674,9 @@ async function saveSeriesImage(name){
   if(!input)return;
 
   const clean=String(input.value||"").trim();
-  const button=input.nextElementSibling;
+  const completeInput=document.getElementById("seriesCompleteInput-"+encodeURIComponent(name));
+  const isComplete=!!completeInput?.checked;
+  const button=completeInput?.parentElement?.nextElementSibling;
   const originalText=button ? button.textContent : "Save";
 
   if(button){
@@ -3687,14 +3691,14 @@ async function saveSeriesImage(name){
     if(existing){
       result=await supabaseClient
         .from("Series")
-        .update({"Cover URL":clean||null})
+        .update({"Cover URL":clean||null,"Complete":isComplete})
         .eq("id",existing.id)
         .select()
         .single();
     }else{
       result=await supabaseClient
         .from("Series")
-        .insert({"Name":name,"Cover URL":clean||null})
+        .insert({"Name":name,"Cover URL":clean||null,"Complete":isComplete})
         .select()
         .single();
     }
