@@ -8,9 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -60,17 +58,10 @@ body {
   padding: 30px;
 }
 
-.page {
-  display: none;
-}
+.page { display: none; }
+.page.active { display: block; }
 
-.page.active {
-  display: block;
-}
-
-h2 {
-  margin-top: 0;
-}
+h2 { margin-top: 0; }
 
 .cards {
   display: grid;
@@ -118,8 +109,7 @@ table {
   border-collapse: collapse;
 }
 
-th,
-td {
+th, td {
   padding: 13px 10px;
   border-bottom: 1px solid #e2e8f0;
   text-align: left;
@@ -163,8 +153,7 @@ label {
   margin-bottom: 7px;
 }
 
-select,
-button.action {
+select, button.action {
   width: 100%;
   padding: 11px;
   border: 1px solid #cbd5e1;
@@ -279,166 +268,164 @@ button.return-btn {
 
 <div class="main">
 
-  <!-- DASHBOARD -->
-  <section id="dashboard" class="page active">
-    <h2>Dashboard</h2>
+<section id="dashboard" class="page active">
+  <h2>Dashboard</h2>
 
-    <div class="cards">
-      <div class="card">
-        <div class="card-title">Total Books</div>
-        <div class="card-number" id="totalBooks">—</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Available</div>
-        <div class="card-number" id="availableBooks">—</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Checked Out</div>
-        <div class="card-number" id="checkedOutBooks">—</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Students</div>
-        <div class="card-number" id="totalStudents">—</div>
-      </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">Total Books</div>
+      <div class="card-number" id="totalBooks">—</div>
     </div>
 
-    <div class="panel">
-      <h3>Welcome to Your Classroom Library</h3>
-      <p>
-        Your library is connected to your database. Books, students,
-        checkouts, returns, and history will appear here automatically.
-      </p>
+    <div class="card">
+      <div class="card-title">Available</div>
+      <div class="card-number" id="availableBooks">—</div>
     </div>
-  </section>
 
-  <!-- LIBRARY -->
-  <section id="library" class="page">
-    <h2>Library</h2>
-
-    <div class="panel">
-      <input
-        type="text"
-        class="search"
-        id="librarySearch"
-        placeholder="Search by title, author, or series..."
-        oninput="renderLibrary()"
-      >
-
-      <div id="libraryTable">
-        <div class="loading">Loading books...</div>
-      </div>
+    <div class="card">
+      <div class="card-title">Checked Out</div>
+      <div class="card-number" id="checkedOutBooks">—</div>
     </div>
-  </section>
 
-  <!-- CHECKOUT -->
-  <section id="checkout" class="page">
-    <h2>Check Out a Book</h2>
+    <div class="card">
+      <div class="card-title">Students</div>
+      <div class="card-number" id="totalStudents">—</div>
+    </div>
+  </div>
 
-    <div class="panel">
+  <div class="panel">
+    <h3>Welcome to Your Classroom Library</h3>
+    <p>
+      Your library is connected to your database. Books, students,
+      checkouts, returns, and history will appear here automatically.
+    </p>
+  </div>
+</section>
 
-      <div class="form-grid">
 
-        <div>
-          <label for="classSelect">Class</label>
-          <select id="classSelect" onchange="updateStudentNumbers()">
-            <option value="">Select a class</option>
-            <option value="7S">7S</option>
-            <option value="7K">7K</option>
-          </select>
-        </div>
+<section id="library" class="page">
+  <h2>Library</h2>
 
-        <div>
-          <label for="studentSelect">Student Number</label>
-          <select id="studentSelect">
-            <option value="">Select a student</option>
-          </select>
-        </div>
+  <div class="panel">
+    <input
+      type="text"
+      class="search"
+      id="librarySearch"
+      placeholder="Search by title, author, or series..."
+      oninput="renderLibrary()"
+    >
 
-      </div>
+    <div id="libraryTable">
+      <div class="loading">Loading books...</div>
+    </div>
+  </div>
+</section>
+
+
+<section id="checkout" class="page">
+  <h2>Check Out a Book</h2>
+
+  <div class="panel">
+
+    <div class="form-grid">
 
       <div>
-        <label for="bookSelect">Book</label>
-        <select id="bookSelect">
-          <option value="">Select a book</option>
+        <label for="classSelect">Class</label>
+
+        <select id="classSelect" onchange="updateStudentNumbers()">
+          <option value="">Select a class</option>
+          <option value="7S">7S</option>
+          <option value="7K">7K</option>
         </select>
       </div>
 
-      <br>
+      <div>
+        <label for="studentSelect">Student Number</label>
 
-      <button class="action" onclick="checkoutBook()">
-        Check Out Book
-      </button>
-
-      <div id="checkoutMessage" class="message"></div>
-
-    </div>
-  </section>
-
-  <!-- RETURNS -->
-  <section id="returns" class="page">
-    <h2>Returns</h2>
-
-    <div class="panel">
-      <div id="returnsTable">
-        <div class="loading">Loading checked out books...</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STUDENTS -->
-  <section id="students" class="page">
-    <h2>Students</h2>
-
-    <div class="student-grid">
-
-      <div class="student-column">
-        <h3>7S</h3>
-        <div class="student-list" id="students7S"></div>
-      </div>
-
-      <div class="student-column">
-        <h3>7K</h3>
-        <div class="student-list" id="students7K"></div>
+        <select id="studentSelect">
+          <option value="">Select a student</option>
+        </select>
       </div>
 
     </div>
-  </section>
 
-  <!-- HISTORY -->
-  <section id="history" class="page">
-    <h2>Checkout History</h2>
+    <div>
+      <label for="bookSelect">Book</label>
 
-    <div class="panel">
-      <div id="historyTable">
-        <div class="loading">Loading history...</div>
-      </div>
+      <select id="bookSelect">
+        <option value="">Select a book</option>
+      </select>
     </div>
-  </section>
+
+    <br>
+
+    <button class="action" onclick="checkoutBook()">
+      Check Out Book
+    </button>
+
+    <div id="checkoutMessage" class="message"></div>
+
+  </div>
+</section>
+
+
+<section id="returns" class="page">
+  <h2>Returns</h2>
+
+  <div class="panel">
+    <div id="returnsTable">
+      <div class="loading">Loading checked out books...</div>
+    </div>
+  </div>
+</section>
+
+
+<section id="students" class="page">
+  <h2>Students</h2>
+
+  <div class="student-grid">
+
+    <div class="student-column">
+      <h3>7S</h3>
+      <div class="student-list" id="students7S"></div>
+    </div>
+
+    <div class="student-column">
+      <h3>7K</h3>
+      <div class="student-list" id="students7K"></div>
+    </div>
+
+  </div>
+</section>
+
+
+<section id="history" class="page">
+  <h2>Checkout History</h2>
+
+  <div class="panel">
+    <div id="historyTable">
+      <div class="loading">Loading history...</div>
+    </div>
+  </div>
+</section>
 
 </div>
 
+
 <script>
 
-/* ==========================================
-   SUPABASE CONNECTION
-   ========================================== */
+const SUPABASE_URL =
+  "https://wwkcacypzjoojonmfaui.supabase.co";
 
-const SUPABASE_URL = "https://wwkcacypzjoojonmfaui.supabase.co";
+const SUPABASE_KEY =
+  "sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
 
-const SUPABASE_KEY = "sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-
-/* ==========================================
-   DATA
-   ========================================== */
 
 let books = [];
 let students = [];
@@ -446,9 +433,7 @@ let classes = [];
 let checkouts = [];
 
 
-/* ==========================================
-   PAGE NAVIGATION
-   ========================================== */
+/* PAGE NAVIGATION */
 
 function showPage(pageId, button) {
 
@@ -474,18 +459,17 @@ function showPage(pageId, button) {
 }
 
 
-/* ==========================================
-   LOAD DATABASE
-   ========================================== */
+/* LOAD DATA */
 
 async function loadData() {
 
   try {
 
-    const booksResult = await supabaseClient
-      .from("Books")
-      .select("*")
-      .order("Title");
+    const booksResult =
+      await supabaseClient
+        .from("Books")
+        .select("*")
+        .order("Title");
 
     if (booksResult.error) {
       throw booksResult.error;
@@ -494,11 +478,12 @@ async function loadData() {
     books = booksResult.data || [];
 
 
-    const studentsResult = await supabaseClient
-      .from("Students")
-      .select("*")
-      .order("class_id")
-      .order("student_number");
+    const studentsResult =
+      await supabaseClient
+        .from("Students")
+        .select("*")
+        .order("class_id")
+        .order("student_number");
 
     if (studentsResult.error) {
       throw studentsResult.error;
@@ -507,10 +492,11 @@ async function loadData() {
     students = studentsResult.data || [];
 
 
-    const classesResult = await supabaseClient
-      .from("Classes")
-      .select("*")
-      .order("id");
+    const classesResult =
+      await supabaseClient
+        .from("Classes")
+        .select("*")
+        .order("id");
 
     if (classesResult.error) {
       throw classesResult.error;
@@ -528,29 +514,25 @@ async function loadData() {
 
   } catch (error) {
 
-    console.error(error);
+    console.error("Library database error:", error);
 
     document.getElementById("libraryTable").innerHTML =
       `<div class="message error">
         Could not connect to the library database.
-        Check the browser console for details.
       </div>`;
-
   }
-
 }
 
 
-/* ==========================================
-   LOAD CHECKOUTS
-   ========================================== */
+/* LOAD CHECKOUTS */
 
 async function loadCheckouts() {
 
-  const result = await supabaseClient
-    .from("Checkouts")
-    .select("*")
-    .order("checked_out_at", { ascending: false });
+  const result =
+    await supabaseClient
+      .from("Checkouts")
+      .select("*")
+      .order("Check Out Date", { ascending: false });
 
   if (result.error) {
     throw result.error;
@@ -560,15 +542,14 @@ async function loadCheckouts() {
 }
 
 
-/* ==========================================
-   DASHBOARD
-   ========================================== */
+/* DASHBOARD */
 
 function updateDashboard() {
 
-  const activeCheckouts = checkouts.filter(
-    checkout => checkout.returned_at === null
-  );
+  const activeCheckouts =
+    checkouts.filter(
+      checkout => checkout["Return Date"] === null
+    );
 
   document.getElementById("totalBooks").textContent =
     books.length;
@@ -584,9 +565,7 @@ function updateDashboard() {
 }
 
 
-/* ==========================================
-   LIBRARY
-   ========================================== */
+/* LIBRARY */
 
 function renderLibrary() {
 
@@ -595,23 +574,31 @@ function renderLibrary() {
       .toLowerCase()
       .trim() || "";
 
-  const activeCheckouts = checkouts.filter(
-    checkout => checkout.returned_at === null
-  );
-
-  const rows = books.filter(book => {
-
-    const title = (book.Title || "").toLowerCase();
-    const author = (book.Author || "").toLowerCase();
-    const series = (book.Series || "").toLowerCase();
-
-    return (
-      title.includes(search) ||
-      author.includes(search) ||
-      series.includes(search)
+  const activeCheckouts =
+    checkouts.filter(
+      checkout => checkout["Return Date"] === null
     );
 
-  });
+
+  const rows =
+    books.filter(book => {
+
+      const title =
+        (book.Title || "").toLowerCase();
+
+      const author =
+        (book.Author || "").toLowerCase();
+
+      const series =
+        (book.Series || "").toLowerCase();
+
+      return (
+        title.includes(search) ||
+        author.includes(search) ||
+        series.includes(search)
+      );
+    });
+
 
   if (rows.length === 0) {
 
@@ -639,9 +626,11 @@ function renderLibrary() {
 
   rows.forEach(book => {
 
-    const checkout = activeCheckouts.find(
-      c => c.book_id === book.id
-    );
+    const checkout =
+      activeCheckouts.find(
+        c => c.book_id === book.id
+      );
+
 
     let seriesText = "";
 
@@ -649,31 +638,51 @@ function renderLibrary() {
 
       seriesText = book.Series;
 
-      if (book["Series #"] !== null &&
-          book["Series #"] !== undefined) {
-
-        seriesText += ` #${book["Series #"]}`;
-
+      if (
+        book["Series #"] !== null &&
+        book["Series #"] !== undefined
+      ) {
+        seriesText +=
+          ` #${book["Series #"]}`;
       }
     }
 
 
     html += `
       <tr>
-        <td><strong>${escapeHTML(book.Title)}</strong></td>
-        <td>${escapeHTML(book.Author || "")}</td>
-        <td>${escapeHTML(book.Category || "")}</td>
-        <td>${escapeHTML(seriesText)}</td>
+
+        <td>
+          <strong>
+            ${escapeHTML(book.Title)}
+          </strong>
+        </td>
+
+        <td>
+          ${escapeHTML(book.Author || "")}
+        </td>
+
+        <td>
+          ${escapeHTML(book.Category || "")}
+        </td>
+
+        <td>
+          ${escapeHTML(seriesText)}
+        </td>
+
         <td>
           ${
             checkout
-            ? `<span class="status checked">Checked Out</span>`
-            : `<span class="status available">Available</span>`
+              ? `<span class="status checked">
+                   Checked Out
+                 </span>`
+              : `<span class="status available">
+                   Available
+                 </span>`
           }
         </td>
+
       </tr>
     `;
-
   });
 
 
@@ -682,24 +691,26 @@ function renderLibrary() {
     </table>
   `;
 
-  document.getElementById("libraryTable").innerHTML = html;
+  document.getElementById("libraryTable").innerHTML =
+    html;
 }
 
 
-/* ==========================================
-   CHECKOUT BOOK DROPDOWN
-   ========================================== */
+/* BOOK DROPDOWN */
 
 function populateBookSelect() {
 
-  const select = document.getElementById("bookSelect");
+  const select =
+    document.getElementById("bookSelect");
 
   select.innerHTML =
     `<option value="">Select a book</option>`;
 
-  const activeCheckouts = checkouts.filter(
-    checkout => checkout.returned_at === null
-  );
+
+  const activeCheckouts =
+    checkouts.filter(
+      checkout => checkout["Return Date"] === null
+    );
 
 
   books
@@ -715,26 +726,29 @@ function populateBookSelect() {
     )
     .forEach(book => {
 
-      const option = document.createElement("option");
+      const option =
+        document.createElement("option");
 
       option.value = book.id;
 
       option.textContent =
         book.Title +
-        (book.Series
-          ? ` — ${book.Series}${book["Series #"] ? " #" + book["Series #"] : ""}`
-          : "");
+        (
+          book.Series
+            ? ` — ${book.Series}${
+                book["Series #"]
+                  ? " #" + book["Series #"]
+                  : ""
+              }`
+            : ""
+        );
 
       select.appendChild(option);
-
     });
-
 }
 
 
-/* ==========================================
-   STUDENT NUMBERS
-   ========================================== */
+/* STUDENT NUMBERS */
 
 function updateStudentNumbers() {
 
@@ -754,7 +768,10 @@ function updateStudentNumbers() {
 
 
   const classRecord =
-    classes.find(c => c.name === className);
+    classes.find(
+      c => c.name === className
+    );
+
 
   if (!classRecord) {
     return;
@@ -762,9 +779,13 @@ function updateStudentNumbers() {
 
 
   students
-    .filter(student => student.class_id === classRecord.id)
-    .sort((a, b) =>
-      a.student_number - b.student_number
+    .filter(
+      student =>
+        student.class_id === classRecord.id
+    )
+    .sort(
+      (a, b) =>
+        a.student_number - b.student_number
     )
     .forEach(student => {
 
@@ -777,15 +798,11 @@ function updateStudentNumbers() {
         `${className} #${student.student_number}`;
 
       select.appendChild(option);
-
     });
-
 }
 
 
-/* ==========================================
-   CHECK OUT
-   ========================================== */
+/* CHECK OUT */
 
 async function checkoutBook() {
 
@@ -805,7 +822,9 @@ async function checkoutBook() {
 
   if (!studentId || !bookId) {
 
-    message.className = "message error";
+    message.className =
+      "message error";
+
     message.textContent =
       "Please select a class, student, and book.";
 
@@ -813,16 +832,19 @@ async function checkoutBook() {
   }
 
 
-  const alreadyOut = checkouts.some(
-    checkout =>
-      checkout.book_id == bookId &&
-      checkout.returned_at === null
-  );
+  const alreadyOut =
+    checkouts.some(
+      checkout =>
+        checkout.book_id == bookId &&
+        checkout["Return Date"] === null
+    );
 
 
   if (alreadyOut) {
 
-    message.className = "message error";
+    message.className =
+      "message error";
+
     message.textContent =
       "That book is already checked out.";
 
@@ -830,21 +852,30 @@ async function checkoutBook() {
   }
 
 
-  const result = await supabaseClient
-    .from("Checkouts")
-    .insert([
-      {
-        book_id: Number(bookId),
-        student_id: Number(studentId)
-      }
-    ]);
+  const result =
+    await supabaseClient
+      .from("Checkouts")
+      .insert([
+        {
+          book_id: Number(bookId),
+          student_id: Number(studentId),
+          "Check Out Date":
+            new Date().toISOString(),
+          "Return Date": null
+        }
+      ]);
 
 
   if (result.error) {
 
-    console.error(result.error);
+    console.error(
+      "Checkout error:",
+      result.error
+    );
 
-    message.className = "message error";
+    message.className =
+      "message error";
+
     message.textContent =
       "There was a problem checking out the book.";
 
@@ -852,7 +883,9 @@ async function checkoutBook() {
   }
 
 
-  message.className = "message success";
+  message.className =
+    "message success";
+
   message.textContent =
     "Book successfully checked out!";
 
@@ -872,19 +905,17 @@ async function checkoutBook() {
   populateBookSelect();
   renderReturns();
   renderHistory();
-
 }
 
 
-/* ==========================================
-   RETURNS
-   ========================================== */
+/* RETURNS */
 
 function renderReturns() {
 
   const activeCheckouts =
     checkouts.filter(
-      checkout => checkout.returned_at === null
+      checkout =>
+        checkout["Return Date"] === null
     );
 
 
@@ -916,44 +947,58 @@ function renderReturns() {
   activeCheckouts.forEach(checkout => {
 
     const book =
-      books.find(b => b.id === checkout.book_id);
+      books.find(
+        b => b.id === checkout.book_id
+      );
 
     const student =
-      students.find(s => s.id === checkout.student_id);
+      students.find(
+        s => s.id === checkout.student_id
+      );
+
 
     let studentText = "Unknown";
+
 
     if (student) {
 
       const classRecord =
-        classes.find(c => c.id === student.class_id);
+        classes.find(
+          c => c.id === student.class_id
+        );
 
       if (classRecord) {
 
         studentText =
           `${classRecord.name} #${student.student_number}`;
-
       }
-
     }
 
 
     const date =
-      new Date(checkout.checked_out_at)
-        .toLocaleDateString();
+      new Date(
+        checkout["Check Out Date"]
+      ).toLocaleDateString();
 
 
     html += `
       <tr>
+
         <td>
           <strong>
-            ${escapeHTML(book?.Title || "Unknown Book")}
+            ${escapeHTML(
+              book?.Title || "Unknown Book"
+            )}
           </strong>
         </td>
 
-        <td>${escapeHTML(studentText)}</td>
+        <td>
+          ${escapeHTML(studentText)}
+        </td>
 
-        <td>${date}</td>
+        <td>
+          ${date}
+        </td>
 
         <td>
           <button
@@ -962,9 +1007,9 @@ function renderReturns() {
             Return
           </button>
         </td>
+
       </tr>
     `;
-
   });
 
 
@@ -974,29 +1019,35 @@ function renderReturns() {
   `;
 
 
-  document.getElementById("returnsTable").innerHTML = html;
+  document.getElementById("returnsTable").innerHTML =
+    html;
 }
 
 
-/* ==========================================
-   RETURN BOOK
-   ========================================== */
+/* RETURN BOOK */
 
 async function returnBook(checkoutId) {
 
-  const result = await supabaseClient
-    .from("Checkouts")
-    .update({
-      returned_at: new Date().toISOString()
-    })
-    .eq("id", checkoutId);
+  const result =
+    await supabaseClient
+      .from("Checkouts")
+      .update({
+        "Return Date":
+          new Date().toISOString()
+      })
+      .eq("id", checkoutId);
 
 
   if (result.error) {
 
-    console.error(result.error);
+    console.error(
+      "Return error:",
+      result.error
+    );
 
-    alert("There was a problem returning the book.");
+    alert(
+      "There was a problem returning the book."
+    );
 
     return;
   }
@@ -1009,36 +1060,47 @@ async function returnBook(checkoutId) {
   populateBookSelect();
   renderReturns();
   renderHistory();
-
 }
 
 
-/* ==========================================
-   STUDENTS
-   ========================================== */
+/* STUDENTS */
 
 function renderStudents() {
 
   const class7S =
-    classes.find(c => c.name === "7S");
+    classes.find(
+      c => c.name === "7S"
+    );
 
   const class7K =
-    classes.find(c => c.name === "7K");
+    classes.find(
+      c => c.name === "7K"
+    );
 
 
   if (class7S) {
 
     const students7S =
       students
-        .filter(s => s.class_id === class7S.id)
-        .sort((a, b) => a.student_number - b.student_number);
+        .filter(
+          s => s.class_id === class7S.id
+        )
+        .sort(
+          (a, b) =>
+            a.student_number -
+            b.student_number
+        );
 
 
     document.getElementById("students7S").innerHTML =
-      students7S.map(student =>
-        `<div class="student">#${student.student_number}</div>`
-      ).join("");
-
+      students7S
+        .map(
+          student =>
+            `<div class="student">
+              #${student.student_number}
+            </div>`
+        )
+        .join("");
   }
 
 
@@ -1046,23 +1108,30 @@ function renderStudents() {
 
     const students7K =
       students
-        .filter(s => s.class_id === class7K.id)
-        .sort((a, b) => a.student_number - b.student_number);
+        .filter(
+          s => s.class_id === class7K.id
+        )
+        .sort(
+          (a, b) =>
+            a.student_number -
+            b.student_number
+        );
 
 
     document.getElementById("students7K").innerHTML =
-      students7K.map(student =>
-        `<div class="student">#${student.student_number}</div>`
-      ).join("");
-
+      students7K
+        .map(
+          student =>
+            `<div class="student">
+              #${student.student_number}
+            </div>`
+        )
+        .join("");
   }
-
 }
 
 
-/* ==========================================
-   HISTORY
-   ========================================== */
+/* HISTORY */
 
 function renderHistory() {
 
@@ -1094,10 +1163,14 @@ function renderHistory() {
   checkouts.forEach(checkout => {
 
     const book =
-      books.find(b => b.id === checkout.book_id);
+      books.find(
+        b => b.id === checkout.book_id
+      );
 
     const student =
-      students.find(s => s.id === checkout.student_id);
+      students.find(
+        s => s.id === checkout.student_id
+      );
 
 
     let studentText = "Unknown";
@@ -1106,39 +1179,55 @@ function renderHistory() {
     if (student) {
 
       const classRecord =
-        classes.find(c => c.id === student.class_id);
+        classes.find(
+          c => c.id === student.class_id
+        );
 
       if (classRecord) {
 
         studentText =
           `${classRecord.name} #${student.student_number}`;
-
       }
-
     }
 
 
     const checkoutDate =
-      new Date(checkout.checked_out_at)
-        .toLocaleDateString();
+      new Date(
+        checkout["Check Out Date"]
+      ).toLocaleDateString();
 
 
     const returnDate =
-      checkout.returned_at
-        ? new Date(checkout.returned_at)
-            .toLocaleDateString()
+      checkout["Return Date"]
+        ? new Date(
+            checkout["Return Date"]
+          ).toLocaleDateString()
         : "Still out";
 
 
     html += `
       <tr>
-        <td>${escapeHTML(book?.Title || "Unknown Book")}</td>
-        <td>${escapeHTML(studentText)}</td>
-        <td>${checkoutDate}</td>
-        <td>${returnDate}</td>
+
+        <td>
+          ${escapeHTML(
+            book?.Title || "Unknown Book"
+          )}
+        </td>
+
+        <td>
+          ${escapeHTML(studentText)}
+        </td>
+
+        <td>
+          ${checkoutDate}
+        </td>
+
+        <td>
+          ${returnDate}
+        </td>
+
       </tr>
     `;
-
   });
 
 
@@ -1148,13 +1237,12 @@ function renderHistory() {
   `;
 
 
-  document.getElementById("historyTable").innerHTML = html;
+  document.getElementById("historyTable").innerHTML =
+    html;
 }
 
 
-/* ==========================================
-   SECURITY / HTML CLEANUP
-   ========================================== */
+/* CLEAN TEXT */
 
 function escapeHTML(value) {
 
@@ -1164,13 +1252,10 @@ function escapeHTML(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-
 }
 
 
-/* ==========================================
-   START APP
-   ========================================== */
+/* START */
 
 loadData();
 
