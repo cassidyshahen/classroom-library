@@ -1,1 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classroom Library</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      width: 240px;
+      background: #1f2937;
+      color: white;
+      padding: 24px 16px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      padding: 0 12px;
+    }
+
+    .nav-button {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: #d1d5db;
+      text-align: left;
+      padding: 13px 12px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      background: #374151;
+      color: white;
+    }
+
+    /* MAIN */
+
+    .main {
+      flex: 1;
+      padding: 32px;
+      overflow-x: auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 28px;
+    }
+
+    /* DASHBOARD CARDS */
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .card-title {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .card-number {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    /* CONTENT */
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+    }
+
+    /* SEARCH */
+
+    .search {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+
+    /* TABLE */
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 2px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    td {
+      padding: 13px 12px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* BUTTONS */
+
+    .button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 18px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background: #1d4ed8;
+    }
+
+    .button.secondary {
+      background: #e5e7eb;
+      color: #1f2937;
+    }
+
+    /* FORMS */
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      background: white;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    /* BADGES */
+
+    .badge {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge.available {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge.checked {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 900px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 12px;
+      }
+
+      .logo {
+        margin-bottom: 10px;
+      }
+
+      .nav-button {
+        width: auto;
+        display: inline-block;
+        margin-right: 5px;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+    <div class="logo">
+      📚 Classroom Library
+    </div>
+
+    <button class="nav-button active" onclick="showPage('dashboard', this)">
+      🏠 Dashboard
+    </button>
+
+    <button class="nav-button" onclick="showPage('library', this)">
+      📚 Library
+    </button>
+
+    <button class="nav-button" onclick="showPage('checkout', this)">
+      📤 Check Out
+    </button>
+
+    <button class="nav-button" onclick="showPage('returns', this)">
+      📥 Returns
+    </button>
+
+    <button class="nav-button" onclick="showPage('students', this)">
+      👥 Students
+    </button>
+
+    <button class="nav-button" onclick="showPage('history', this)">
+      📋 History
+    </button>
+
+  </aside>
+
+
+  <!-- MAIN CONTENT -->
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+
+    <section id="dashboard" class="page active">
+
+      <h1>Dashboard</h1>
+
+      <div class="subtitle">
+        Your classroom library at a glance.
+      </div>
+
+      <div class="cards">
+
+        <div class="card">
+          <div class="card-title">Total Books</div>
+          <div class="card-number">103</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Available</div>
+          <div class="card-number">103</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Checked Out</div>
+          <div class="card-number">0</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Students</div>
+          <div class="card-number">56</div>
+        </div>
+
+      </div>
+
+      <div class="panel">
+
+        <h2>Quick Actions</h2>
+
+        <button class="button" onclick="showPageById('checkout')">
+          Check Out a Book
+        </button>
+
+        <button class="button secondary" onclick="showPageById('returns')">
+          View Returns
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- LIBRARY -->
+
+    <section id="library" class="page">
+
+      <h1>Library</h1>
+
+      <div class="subtitle">
+        Browse your classroom collection.
+      </div>
+
+      <div class="panel">
+
+        <input
+          class="search"
+          type="text"
+          placeholder="Search by title, author, or series..."
+          onkeyup="searchBooks()"
+          id="bookSearch"
+        >
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Category</th>
+              <th>Series</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody id="bookTable">
+
+            <tr>
+              <td>Harry Potter and the Sorcerer’s Stone</td>
+              <td>J.K. Rowling</td>
+              <td>Series</td>
+              <td>Harry Potter #1</td>
+              <td><span class="badge available">Available</span></td>
+            </tr>
+
+            <tr>
+              <td>The Lightning Thief</td>
+              <td>Rick Riordan</td>
+              <td>Series</td>
+              <td>Percy Jackson #1</td>
+              <td><span class="badge available">Available</span></td>
+            </tr>
+
+            <tr>
+              <td>Wonder</td>
+              <td>R.J. Palacio</td>
+              <td>Standalone</td>
+              <td>—</td>
+              <td><span class="badge available">Available</span></td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- CHECKOUT -->
+
+    <section id="checkout" class="page">
+
+      <h1>Check Out a Book</h1>
+
+      <div class="subtitle">
+        Record a student borrowing a book.
+      </div>
+
+      <div class="panel">
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label>Class</label>
+
+            <select>
+              <option value="">Select a class</option>
+              <option>7S</option>
+              <option>7K</option>
+            </select>
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Student Number</label>
+
+            <select>
+              <option value="">Select student number</option>
+              <option>#1</option>
+              <option>#2</option>
+              <option>#3</option>
+              <option>#4</option>
+              <option>#5</option>
+              <option>#6</option>
+              <option>#7</option>
+              <option>#8</option>
+              <option>#9</option>
+              <option>#10</option>
+              <option>#11</option>
+              <option>#12</option>
+              <option>#13</option>
+              <option>#14</option>
+              <option>#15</option>
+              <option>#16</option>
+              <option>#17</option>
+              <option>#18</option>
+              <option>#19</option>
+              <option>#20</option>
+              <option>#21</option>
+              <option>#22</option>
+              <option>#23</option>
+              <option>#24</option>
+              <option>#25</option>
+              <option>#26</option>
+              <option>#27</option>
+              <option>#28</option>
+            </select>
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Book</label>
+
+          <select>
+
+            <option value="">
+              Select a book
+            </option>
+
+            <option>
+              Harry Potter and the Sorcerer’s Stone
+            </option>
+
+            <option>
+              The Lightning Thief
+            </option>
+
+            <option>
+              Wonder
+            </option>
+
+          </select>
+
+        </div>
+
+        <button class="button">
+          Check Out Book
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- RETURNS -->
+
+    <section id="returns" class="page">
+
+      <h1>Returns</h1>
+
+      <div class="subtitle">
+        Books currently checked out.
+      </div>
+
+      <div class="panel">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Book</th>
+              <th>Student</th>
+              <th>Class</th>
+              <th>Checked Out</th>
+              <th>Action</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr>
+
+              <td colspan="5">
+                No books are currently checked out.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- STUDENTS -->
+
+    <section id="students" class="page">
+
+      <h1>Students</h1>
+
+      <div class="subtitle">
+        Your 7S and 7K classes.
+      </div>
+
+      <div class="panel">
+
+        <h2>7S</h2>
+
+        <p>
+          Students #1–#28
+        </p>
+
+      </div>
+
+      <div class="panel">
+
+        <h2>7K</h2>
+
+        <p>
+          Students #1–#28
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- HISTORY -->
+
+    <section id="history" class="page">
+
+      <h1>Checkout History</h1>
+
+      <div class="subtitle">
+        Previous books borrowed and returned.
+      </div>
+
+      <div class="panel">
+
+        <p>
+          No checkout history yet.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<script>
+
+  function showPage(pageId, button) {
+
+    document.querySelectorAll('.page').forEach(function(page) {
+      page.classList.remove('active');
+    });
+
+    document.getElementById(pageId).classList.add('active');
+
+    document.querySelectorAll('.nav-button').forEach(function(btn) {
+      btn.classList.remove('active');
+    });
+
+    if (button) {
+      button.classList.add('active');
+    }
+
+  }
+
+
+  function showPageById(pageId) {
+
+    document.querySelectorAll('.page').forEach(function(page) {
+      page.classList.remove('active');
+    });
+
+    document.getElementById(pageId).classList.add('active');
+
+    document.querySelectorAll('.nav-button').forEach(function(btn) {
+      btn.classList.remove('active');
+    });
+
+  }
+
+
+  function searchBooks() {
+
+    const search =
+      document.getElementById('bookSearch')
+      .value
+      .toLowerCase();
+
+    const rows =
+      document.querySelectorAll('#bookTable tr');
+
+    rows.forEach(function(row) {
+
+      const text =
+        row.innerText.toLowerCase();
+
+      row.style.display =
+        text.includes(search) ? '' : 'none';
+
+    });
+
+  }
+
+</script>
+
+</body>
+</html>
