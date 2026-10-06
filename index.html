@@ -2955,6 +2955,93 @@ async function insertNewBook(data){
    LOAD DATA
 ============================================================ */
 
+const GENRE_MIGRATION_VERSION="2026-10-06-v1";
+const GENRE_MIGRATION_KEY="classroomLibraryGenreMigration";
+
+function getCorrectGenresForBook(book){
+  const title=String(book.Title||"").trim();
+  const series=String(book.Series||"").trim();
+  const seriesMap={
+    "Harry Potter":["Fantasy","Action & Adventure"],
+    "Percy Jackson and the Olympians":["Fantasy","Action & Adventure"],
+    "The Hunger Games":["Science Fiction","Action & Adventure"],
+    "Divergent":["Science Fiction","Action & Adventure"],
+    "The Maze Runner":["Science Fiction","Action & Adventure"],
+    "The 5th Wave":["Science Fiction","Action & Adventure"],
+    "The Chronicles of Narnia":["Fantasy","Action & Adventure"],
+    "The Mysterious Benedict Society":["Mystery","Action & Adventure"],
+    "BONE":["Fantasy","Graphic Novel"],
+    "The 39 Clues":["Action & Adventure","Mystery"],
+    "Twilight":["Romance","Fantasy"],
+    "Magic Tree House":["Historical Fiction","Action & Adventure"],
+    "The Hardy Boys":["Mystery","Action & Adventure"],
+    "Goosebumps":["Horror"],
+    "Guardians of Ga'Hoole":["Fantasy","Action & Adventure"],
+    "Artemis Fowl":["Fantasy","Action & Adventure"]
+  };
+  if(series==="I Survived") return title.includes("True Stories")?["Nonfiction","Action & Adventure"]:["Historical Fiction","Action & Adventure"];
+  const titleMap={
+    "101 Fairytales":["Fantasy","Classics"],"7 Habits of Highly Effective Teens":["Nonfiction"],"A Wrinkle in Time":["Fantasy","Science Fiction"],
+    "Alice’s Adventures in Wonderland/Through the Looking Glass":["Fantasy","Classics"],"Alone":["Realistic Fiction","Action & Adventure"],
+    "Aru Shah and the End of Time":["Fantasy","Action & Adventure"],"Atlas Shrugged":["Classics"],
+    "Avatar the Last Airbender- Katara and the Pirates Silver":["Graphic Novel","Fantasy"],
+    "Brian's Hunt":["Action & Adventure"],"Brian's Winter":["Action & Adventure"],"Cheesy Bits":["Humor"],
+    "Civil War on Sunday":["Historical Fiction","Action & Adventure"],"Dominance- Uconn's Back to Back Championships":["Sports","Nonfiction"],
+    "Duke":["Historical Fiction"],"Earthquake in the Early Morning":["Historical Fiction","Action & Adventure"],"Ella Enchanted":["Fantasy"],
+    "Esperanza Rising":["Historical Fiction","Realistic Fiction"],"Flat Stanley":["Realistic Fiction","Humor"],"Freak the Mighty":["Realistic Fiction"],
+    "Frightful's Mountain":["Realistic Fiction","Action & Adventure"],"Frizzy":["Graphic Novel","Realistic Fiction"],"Ghost Hotel":["Horror"],
+    "Gods of Manhattan":["Fantasy","Action & Adventure"],"Greek Gods":["Fantasy"],"Grounded":["Realistic Fiction"],
+    "Guardians of the Galaxy":["Action & Adventure","Science Fiction"],"Hatchet":["Action & Adventure"],
+    "In a dark Room and Other Scary Stories":["Horror"],"Island of the Blue Dolphins":["Historical Fiction","Action & Adventure"],
+    "It Found Us":["Horror","Mystery"],"Jessi Ramsey, Pet-Sitter":["Realistic Fiction"],"King of the Wind":["Realistic Fiction"],
+    "Life of Pi":["Action & Adventure"],"Little Woman":["Classics"],"Loki":["Fantasy","Action & Adventure"],
+    "Magic Tree House #14: Day of the Dragon King":["Historical Fiction","Action & Adventure"],"Marley & Me":["Memoir / Biography","Nonfiction"],
+    "Miles Morales Spider-Man":["Action & Adventure","Science Fiction"],"Misty of Chincoteague":["Realistic Fiction"],"Night":["Memoir / Biography","Nonfiction"],
+    "Of Mice and Men":["Classics","Realistic Fiction"],"Of Walden Pond":["Nonfiction","Classics"],"On the Far Side of the Mountain":["Realistic Fiction","Action & Adventure"],
+    "Pajaro Blanco":["Realistic Fiction"],"Peter and the Starcatchers":["Action & Adventure","Fantasy"],"Refugee":["Historical Fiction","Realistic Fiction"],
+    "Sea Star Orphan of Chincoteague":["Realistic Fiction"],"Shakespeare of London":["Nonfiction","Memoir / Biography"],"Siddhartha":["Classics"],
+    "Sleepover Sleuths":["Mystery"],"Something Under the Bed is Drooling":["Humor"],"Spaceheadz":["Science Fiction","Humor"],
+    "Stallion by Starlight":["Historical Fiction","Action & Adventure"],"Star Wars Rebel Force-Target":["Action & Adventure","Science Fiction"],
+    "Star Wars- Boba Fett- The Fight to Survive":["Action & Adventure","Science Fiction"],"Stone Fox":["Realistic Fiction"],
+    "Stormy, Misty's Foal":["Realistic Fiction"],"Strange Case of Dr Jekyll and Mr Hyde":["Horror","Classics"],"Teddy Ballgame":["Sports","Memoir / Biography"],
+    "That Was Then, This Is Now":["Realistic Fiction"],"The Adventures of Huckleberry Finn":["Classics","Action & Adventure"],
+    "The Austere Academy":["Mystery","Humor"],"The Blind Side":["Sports","Nonfiction"],"The Book Thief":["Historical Fiction"],
+    "The Boxcar Children":["Mystery"],"The Captain":["Sports","Memoir / Biography"],"The Crucible":["Classics","Historical Fiction"],
+    "The Final Four":["Realistic Fiction","Sports"],"The Gauntlet Iron Man":["Action & Adventure","Science Fiction"],
+    "The Girl in the Locked Room":["Horror","Mystery"],"The Giver":["Science Fiction"],"The Great Gatsby":["Classics"],
+    "The Norton Shakespeare":["Nonfiction","Classics"],"The Old Man and the Sea":["Classics","Realistic Fiction"],"The Outsiders":["Realistic Fiction","Classics"],
+    "The Secret Life of Bees":["Historical Fiction","Realistic Fiction"],"The Thief Lord":["Fantasy","Action & Adventure"],
+    "The Underdogs":["Realistic Fiction","Sports"],"The Whipping Boy":["Realistic Fiction"],"Thor":["Action & Adventure","Fantasy"],
+    "Top Dogs- UCONN Huskies":["Sports","Nonfiction"],"Tracker":["Action & Adventure"],"Treasure Island":["Action & Adventure","Classics"],
+    "We are the Scribes":["Historical Fiction"],"What If?":["Nonfiction"],"What Waits in the Water":["Horror","Thriller / Suspense"],
+    "Where is Easter Island?":["Nonfiction"],"Wonder":["Realistic Fiction"],"Wonder (Spanish)":["Realistic Fiction"],"Year in Sports 2016":["Sports","Nonfiction"]
+  };
+  return titleMap[title]||seriesMap[series]||null;
+}
+
+async function applyCorrectGenresOnce(){
+  if(localStorage.getItem(GENRE_MIGRATION_KEY)===GENRE_MIGRATION_VERSION)return;
+  const updates=[];
+  const unmatched=[];
+  for(const book of books){
+    const genres=getCorrectGenresForBook(book);
+    if(!genres){unmatched.push(book.Title);continue;}
+    const current=Array.isArray(book.Genres)?book.Genres:[];
+    if(JSON.stringify(current)!==JSON.stringify(genres)||book.Genre!==genres[0]){
+      updates.push({book,genres});
+    }
+  }
+  for(const item of updates){
+    const {error}=await supabaseClient.from("Books").update({"Genres":item.genres,"Genre":item.genres[0]}).eq("id",item.book.id);
+    if(error){console.error("Genre update failed:",item.book.Title,error);return;}
+    item.book.Genres=item.genres;
+    item.book.Genre=item.genres[0];
+  }
+  if(unmatched.length)console.warn("Books without automatic genre assignment:",unmatched);
+  localStorage.setItem(GENRE_MIGRATION_KEY,GENRE_MIGRATION_VERSION);
+  if(updates.length){renderLibrary();renderBookList();updateDashboard();}
+}
+
 async function loadData(){
 
   try{
@@ -3027,6 +3114,8 @@ async function loadData(){
 
     seriesCovers=
       seriesResult.data||[];
+
+    await applyCorrectGenresOnce();
 
     updateDashboard();
     populateClasses();
