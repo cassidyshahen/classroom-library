@@ -684,8 +684,10 @@ tr:hover td{background:#f8fafc}
   cursor:pointer;
 }
 .series-image-button:hover{background:#eef2f7}
+.series-edit-menu{position:absolute;top:8px;right:8px;z-index:6}.series-edit-menu summary{list-style:none;width:32px;height:32px;border:1px solid #cbd5e1;border-radius:8px;background:rgba(255,255,255,.94);color:#334155;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;cursor:pointer;box-shadow:0 2px 7px rgba(15,23,42,.12)}.series-edit-menu summary::-webkit-details-marker{display:none}.series-edit-popover{position:absolute;right:0;top:37px;width:120px;background:white;border:1px solid #e2e8f0;border-radius:9px;padding:5px;box-shadow:0 8px 22px rgba(15,23,42,.16)}.series-edit-popover button{display:block;width:100%;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:6px;cursor:pointer;font-weight:700;color:#334155}.series-edit-popover button:hover{background:#f1f5f9}.series-image-editor.hidden{display:none}
 
 .series-option-card{
+  position:relative;
   background:white;
   border:1px solid #e2e8f0;
   border-radius:12px;
@@ -3625,22 +3627,20 @@ function renderSeriesBrowser(){
         : `<div class="series-option-placeholder">📚</div>`;
 
       return `<div class="series-option-card">
+        <details class="series-edit-menu" onclick="event.stopPropagation()">
+          <summary aria-label="Series options">⋯</summary>
+          <div class="series-edit-popover">
+            <button type="button" onclick="showSeriesImageEditor('${safeName}');this.closest('details').removeAttribute('open')">✏️ Edit</button>
+          </div>
+        </details>
         <button class="series-card-main" type="button" onclick="openBrowseSeries('${safeName}')">
           <div class="series-option-image-wrap">${imageHtml}</div>
           <div class="series-option-name">${name}</div>
           <div class="series-option-count">${count} ${count===1 ? "book" : "books"}</div>
         </button>
-        <div class="series-image-editor" onclick="event.stopPropagation();">
-          <input
-            class="series-image-url-input"
-            id="seriesImageInput-${encodeURIComponent(name)}"
-            type="url"
-            placeholder="Paste image URL..."
-            value="${savedImage.replace(/"/g,"&quot;")}"
-          >
-          <button class="series-image-button" type="button" onclick="saveSeriesImage('${safeName}')">
-            Save
-          </button>
+        <div class="series-image-editor hidden" id="seriesImageEditor-${encodeURIComponent(name)}" onclick="event.stopPropagation();">
+          <input class="series-image-url-input" id="seriesImageInput-${encodeURIComponent(name)}" type="url" placeholder="Paste image URL..." value="${savedImage.replace(/"/g,"&quot;")}">
+          <button class="series-image-button" type="button" onclick="saveSeriesImage('${safeName}')">Save</button>
         </div>
       </div>`;
     }).join("");
@@ -3664,6 +3664,8 @@ function renderSeriesBrowser(){
     booksGrid.appendChild(card);
   });
 }
+
+function showSeriesImageEditor(name){const editor=document.getElementById("seriesImageEditor-"+encodeURIComponent(name));if(!editor)return;editor.classList.toggle("hidden");if(!editor.classList.contains("hidden")){const input=document.getElementById("seriesImageInput-"+encodeURIComponent(name));if(input)input.focus();}}
 
 async function saveSeriesImage(name){
   const input=document.getElementById("seriesImageInput-"+encodeURIComponent(name));
