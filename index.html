@@ -873,6 +873,7 @@ tr:hover td{background:#f8fafc}
   <button class="nav-button active" data-page="dashboard">Dashboard</button>
   <button class="nav-button" data-page="checkout">Check Out</button>
   <button class="nav-button" data-page="library">Library</button>
+  <button class="nav-button" data-page="booklist">Book List</button>
   <button class="nav-button" data-page="students">Students</button>
   <button class="nav-button" data-page="checkedout">Checked Out</button>
   <button class="nav-button" data-page="history">History</button>
@@ -1118,6 +1119,23 @@ tr:hover td{background:#f8fafc}
 
 </section>
 
+
+<section id="booklist" class="page">
+  <div class="library-header">
+    <div>
+      <h2>Book List</h2>
+      <p style="color:#64748b;margin-top:4px;">All titles in your classroom library, alphabetically.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="table-container">
+      <table class="book-list-table">
+        <thead><tr><th>Title</th><th>Author</th></tr></thead>
+        <tbody id="bookListTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
 <section id="students" class="page">
 
@@ -3013,6 +3031,7 @@ async function loadData(){
     updateDashboard();
     populateClasses();
     renderLibrary();
+    renderBookList();
     renderStudents();
     renderCheckedOut();
     renderHistory();
@@ -5570,6 +5589,13 @@ function renderHistory(){
    NAVIGATION
 ============================================================ */
 
+function renderBookList(){
+  const tbody=document.getElementById("bookListTableBody");
+  if(!tbody)return;
+  const sorted=[...books].sort((a,b)=>String(a.Title||"").localeCompare(String(b.Title||""),undefined,{sensitivity:"base"}));
+  tbody.innerHTML=sorted.map(book=>`<tr><td><strong>${book.Title||""}</strong></td><td>${book.Author||"—"}</td></tr>`).join("");
+}
+
 function showPage(pageId){
 
   document.querySelectorAll(
@@ -5613,6 +5639,9 @@ function showPage(pageId){
 
   if(pageId==="library")
     renderLibrary();
+
+  if(pageId==="booklist")
+    renderBookList();
 
   if(pageId==="students")
     renderStudents();
