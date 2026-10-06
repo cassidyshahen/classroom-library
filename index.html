@@ -960,6 +960,11 @@ tbody tr{transition:background .12s ease}
 .library-card-footer{position:relative;display:flex;justify-content:space-between;gap:15px;align-items:center;padding-top:16px;color:#927b5d;font-size:11px;font-weight:700}
 .library-card-number{letter-spacing:.09em}
 @media(max-width:700px){.student-library-card{padding:0 16px 15px;border-radius:17px}.student-library-card-top{padding-top:20px}.library-card-icon{width:48px;height:48px;font-size:23px}.library-card-footer{flex-direction:column;align-items:flex-start;gap:5px}}
+
+#editModal .modal-buttons{align-items:center;flex-wrap:wrap}
+#editModal .edit-modal-delete{margin-left:auto;padding:12px 16px;border-radius:9px}
+#studentHistory .return-button{padding:7px 12px;border-radius:8px}
+@media(max-width:600px){#editModal .edit-modal-delete{margin-left:0;width:100%;order:3}}
 </style>
 </head>
 
@@ -1511,6 +1516,10 @@ tbody tr{transition:background .12s ease}
 
       <button id="cancelEditButton" class="cancel-button">
         Cancel
+      </button>
+
+      <button id="deleteEditCheckoutButton" class="delete-button edit-modal-delete" type="button">
+        Delete Record
       </button>
 
     </div>
@@ -5175,12 +5184,13 @@ function showStudentHistory(studentId){
                 Edit
               </button>
 
+              ${!returned ? `
               <button
-                class="delete-button"
-                onclick="deleteCheckout(${checkout.id})"
+                class="return-button"
+                onclick="returnBook(${checkout.id})"
               >
-                Delete
-              </button>
+                Return Book
+              </button>` : ""}
 
             </div>
 
@@ -6313,6 +6323,19 @@ document.getElementById(
 ).addEventListener(
   "click",
   closeEditCheckout
+);
+
+
+document.getElementById(
+  "deleteEditCheckoutButton"
+).addEventListener(
+  "click",
+  ()=>{
+    if(!editingCheckoutId)return;
+    const checkoutId=editingCheckoutId;
+    closeEditCheckout();
+    deleteCheckout(checkoutId);
+  }
 );
 
 
