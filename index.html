@@ -4047,6 +4047,7 @@ function renderLibrary(){
               >
                 ${available>0 ? "Check Out" : "Unavailable"}
               </button>
+              <button class="book-card-details-button" onclick="openBookDetails(${book.id})">View Details</button>
               <div class="online-book-actions">
                 <button class="edit-button" onclick="openEditBook(${book.id})">Edit</button>
                 <button class="delete-button" onclick="deleteBook(${book.id})">Delete</button>
