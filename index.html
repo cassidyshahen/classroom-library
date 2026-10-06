@@ -599,16 +599,16 @@ tr:hover td{background:#f8fafc}
 
 .series-options-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
 }
 .series-option-image-wrap{
-  width:100%;
-  aspect-ratio:3/2;
-  border-radius:9px;
+  width:calc(100% + 36px);
+  margin:-18px -18px 14px;
+  aspect-ratio:16/10;
+  border-radius:12px 12px 0 0;
   overflow:hidden;
   background:#eef2f7;
-  margin-bottom:12px;
 }
 .series-option-image{
   width:100%;
@@ -778,6 +778,7 @@ tr:hover td{background:#f8fafc}
 .online-library-empty{background:white;border-radius:10px;padding:30px;text-align:center;color:#64748b}
 
 @media(max-width:800px){
+  .series-options-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stats{grid-template-columns:repeat(2,1fr)}
 
   .library-header{
@@ -790,6 +791,7 @@ tr:hover td{background:#f8fafc}
 }
 
 @media(max-width:600px){
+  .series-options-grid{grid-template-columns:1fr}
   header{padding:13px 15px}
   header h1{font-size:20px}
   main{padding:15px}
