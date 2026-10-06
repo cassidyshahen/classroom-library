@@ -368,6 +368,9 @@ const SUPABASE_ANON_KEY="sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
 
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
+const LOGIN_DURATION=8*60*60*1000;
+const LOGIN_TIME_KEY="classroomLibraryLoginTime";
+
 let books=[];
 let students=[];
 let classes=[];
@@ -1181,6 +1184,15 @@ async function login(){
     return;
   }
 
+  /*
+    Start the 8-hour login window.
+
+    This timestamp is only checked when the app is opened/reloaded.
+    There is NO timer running in the background, so the user will
+    never be kicked out while actively using the app.
+  */
+  localStorage.setItem(LOGIN_TIME_KEY,String(Date.now()));
+
   await showApp();
 }
 
@@ -1193,10 +1205,64 @@ async function showApp(){
 async function logout(){
   await supabaseClient.auth.signOut();
 
+  localStorage.removeItem(LOGIN_TIME_KEY);
+
   document.getElementById("app").classList.add("hidden");
   document.getElementById("loginScreen").classList.remove("hidden");
   document.getElementById("password").value="";
 }
+
+/* ============================================================
+   8-HOUR LOGIN CHECK
+============================================================ */
+
+async function checkExistingSession(){
+  const {
+    data:{session}
+  }=await supabaseClient.auth.getSession();
+
+  if(!session){
+    localStorage.removeItem(LOGIN_TIME_KEY);
+    return;
+  }
+
+  const storedLoginTime=localStorage.getItem(LOGIN_TIME_KEY);
+
+  /*
+    If an old session exists without our new timestamp,
+    start a fresh 8-hour window from now.
+  */
+  if(!storedLoginTime){
+    localStorage.setItem(LOGIN_TIME_KEY,String(Date.now()));
+    await showApp();
+    return;
+  }
+
+  const loginTime=Number(storedLoginTime);
+  const elapsed=Date.now()-loginTime;
+
+  /*
+    8 hours have passed.
+
+    We sign out only because the app has been opened/reloaded
+    after the 8-hour window. We do NOT run a timer while the
+    app is being used.
+  */
+  if(elapsed>=LOGIN_DURATION){
+    localStorage.removeItem(LOGIN_TIME_KEY);
+
+    await supabaseClient.auth.signOut();
+
+    document.getElementById("app").classList.add("hidden");
+    document.getElementById("loginScreen").classList.remove("hidden");
+
+    return;
+  }
+
+  await showApp();
+}
+
+checkExistingSession();
 
 /* ============================================================
    EVENT LISTENERS
@@ -1278,20 +1344,6 @@ document.getElementById("editModal").addEventListener("click",event=>{
     closeEditCheckout();
   }
 });
-
-/* ============================================================
-   CHECK EXISTING LOGIN SESSION
-============================================================ */
-
-async function checkExistingSession(){
-  const {
-    data:{session}
-  }=await supabaseClient.auth.getSession();
-
-  if(session)await showApp();
-}
-
-checkExistingSession();
 </script>
 
 </body>
