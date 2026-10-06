@@ -5129,13 +5129,13 @@ function renderStudents(){
   );
 
   document.querySelectorAll(
-    ".student-tab"
+    "#students .student-tab"
   ).forEach(
     tab=>{
 
       tab.classList.toggle(
         "active",
-        tab.dataset.class.toLowerCase()===
+        (tab.dataset.class||"").toLowerCase()===
           selectedStudentClass.toLowerCase()
       );
     }
