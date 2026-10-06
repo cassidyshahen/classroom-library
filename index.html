@@ -1127,6 +1127,15 @@ tr:hover td{background:#f8fafc}
       <p style="color:#64748b;margin-top:4px;">All titles in your classroom library, alphabetically.</p>
     </div>
   </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <label for="bookListSort" style="font-weight:700;">Sort by</label>
+    <select id="bookListSort" onchange="renderBookList()" style="min-width:220px;">
+      <option value="title-az">Title: A–Z</option>
+      <option value="title-za">Title: Z–A</option>
+      <option value="author-az">Author: A–Z</option>
+      <option value="author-za">Author: Z–A</option>
+    </select>
+  </div>
   <div class="card">
     <div class="table-container">
       <table class="book-list-table">
@@ -5681,7 +5690,14 @@ function renderHistory(){
 function renderBookList(){
   const tbody=document.getElementById("bookListTableBody");
   if(!tbody)return;
-  const sorted=[...books].sort((a,b)=>String(a.Title||"").localeCompare(String(b.Title||""),undefined,{sensitivity:"base"}));
+  const sortValue=document.getElementById("bookListSort")?.value||"title-az";
+  const [field,direction]=sortValue.split("-");
+  const key=field==="author"?"Author":"Title";
+  const sorted=[...books].sort((a,b)=>{
+    const result=String(a[key]||"").localeCompare(String(b[key]||""),undefined,{sensitivity:"base"});
+    if(result!==0)return direction==="za"?-result:result;
+    return String(a.Title||"").localeCompare(String(b.Title||""),undefined,{sensitivity:"base"});
+  });
   tbody.innerHTML=sorted.map(book=>`<tr><td><strong>${book.Title||""}</strong></td><td>${book.Author||"—"}</td></tr>`).join("");
 }
 
