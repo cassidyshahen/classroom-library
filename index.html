@@ -86,6 +86,16 @@ tr:hover td{background:#f8fafc}
 .delete-button{background:#dc2626;color:white;border:none;padding:7px 11px;border-radius:5px;cursor:pointer}
 .delete-button:hover{background:#b91c1c}
 
+.small-button{
+  background:#64748b;
+  color:white;
+  border:none;
+  padding:7px 11px;
+  border-radius:5px;
+  cursor:pointer;
+}
+.small-button:hover{background:#475569}
+
 /* SEARCHABLE BOOK DROPDOWN */
 .book-dropdown{position:relative}
 .book-dropdown-input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;background:white;cursor:pointer}
@@ -96,7 +106,7 @@ tr:hover td{background:#f8fafc}
 .book-dropdown-option:hover{background:#f1f5f9}
 .book-dropdown-empty{padding:12px;color:#64748b}
 
-/* EDIT MODAL */
+/* MODALS */
 .modal-overlay{
   position:fixed;
   inset:0;
@@ -106,7 +116,9 @@ tr:hover td{background:#f8fafc}
   justify-content:center;
   padding:20px;
   z-index:1000;
+  overflow-y:auto;
 }
+
 .modal{
   background:white;
   width:100%;
@@ -115,7 +127,9 @@ tr:hover td{background:#f8fafc}
   padding:25px;
   box-shadow:0 10px 35px rgba(0,0,0,.25);
 }
+
 .modal h2{margin-top:0}
+
 .modal-book{
   background:#f8fafc;
   padding:12px;
@@ -123,7 +137,9 @@ tr:hover td{background:#f8fafc}
   margin-bottom:20px;
   font-weight:bold;
 }
+
 .modal-buttons{display:flex;gap:10px;margin-top:20px}
+
 .cancel-button{
   background:#64748b;
   color:white;
@@ -135,9 +151,74 @@ tr:hover td{background:#f8fafc}
 }
 .cancel-button:hover{background:#475569}
 
+.library-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.library-header h2{
+  margin:0;
+}
+
+.library-actions{
+  display:flex;
+  gap:10px;
+}
+
+.book-action-buttons{
+  display:flex;
+  gap:6px;
+  white-space:nowrap;
+}
+
+.add-button{
+  background:#16a34a;
+  color:white;
+  border:none;
+  padding:10px 16px;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.add-button:hover{background:#15803d}
+
+.available-good{
+  color:#166534;
+  font-weight:bold;
+}
+
+.available-none{
+  color:#b91c1c;
+  font-weight:bold;
+}
+
+.copy-note{
+  color:#64748b;
+  font-size:14px;
+  margin-top:5px;
+}
+
 @media(max-width:800px){
 .stats{grid-template-columns:repeat(2,1fr)}
+
+.library-header{
+  align-items:stretch;
+  flex-direction:column;
 }
+
+.library-actions{
+  width:100%;
+}
+
+.library-actions button{
+  flex:1;
+}
+}
+
 @media(max-width:600px){
 header{padding:13px 15px}
 header h1{font-size:20px}
@@ -187,33 +268,67 @@ nav{padding:8px}
 
 <section id="dashboard" class="page active">
   <h2>Dashboard</h2>
+
   <div class="stats">
-    <div class="stat-card"><div class="number" id="totalBooks">0</div><div class="label">Total Books</div></div>
-    <div class="stat-card"><div class="number" id="availableBooks">0</div><div class="label">Available</div></div>
-    <div class="stat-card"><div class="number" id="checkedOutBooks">0</div><div class="label">Checked Out</div></div>
-    <div class="stat-card"><div class="number" id="totalStudents">0</div><div class="label">Students</div></div>
+    <div class="stat-card">
+      <div class="number" id="totalBooks">0</div>
+      <div class="label">Total Books</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="number" id="availableBooks">0</div>
+      <div class="label">Available</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="number" id="checkedOutBooks">0</div>
+      <div class="label">Checked Out</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="number" id="totalStudents">0</div>
+      <div class="label">Students</div>
+    </div>
   </div>
+
   <div class="card">
     <h3>Welcome!</h3>
-    <p>Use <strong>Check Out</strong> to lend a book to a student. Use <strong>Checked Out</strong> to see currently borrowed books. Use <strong>History</strong> to see every checkout and return. Click a student on the <strong>Students</strong> page to see that student's personal history.</p>
+    <p>
+      Use <strong>Check Out</strong> to lend a book to a student.
+      Use <strong>Checked Out</strong> to see currently borrowed books.
+      Use <strong>History</strong> to see every checkout and return.
+      Click a student on the <strong>Students</strong> page to see that student's personal history.
+    </p>
   </div>
 </section>
 
+
 <section id="checkout" class="page">
   <h2>Check Out a Book</h2>
+
   <div id="checkoutMessage"></div>
+
   <div class="card">
+
     <div class="form-group">
       <label for="classSelect">Class</label>
-      <select id="classSelect"><option value="">Select a class...</option></select>
+      <select id="classSelect">
+        <option value="">Select a class...</option>
+      </select>
     </div>
+
     <div class="form-group">
       <label for="studentSelect">Student</label>
-      <select id="studentSelect" disabled><option value="">Select a student...</option></select>
+      <select id="studentSelect" disabled>
+        <option value="">Select a student...</option>
+      </select>
     </div>
+
     <div class="form-group">
       <label for="bookSelect">Book</label>
+
       <div class="book-dropdown">
+
         <input
           type="text"
           id="bookSelect"
@@ -222,59 +337,130 @@ nav{padding:8px}
           autocomplete="off"
           disabled
         >
+
         <div id="bookDropdownList" class="book-dropdown-list hidden"></div>
+
       </div>
     </div>
-    <button id="checkoutButton" class="primary-button" disabled>Check Out</button>
+
+    <button id="checkoutButton" class="primary-button" disabled>
+      Check Out
+    </button>
+
   </div>
 </section>
+
 
 <section id="library" class="page">
-  <h2>Library</h2>
-  <div class="search-box">
-    <input type="text" id="librarySearch" placeholder="Search by title, author, series, or category...">
-  </div>
-  <div class="card">
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th><th>Author</th><th>Category</th><th>Series</th><th>Series #</th><th>Copies</th><th>Available</th>
-          </tr>
-        </thead>
-        <tbody id="libraryTableBody"></tbody>
-      </table>
+
+  <div class="library-header">
+    <h2>Library</h2>
+
+    <div class="library-actions">
+      <button id="addBookButton" class="add-button">
+        + Add Book
+      </button>
     </div>
   </div>
+
+  <div class="search-box">
+    <input
+      type="text"
+      id="librarySearch"
+      placeholder="Search by title, author, series, or category..."
+    >
+  </div>
+
+  <div class="card">
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Series</th>
+            <th>Series #</th>
+            <th>Copies</th>
+            <th>Available</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="libraryTableBody"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
 </section>
 
+
 <section id="students" class="page">
+
   <h2>Students</h2>
+
   <div class="student-tabs">
     <button class="student-tab active" data-class="7S">7S</button>
     <button class="student-tab" data-class="7K">7K</button>
   </div>
+
   <div class="search-box">
-    <input type="text" id="studentSearch" placeholder="Search student number...">
+    <input
+      type="text"
+      id="studentSearch"
+      placeholder="Search student number..."
+    >
   </div>
+
   <div class="card">
+
     <div class="table-container">
+
       <table>
+
         <thead>
-          <tr><th>Class</th><th>Student #</th><th>Books Checked Out</th></tr>
+          <tr>
+            <th>Class</th>
+            <th>Student #</th>
+            <th>Books Checked Out</th>
+          </tr>
         </thead>
+
         <tbody id="studentsTableBody"></tbody>
+
       </table>
+
     </div>
+
   </div>
+
 </section>
 
+
 <section id="studentHistory" class="page">
-  <button id="backToStudentsButton" class="primary-button" style="margin-bottom:20px;">← Back to Students</button>
+
+  <button
+    id="backToStudentsButton"
+    class="primary-button"
+    style="margin-bottom:20px;"
+  >
+    ← Back to Students
+  </button>
+
   <h2 id="studentHistoryTitle">Student History</h2>
+
   <div class="card">
+
     <div class="table-container">
+
       <table>
+
         <thead>
           <tr>
             <th>Book</th>
@@ -284,17 +470,28 @@ nav{padding:8px}
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody id="studentHistoryTableBody"></tbody>
+
       </table>
+
     </div>
+
   </div>
+
 </section>
 
+
 <section id="checkedout" class="page">
+
   <h2>Checked Out Books</h2>
+
   <div class="card">
+
     <div class="table-container">
+
       <table>
+
         <thead>
           <tr>
             <th>Book</th>
@@ -304,35 +501,69 @@ nav{padding:8px}
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody id="checkedOutTableBody"></tbody>
+
       </table>
+
     </div>
+
   </div>
+
 </section>
 
+
 <section id="history" class="page">
+
   <h2>Checkout History</h2>
+
   <div class="search-box">
-    <input type="text" id="historySearch" placeholder="Search by book, student, or class...">
+
+    <input
+      type="text"
+      id="historySearch"
+      placeholder="Search by book, student, or class..."
+    >
+
   </div>
+
   <div class="card">
+
     <div class="table-container">
+
       <table>
+
         <thead>
-          <tr><th>Book</th><th>Student</th><th>Class</th><th>Checked Out</th><th>Returned</th><th>Status</th></tr>
+          <tr>
+            <th>Book</th>
+            <th>Student</th>
+            <th>Class</th>
+            <th>Checked Out</th>
+            <th>Returned</th>
+            <th>Status</th>
+          </tr>
         </thead>
+
         <tbody id="historyTableBody"></tbody>
+
       </table>
+
     </div>
+
   </div>
+
 </section>
 
 </main>
 </div>
 
+
 <!-- EDIT CHECKOUT MODAL -->
+
 <div id="editModal" class="modal-overlay hidden">
+
   <div class="modal">
+
     <h2>Edit Checkout</h2>
 
     <div class="modal-book" id="editBookName"></div>
@@ -344,29 +575,166 @@ nav{padding:8px}
 
     <div class="form-group">
       <label for="editStatus">Status</label>
+
       <select id="editStatus">
         <option value="out">Checked Out</option>
         <option value="returned">Returned</option>
       </select>
+
     </div>
 
     <div class="form-group" id="editReturnDateGroup">
+
       <label for="editReturnDate">Return Date</label>
+
       <input type="date" id="editReturnDate">
+
     </div>
 
     <div class="modal-buttons">
-      <button id="saveEditButton" class="primary-button">Save Changes</button>
-      <button id="cancelEditButton" class="cancel-button">Cancel</button>
+
+      <button id="saveEditButton" class="primary-button">
+        Save Changes
+      </button>
+
+      <button id="cancelEditButton" class="cancel-button">
+        Cancel
+      </button>
+
     </div>
+
   </div>
+
 </div>
 
+
+<!-- ADD / EDIT BOOK MODAL -->
+
+<div id="bookModal" class="modal-overlay hidden">
+
+  <div class="modal">
+
+    <h2 id="bookModalTitle">Add Book</h2>
+
+    <div id="bookModalMessage"></div>
+
+    <div class="form-group">
+
+      <label for="bookTitleInput">Title</label>
+
+      <input
+        type="text"
+        id="bookTitleInput"
+        placeholder="Book title"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="bookAuthorInput">Author</label>
+
+      <input
+        type="text"
+        id="bookAuthorInput"
+        placeholder="Author"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="bookCategoryInput">Category</label>
+
+      <select id="bookCategoryInput">
+
+        <option value="">Select a category...</option>
+        <option value="Series">Series</option>
+        <option value="Standalone">Standalone</option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group" id="bookSeriesGroup">
+
+      <label for="bookSeriesInput">Series</label>
+
+      <input
+        type="text"
+        id="bookSeriesInput"
+        list="seriesOptions"
+        placeholder="Series name"
+      >
+
+      <datalist id="seriesOptions"></datalist>
+
+    </div>
+
+
+    <div class="form-group" id="bookSeriesNumberGroup">
+
+      <label for="bookSeriesNumberInput">Series #</label>
+
+      <input
+        type="number"
+        id="bookSeriesNumberInput"
+        min="1"
+        step="1"
+        placeholder="Example: 3"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="bookCopiesInput">Copies</label>
+
+      <input
+        type="number"
+        id="bookCopiesInput"
+        min="1"
+        step="1"
+        value="1"
+      >
+
+      <div class="copy-note" id="copyNote">
+        How many physical copies of this book do you own?
+      </div>
+
+    </div>
+
+
+    <div class="modal-buttons">
+
+      <button id="saveBookButton" class="primary-button">
+        Add Book
+      </button>
+
+      <button id="cancelBookButton" class="cancel-button">
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
 <script>
+
 const SUPABASE_URL="https://wwkcacypzjoojonmfaui.supabase.co";
 const SUPABASE_ANON_KEY="sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM";
 
-const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const supabaseClient=supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 const LOGIN_DURATION=8*60*60*1000;
 const LOGIN_TIME_KEY="classroomLibraryLoginTime";
@@ -375,13 +743,23 @@ let books=[];
 let students=[];
 let classes=[];
 let checkouts=[];
+
 let selectedStudentClass="7S";
 let currentStudentHistoryStudentId=null;
 let editingCheckoutId=null;
 let selectedBookId="";
 
+let editingBookId=null;
+
+
+/* ============================================================
+   DATE FUNCTIONS
+============================================================ */
+
 function getTodayEastern(){
+
   const now=new Date();
+
   const parts=new Intl.DateTimeFormat("en-US",{
     timeZone:"America/New_York",
     year:"numeric",
@@ -389,20 +767,30 @@ function getTodayEastern(){
     day:"2-digit"
   }).formatToParts(now);
 
-  let year="",month="",day="";
+  let year="";
+  let month="";
+  let day="";
+
   parts.forEach(part=>{
+
     if(part.type==="year")year=part.value;
     if(part.type==="month")month=part.value;
     if(part.type==="day")day=part.value;
+
   });
 
   return `${year}-${month}-${day}`;
 }
 
+
 function formatDate(value){
+
   if(!value)return "";
+
   const dateString=String(value).substring(0,10);
+
   const parts=dateString.split("-");
+
   if(parts.length!==3)return value;
 
   const year=Number(parts[0]);
@@ -416,55 +804,143 @@ function formatDate(value){
     day:"numeric",
     year:"numeric"
   }).format(new Date(year,month-1,day));
+
 }
+
+
+/* ============================================================
+   HELPER FUNCTIONS
+============================================================ */
 
 function getClassName(classId){
-  const found=classes.find(c=>String(c.id)===String(classId));
+
+  const found=classes.find(
+    c=>String(c.id)===String(classId)
+  );
+
   if(!found)return "";
-  return found.name||found.Name||found.class_name||found["Class Name"]||"";
+
+  return found.name||
+    found.Name||
+    found.class_name||
+    found["Class Name"]||
+    "";
+
 }
+
 
 function getBookTitle(bookId){
-  const book=books.find(b=>String(b.id)===String(bookId));
+
+  const book=books.find(
+    b=>String(b.id)===String(bookId)
+  );
+
   return book?book.Title:"Unknown Book";
+
 }
+
 
 function getStudent(studentId){
-  return students.find(s=>String(s.id)===String(studentId));
+
+  return students.find(
+    s=>String(s.id)===String(studentId)
+  );
+
 }
+
 
 function getAvailableCopies(book){
+
   const activeCheckouts=checkouts.filter(c=>
-    String(c.book_id)===String(book.id)&&!c["Return Date"]
+    String(c.book_id)===String(book.id)&&
+    !c["Return Date"]
   ).length;
 
-  return Math.max(0,Number(book.Copies||0)-activeCheckouts);
+  return Math.max(
+    0,
+    Number(book.Copies||0)-activeCheckouts
+  );
+
 }
+
+
+function getActiveCheckoutCount(bookId){
+
+  return checkouts.filter(c=>
+    String(c.book_id)===String(bookId)&&
+    !c["Return Date"]
+  ).length;
+
+}
+
 
 function showMessage(elementId,message,type){
+
   const element=document.getElementById(elementId);
-  element.innerHTML=`<div class="message ${type}">${message}</div>`;
-  setTimeout(()=>element.innerHTML="",4000);
+
+  element.innerHTML=
+    `<div class="message ${type}">${message}</div>`;
+
+  setTimeout(()=>{
+    element.innerHTML="";
+  },4000);
+
 }
 
+
+/* ============================================================
+   LOAD DATA
+============================================================ */
+
 async function loadData(){
+
   try{
-    const [booksResult,studentsResult,classesResult,checkoutsResult]=await Promise.all([
-      supabaseClient.from("Books").select("*").order("Title"),
-      supabaseClient.from("Students").select("*").order("class_id").order("student_number"),
-      supabaseClient.from("Classes").select("*").order("id"),
-      supabaseClient.from("Checkouts").select("*").order("Check Out Date",{ascending:false})
+
+    const [
+      booksResult,
+      studentsResult,
+      classesResult,
+      checkoutsResult
+    ]=await Promise.all([
+
+      supabaseClient
+        .from("Books")
+        .select("*")
+        .order("Title"),
+
+      supabaseClient
+        .from("Students")
+        .select("*")
+        .order("class_id")
+        .order("student_number"),
+
+      supabaseClient
+        .from("Classes")
+        .select("*")
+        .order("id"),
+
+      supabaseClient
+        .from("Checkouts")
+        .select("*")
+        .order(
+          "Check Out Date",
+          {ascending:false}
+        )
+
     ]);
+
 
     if(booksResult.error)throw booksResult.error;
     if(studentsResult.error)throw studentsResult.error;
     if(classesResult.error)throw classesResult.error;
     if(checkoutsResult.error)throw checkoutsResult.error;
 
+
     books=booksResult.data||[];
     students=studentsResult.data||[];
     classes=classesResult.data||[];
     checkouts=checkoutsResult.data||[];
+
 
     updateDashboard();
     populateClasses();
@@ -472,338 +948,1569 @@ async function loadData(){
     renderStudents();
     renderCheckedOut();
     renderHistory();
+    updateSeriesOptions();
+
 
   }catch(error){
-    console.error("Error loading data:",error);
-    alert("There was a problem loading your library data. Please refresh the page and try again.");
+
+    console.error(
+      "Error loading data:",
+      error
+    );
+
+    alert(
+      "There was a problem loading your library data. Please refresh the page and try again."
+    );
+
   }
+
 }
+
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
 
 function updateDashboard(){
-  const totalBooks=books.reduce((total,book)=>total+Number(book.Copies||0),0);
-  const checkedOut=checkouts.filter(c=>!c["Return Date"]).length;
-  const available=totalBooks-checkedOut;
 
-  document.getElementById("totalBooks").textContent=totalBooks;
-  document.getElementById("availableBooks").textContent=available;
-  document.getElementById("checkedOutBooks").textContent=checkedOut;
-  document.getElementById("totalStudents").textContent=students.length;
-}
-
-function populateClasses(){
-  const select=document.getElementById("classSelect");
-  select.innerHTML='<option value="">Select a class...</option>';
-
-  classes.forEach(classItem=>{
-    const option=document.createElement("option");
-    option.value=classItem.id;
-    option.textContent=getClassName(classItem.id);
-    select.appendChild(option);
-  });
-}
-
-function populateStudents(){
-  const classId=document.getElementById("classSelect").value;
-  const studentSelect=document.getElementById("studentSelect");
-
-  studentSelect.innerHTML='<option value="">Select a student...</option>';
-
-  if(!classId){
-    studentSelect.disabled=true;
-    clearBookSelection();
-    document.getElementById("bookSelect").disabled=true;
-    return;
-  }
-
-  const classStudents=students.filter(student=>
-    String(student.class_id)===String(classId)
+  const totalBooks=books.reduce(
+    (total,book)=>
+      total+Number(book.Copies||0),
+    0
   );
 
-  classStudents.forEach(student=>{
-    const option=document.createElement("option");
-    option.value=student.id;
-    option.textContent=`Student #${student.student_number}`;
-    studentSelect.appendChild(option);
-  });
+  const checkedOut=
+    checkouts.filter(
+      c=>!c["Return Date"]
+    ).length;
 
-  studentSelect.disabled=false;
-  document.getElementById("bookSelect").disabled=false;
-  populateBooks();
+  const available=
+    Math.max(0,totalBooks-checkedOut);
+
+
+  document.getElementById("totalBooks").textContent=
+    totalBooks;
+
+  document.getElementById("availableBooks").textContent=
+    available;
+
+  document.getElementById("checkedOutBooks").textContent=
+    checkedOut;
+
+  document.getElementById("totalStudents").textContent=
+    students.length;
+
 }
 
+
+/* ============================================================
+   CHECKOUT
+============================================================ */
+
+function populateClasses(){
+
+  const select=
+    document.getElementById("classSelect");
+
+  select.innerHTML=
+    '<option value="">Select a class...</option>';
+
+  classes.forEach(classItem=>{
+
+    const option=
+      document.createElement("option");
+
+    option.value=classItem.id;
+
+    option.textContent=
+      getClassName(classItem.id);
+
+    select.appendChild(option);
+
+  });
+
+}
+
+
+function populateStudents(){
+
+  const classId=
+    document.getElementById("classSelect").value;
+
+  const studentSelect=
+    document.getElementById("studentSelect");
+
+  studentSelect.innerHTML=
+    '<option value="">Select a student...</option>';
+
+
+  if(!classId){
+
+    studentSelect.disabled=true;
+
+    clearBookSelection();
+
+    document.getElementById(
+      "bookSelect"
+    ).disabled=true;
+
+    return;
+
+  }
+
+
+  const classStudents=
+    students.filter(student=>
+      String(student.class_id)===String(classId)
+    );
+
+
+  classStudents.forEach(student=>{
+
+    const option=
+      document.createElement("option");
+
+    option.value=student.id;
+
+    option.textContent=
+      `Student #${student.student_number}`;
+
+    studentSelect.appendChild(option);
+
+  });
+
+
+  studentSelect.disabled=false;
+
+  document.getElementById(
+    "bookSelect"
+  ).disabled=false;
+
+  populateBooks();
+
+}
+
+
 function getFilteredBooks(){
-  const search=document.getElementById("bookSelect").value.toLowerCase().trim();
+
+  const search=
+    document.getElementById(
+      "bookSelect"
+    ).value.toLowerCase().trim();
+
 
   return books.filter(book=>{
-    if(getAvailableCopies(book)<=0)return false;
 
-    if(!search)return true;
+    if(getAvailableCopies(book)<=0)
+      return false;
 
-    const title=String(book.Title||"").toLowerCase();
-    const author=String(book.Author||"").toLowerCase();
-    const series=String(book.Series||"").toLowerCase();
+
+    if(!search)
+      return true;
+
+
+    const title=
+      String(book.Title||"").toLowerCase();
+
+    const author=
+      String(book.Author||"").toLowerCase();
+
+    const series=
+      String(book.Series||"").toLowerCase();
+
 
     return title.includes(search)||
       author.includes(search)||
       series.includes(search);
+
   });
+
 }
 
-function populateBooks(){
-  const input=document.getElementById("bookSelect");
-  const list=document.getElementById("bookDropdownList");
 
-  const availableBooks=getFilteredBooks();
+function populateBooks(){
+
+  const input=
+    document.getElementById("bookSelect");
+
+  const list=
+    document.getElementById(
+      "bookDropdownList"
+    );
+
+
+  const availableBooks=
+    getFilteredBooks();
+
 
   list.innerHTML="";
 
+
   if(availableBooks.length===0){
-    list.innerHTML='<div class="book-dropdown-empty">No available books found.</div>';
+
+    list.innerHTML=
+      '<div class="book-dropdown-empty">No available books found.</div>';
+
     return;
+
   }
+
 
   availableBooks.forEach(book=>{
-    const option=document.createElement("div");
-    option.className="book-dropdown-option";
+
+    const option=
+      document.createElement("div");
+
+    option.className=
+      "book-dropdown-option";
+
 
     let text=book.Title;
-    if(book.Author)text+=` — ${book.Author}`;
 
-    text+=` (${getAvailableCopies(book)} available)`;
+    if(book.Author)
+      text+=` — ${book.Author}`;
+
+
+    text+=
+      ` (${getAvailableCopies(book)} available)`;
+
+
     option.textContent=text;
 
+
     option.addEventListener("click",()=>{
+
       selectedBookId=book.id;
+
       input.value=text;
+
       list.classList.add("hidden");
+
       updateCheckoutButton();
+
     });
 
+
     list.appendChild(option);
+
   });
+
 }
+
 
 function clearBookSelection(){
+
   selectedBookId="";
-  document.getElementById("bookSelect").value="";
-  document.getElementById("bookDropdownList").classList.add("hidden");
+
+  document.getElementById(
+    "bookSelect"
+  ).value="";
+
+  document.getElementById(
+    "bookDropdownList"
+  ).classList.add("hidden");
+
   updateCheckoutButton();
+
 }
+
 
 function updateCheckoutButton(){
-  const classValue=document.getElementById("classSelect").value;
-  const studentValue=document.getElementById("studentSelect").value;
-  const bookValue=selectedBookId;
 
-  document.getElementById("checkoutButton").disabled=
-    !classValue||!studentValue||!bookValue;
+  const classValue=
+    document.getElementById(
+      "classSelect"
+    ).value;
+
+  const studentValue=
+    document.getElementById(
+      "studentSelect"
+    ).value;
+
+  const bookValue=
+    selectedBookId;
+
+
+  document.getElementById(
+    "checkoutButton"
+  ).disabled=
+    !classValue||
+    !studentValue||
+    !bookValue;
+
 }
+
 
 async function checkoutBook(){
-  const studentId=document.getElementById("studentSelect").value;
-  const bookId=selectedBookId;
 
-  if(!studentId||!bookId)return;
+  const studentId=
+    document.getElementById(
+      "studentSelect"
+    ).value;
 
-  const button=document.getElementById("checkoutButton");
+  const bookId=
+    selectedBookId;
+
+
+  if(!studentId||!bookId)
+    return;
+
+
+  const book=
+    books.find(
+      b=>String(b.id)===String(bookId)
+    );
+
+
+  if(!book)
+    return;
+
+
+  if(getAvailableCopies(book)<=0){
+
+    showMessage(
+      "checkoutMessage",
+      "That book is no longer available.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const button=
+    document.getElementById(
+      "checkoutButton"
+    );
+
+
   button.disabled=true;
-  button.textContent="Checking Out...";
+  button.textContent=
+    "Checking Out...";
+
 
   try{
-    const today=getTodayEastern();
 
-    const {error}=await supabaseClient
-      .from("Checkouts")
-      .insert({
-        "Check Out Date":`${today}T12:00:00`,
-        "Return Date":null,
-        student_id:Number(studentId),
-        book_id:Number(bookId)
-      });
+    const today=
+      getTodayEastern();
+
+
+    const {error}=
+      await supabaseClient
+        .from("Checkouts")
+        .insert({
+
+          "Check Out Date":
+            `${today}T12:00:00`,
+
+          "Return Date":null,
+
+          student_id:Number(studentId),
+
+          book_id:Number(bookId)
+
+        });
+
 
     if(error)throw error;
 
-    showMessage("checkoutMessage","Book successfully checked out!","success");
 
-    document.getElementById("classSelect").value="";
-    document.getElementById("studentSelect").innerHTML='<option value="">Select a student...</option>';
-    document.getElementById("studentSelect").disabled=true;
+    showMessage(
+      "checkoutMessage",
+      "Book successfully checked out!",
+      "success"
+    );
+
+
+    document.getElementById(
+      "classSelect"
+    ).value="";
+
+
+    document.getElementById(
+      "studentSelect"
+    ).innerHTML=
+      '<option value="">Select a student...</option>';
+
+
+    document.getElementById(
+      "studentSelect"
+    ).disabled=true;
+
+
     clearBookSelection();
-    document.getElementById("bookSelect").disabled=true;
+
+
+    document.getElementById(
+      "bookSelect"
+    ).disabled=true;
+
 
     await loadData();
 
+
   }catch(error){
-    console.error("Checkout error:",error);
-    showMessage("checkoutMessage","Could not check out the book. Please try again.","error");
+
+    console.error(
+      "Checkout error:",
+      error
+    );
+
+    showMessage(
+      "checkoutMessage",
+      "Could not check out the book. Please try again.",
+      "error"
+    );
+
   }finally{
-    button.textContent="Check Out";
+
+    button.textContent=
+      "Check Out";
+
     updateCheckoutButton();
+
   }
+
 }
+
 
 async function returnBook(checkoutId){
-  if(!confirm("Are you sure you want to mark this book as returned?"))return;
+
+  if(!confirm(
+    "Are you sure you want to mark this book as returned?"
+  ))
+    return;
+
 
   try{
-    const today=getTodayEastern();
 
-    const {error}=await supabaseClient
-      .from("Checkouts")
-      .update({
-        "Return Date":`${today}T12:00:00`
-      })
-      .eq("id",checkoutId);
+    const today=
+      getTodayEastern();
+
+
+    const {error}=
+      await supabaseClient
+        .from("Checkouts")
+        .update({
+
+          "Return Date":
+            `${today}T12:00:00`
+
+        })
+        .eq("id",checkoutId);
+
 
     if(error)throw error;
 
+
     await loadData();
 
+
   }catch(error){
-    console.error("Return error:",error);
-    alert("Could not return the book. Please try again.");
+
+    console.error(
+      "Return error:",
+      error
+    );
+
+    alert(
+      "Could not return the book. Please try again."
+    );
+
   }
+
 }
+
+
+/* ============================================================
+   LIBRARY
+============================================================ */
 
 function renderLibrary(){
-  const tbody=document.getElementById("libraryTableBody");
-  const search=document.getElementById("librarySearch").value.toLowerCase().trim();
 
-  const filteredBooks=books.filter(book=>{
-    if(!search)return true;
+  const tbody=
+    document.getElementById(
+      "libraryTableBody"
+    );
 
-    return String(book.Title||"").toLowerCase().includes(search)||
-      String(book.Author||"").toLowerCase().includes(search)||
-      String(book.Category||"").toLowerCase().includes(search)||
-      String(book.Series||"").toLowerCase().includes(search);
-  });
+
+  const search=
+    document.getElementById(
+      "librarySearch"
+    ).value.toLowerCase().trim();
+
+
+  const filteredBooks=
+    books.filter(book=>{
+
+      if(!search)
+        return true;
+
+
+      return String(book.Title||"")
+        .toLowerCase()
+        .includes(search)||
+
+        String(book.Author||"")
+          .toLowerCase()
+          .includes(search)||
+
+        String(book.Category||"")
+          .toLowerCase()
+          .includes(search)||
+
+        String(book.Series||"")
+          .toLowerCase()
+          .includes(search);
+
+    });
+
 
   tbody.innerHTML="";
 
-  filteredBooks.forEach(book=>{
-    const row=document.createElement("tr");
 
-    row.innerHTML=`
-      <td>${book.Title||""}</td>
-      <td>${book.Author||""}</td>
-      <td>${book.Category||""}</td>
-      <td>${book.Series||""}</td>
-      <td>${book["Series #"]||""}</td>
-      <td>${book.Copies||0}</td>
-      <td>${getAvailableCopies(book)}</td>
-    `;
+  if(filteredBooks.length===0){
 
-    tbody.appendChild(row);
-  });
-}
+    tbody.innerHTML=
+      '<tr><td colspan="8">No books found.</td></tr>';
 
-function renderStudents(){
-  const tbody=document.getElementById("studentsTableBody");
-  const search=document.getElementById("studentSearch").value.toLowerCase().trim();
-
-  tbody.innerHTML="";
-
-  const filteredStudents=students.filter(student=>{
-    const className=getClassName(student.class_id);
-
-    if(className.toLowerCase()!==selectedStudentClass.toLowerCase())return false;
-
-    const studentNumber=String(student.student_number);
-
-    if(search&&!studentNumber.includes(search))return false;
-
-    return true;
-  });
-
-  if(filteredStudents.length===0){
-    tbody.innerHTML='<tr><td colspan="3">No students found.</td></tr>';
     return;
+
   }
 
-  filteredStudents.forEach(student=>{
-    const className=getClassName(student.class_id);
 
-    const borrowed=checkouts.filter(checkout=>
-      String(checkout.student_id)===String(student.id)&&
-      !checkout["Return Date"]
-    ).length;
+  filteredBooks.forEach(book=>{
 
-    const row=document.createElement("tr");
-    row.classList.add("clickable-row");
+    const row=
+      document.createElement("tr");
 
-    row.addEventListener("click",()=>showStudentHistory(student.id));
+
+    const available=
+      getAvailableCopies(book);
+
+
+    const active=
+      getActiveCheckoutCount(book.id);
+
 
     row.innerHTML=`
-      <td>${className}</td>
-      <td>Student #${student.student_number}</td>
-      <td>${borrowed}</td>
+
+      <td>${book.Title||""}</td>
+
+      <td>${book.Author||""}</td>
+
+      <td>${book.Category||""}</td>
+
+      <td>${book.Series||""}</td>
+
+      <td>${book["Series #"]||""}</td>
+
+      <td>${book.Copies||0}</td>
+
+      <td>
+        <span class="${
+          available>0
+            ? "available-good"
+            : "available-none"
+        }">
+          ${available}
+        </span>
+      </td>
+
+      <td>
+
+        <div class="book-action-buttons">
+
+          <button
+            class="edit-button"
+            onclick="openEditBook(${book.id})"
+          >
+            Edit
+          </button>
+
+          <button
+            class="delete-button"
+            onclick="deleteBook(${book.id})"
+          >
+            Delete
+          </button>
+
+        </div>
+
+      </td>
+
     `;
 
+
     tbody.appendChild(row);
+
   });
 
-  document.querySelectorAll(".student-tab").forEach(tab=>{
+}
+
+
+/* ============================================================
+   ADD / EDIT BOOK
+============================================================ */
+
+function updateSeriesOptions(){
+
+  const datalist=
+    document.getElementById(
+      "seriesOptions"
+    );
+
+
+  if(!datalist)
+    return;
+
+
+  const seriesNames=
+    [...new Set(
+      books
+        .map(book=>String(book.Series||"").trim())
+        .filter(Boolean)
+    )]
+    .sort();
+
+
+  datalist.innerHTML="";
+
+
+  seriesNames.forEach(series=>{
+
+    const option=
+      document.createElement("option");
+
+    option.value=series;
+
+    datalist.appendChild(option);
+
+  });
+
+}
+
+
+function resetBookModal(){
+
+  editingBookId=null;
+
+  document.getElementById(
+    "bookModalTitle"
+  ).textContent="Add Book";
+
+  document.getElementById(
+    "saveBookButton"
+  ).textContent="Add Book";
+
+
+  document.getElementById(
+    "bookTitleInput"
+  ).value="";
+
+
+  document.getElementById(
+    "bookAuthorInput"
+  ).value="";
+
+
+  document.getElementById(
+    "bookCategoryInput"
+  ).value="";
+
+
+  document.getElementById(
+    "bookSeriesInput"
+  ).value="";
+
+
+  document.getElementById(
+    "bookSeriesNumberInput"
+  ).value="";
+
+
+  document.getElementById(
+    "bookCopiesInput"
+  ).value="1";
+
+
+  document.getElementById(
+    "bookModalMessage"
+  ).innerHTML="";
+
+
+  updateBookCategoryFields();
+
+}
+
+
+function openAddBook(){
+
+  resetBookModal();
+
+  document.getElementById(
+    "bookModal"
+  ).classList.remove("hidden");
+
+  document.getElementById(
+    "bookTitleInput"
+  ).focus();
+
+}
+
+
+function openEditBook(bookId){
+
+  const book=
+    books.find(
+      b=>String(b.id)===String(bookId)
+    );
+
+
+  if(!book)
+    return;
+
+
+  editingBookId=bookId;
+
+
+  document.getElementById(
+    "bookModalTitle"
+  ).textContent=
+    "Edit Book";
+
+
+  document.getElementById(
+    "saveBookButton"
+  ).textContent=
+    "Save Changes";
+
+
+  document.getElementById(
+    "bookTitleInput"
+  ).value=
+    book.Title||"";
+
+
+  document.getElementById(
+    "bookAuthorInput"
+  ).value=
+    book.Author||"";
+
+
+  document.getElementById(
+    "bookCategoryInput"
+  ).value=
+    book.Category||"";
+
+
+  document.getElementById(
+    "bookSeriesInput"
+  ).value=
+    book.Series||"";
+
+
+  document.getElementById(
+    "bookSeriesNumberInput"
+  ).value=
+    book["Series #"]||"";
+
+
+  document.getElementById(
+    "bookCopiesInput"
+  ).value=
+    Number(book.Copies||1);
+
+
+  document.getElementById(
+    "bookModalMessage"
+  ).innerHTML="";
+
+
+  updateBookCategoryFields();
+
+
+  document.getElementById(
+    "bookModal"
+  ).classList.remove("hidden");
+
+}
+
+
+function closeBookModal(){
+
+  editingBookId=null;
+
+  document.getElementById(
+    "bookModal"
+  ).classList.add("hidden");
+
+}
+
+
+function updateBookCategoryFields(){
+
+  const category=
+    document.getElementById(
+      "bookCategoryInput"
+    ).value;
+
+
+  const seriesGroup=
+    document.getElementById(
+      "bookSeriesGroup"
+    );
+
+  const numberGroup=
+    document.getElementById(
+      "bookSeriesNumberGroup"
+    );
+
+
+  if(category==="Series"){
+
+    seriesGroup.classList.remove("hidden");
+    numberGroup.classList.remove("hidden");
+
+  }else{
+
+    seriesGroup.classList.add("hidden");
+    numberGroup.classList.add("hidden");
+
+    if(category==="Standalone"){
+
+      document.getElementById(
+        "bookSeriesInput"
+      ).value="";
+
+      document.getElementById(
+        "bookSeriesNumberInput"
+      ).value="";
+
+    }
+
+  }
+
+}
+
+
+function showBookModalMessage(message,type){
+
+  document.getElementById(
+    "bookModalMessage"
+  ).innerHTML=
+    `<div class="message ${type}">${message}</div>`;
+
+}
+
+
+async function saveBook(){
+
+  const title=
+    document.getElementById(
+      "bookTitleInput"
+    ).value.trim();
+
+
+  const author=
+    document.getElementById(
+      "bookAuthorInput"
+    ).value.trim();
+
+
+  const category=
+    document.getElementById(
+      "bookCategoryInput"
+    ).value;
+
+
+  const series=
+    document.getElementById(
+      "bookSeriesInput"
+    ).value.trim();
+
+
+  const seriesNumberValue=
+    document.getElementById(
+      "bookSeriesNumberInput"
+    ).value;
+
+
+  const copiesValue=
+    document.getElementById(
+      "bookCopiesInput"
+    ).value;
+
+
+  if(!title){
+
+    showBookModalMessage(
+      "Please enter a book title.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(!author){
+
+    showBookModalMessage(
+      "Please enter the author.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(!category){
+
+    showBookModalMessage(
+      "Please select Series or Standalone.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(category==="Series"&&!series){
+
+    showBookModalMessage(
+      "Please enter the series name.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const copies=
+    Number(copiesValue);
+
+
+  if(!Number.isInteger(copies)||copies<1){
+
+    showBookModalMessage(
+      "Copies must be a whole number of at least 1.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  let seriesNumber=null;
+
+
+  if(category==="Series"){
+
+    seriesNumber=
+      seriesNumberValue
+        ? Number(seriesNumberValue)
+        : null;
+
+
+    if(
+      seriesNumber!==null&&
+      (!Number.isInteger(seriesNumber)||
+       seriesNumber<1)
+    ){
+
+      showBookModalMessage(
+        "Series number must be a positive whole number.",
+        "error"
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  const button=
+    document.getElementById(
+      "saveBookButton"
+    );
+
+
+  button.disabled=true;
+
+  button.textContent=
+    editingBookId
+      ? "Saving..."
+      : "Adding...";
+
+
+  try{
+
+    /* ========================================================
+       EDIT EXISTING BOOK
+    ======================================================== */
+
+    if(editingBookId){
+
+      const existingBook=
+        books.find(
+          b=>String(b.id)===String(editingBookId)
+        );
+
+
+      if(!existingBook)
+        throw new Error("Book not found.");
+
+
+      const activeCheckouts=
+        getActiveCheckoutCount(
+          editingBookId
+        );
+
+
+      if(copies<activeCheckouts){
+
+        showBookModalMessage(
+          `You currently have ${activeCheckouts} copy/copies checked out. Copies cannot be reduced below that number.`,
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      /*
+        Check whether the edited information would create
+        an exact duplicate of another book.
+      */
+
+      const duplicate=
+        books.find(book=>
+          String(book.id)!==
+            String(editingBookId)&&
+
+          String(book.Title||"").trim().toLowerCase()===
+            title.toLowerCase()&&
+
+          String(book.Author||"").trim().toLowerCase()===
+            author.toLowerCase()&&
+
+          String(book.Category||"").trim().toLowerCase()===
+            category.toLowerCase()&&
+
+          String(book.Series||"").trim().toLowerCase()===
+            series.toLowerCase()&&
+
+          String(book["Series #"]||"")===
+            String(seriesNumber||"")
+        );
+
+
+      if(duplicate){
+
+        showBookModalMessage(
+          "Another book already has the same title, author, category, series, and series number.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      const {error}=
+        await supabaseClient
+          .from("Books")
+          .update({
+
+            "Title":title,
+
+            "Author":author,
+
+            "Category":category,
+
+            "Series":
+              category==="Series"
+                ? series
+                : null,
+
+            "Series #":
+              category==="Series"
+                ? seriesNumber
+                : null,
+
+            "Copies":copies
+
+          })
+          .eq("id",editingBookId);
+
+
+      if(error)throw error;
+
+
+      closeBookModal();
+
+      await loadData();
+
+      return;
+
+    }
+
+
+    /* ========================================================
+       ADD NEW BOOK
+    ======================================================== */
+
+    const duplicate=
+      books.find(book=>
+
+        String(book.Title||"").trim().toLowerCase()===
+          title.toLowerCase()&&
+
+        String(book.Author||"").trim().toLowerCase()===
+          author.toLowerCase()&&
+
+        String(book.Category||"").trim().toLowerCase()===
+          category.toLowerCase()&&
+
+        String(book.Series||"").trim().toLowerCase()===
+          series.toLowerCase()&&
+
+        String(book["Series #"]||"")===
+          String(seriesNumber||"")
+
+      );
+
+
+    if(duplicate){
+
+      const addCopies=
+        confirm(
+          `"${title}" is already in your library with ${duplicate.Copies||0} copy/copies.\n\nWould you like to add ${copies} more ${copies===1?"copy":"copies"} to that existing book?`
+        );
+
+
+      if(!addCopies){
+
+        return;
+
+      }
+
+
+      const newCopies=
+        Number(duplicate.Copies||0)+copies;
+
+
+      const {error}=
+        await supabaseClient
+          .from("Books")
+          .update({
+            "Copies":newCopies
+          })
+          .eq("id",duplicate.id);
+
+
+      if(error)throw error;
+
+
+      closeBookModal();
+
+      await loadData();
+
+      return;
+
+    }
+
+
+    const {error}=
+      await supabaseClient
+        .from("Books")
+        .insert({
+
+          "Title":title,
+
+          "Author":author,
+
+          "Category":category,
+
+          "Series":
+            category==="Series"
+              ? series
+              : null,
+
+          "Series #":
+            category==="Series"
+              ? seriesNumber
+              : null,
+
+          "Copies":copies
+
+        });
+
+
+    if(error)throw error;
+
+
+    closeBookModal();
+
+    await loadData();
+
+
+  }catch(error){
+
+    console.error(
+      "Save book error:",
+      error
+    );
+
+
+    console.error(
+      "Supabase error details:",
+      error.message,
+      error.details,
+      error.hint
+    );
+
+
+    showBookModalMessage(
+      "Could not save the book. Please make sure the Books permissions were added in Supabase.",
+      "error"
+    );
+
+  }finally{
+
+    button.disabled=false;
+
+    button.textContent=
+      editingBookId
+        ? "Save Changes"
+        : "Add Book";
+
+  }
+
+}
+
+
+/* ============================================================
+   DELETE BOOK
+============================================================ */
+
+async function deleteBook(bookId){
+
+  const book=
+    books.find(
+      b=>String(b.id)===String(bookId)
+    );
+
+
+  if(!book)
+    return;
+
+
+  const historyCount=
+    checkouts.filter(
+      c=>String(c.book_id)===String(bookId)
+    ).length;
+
+
+  if(historyCount>0){
+
+    alert(
+      `"${book.Title}" cannot be deleted because it has checkout history.\n\nYou can edit the book or change its number of copies instead.`
+    );
+
+    return;
+
+  }
+
+
+  const confirmed=
+    confirm(
+      `Delete "${book.Title}" from your library?\n\nThis cannot be undone.`
+    );
+
+
+  if(!confirmed)
+    return;
+
+
+  try{
+
+    const {error}=
+      await supabaseClient
+        .from("Books")
+        .delete()
+        .eq("id",bookId);
+
+
+    if(error)throw error;
+
+
+    await loadData();
+
+
+  }catch(error){
+
+    console.error(
+      "Delete book error:",
+      error
+    );
+
+
+    alert(
+      "Could not delete the book. Please try again."
+    );
+
+  }
+
+}
+
+
+/* ============================================================
+   STUDENTS
+============================================================ */
+
+function renderStudents(){
+
+  const tbody=
+    document.getElementById(
+      "studentsTableBody"
+    );
+
+
+  const search=
+    document.getElementById(
+      "studentSearch"
+    ).value.toLowerCase().trim();
+
+
+  tbody.innerHTML="";
+
+
+  const filteredStudents=
+    students.filter(student=>{
+
+      const className=
+        getClassName(student.class_id);
+
+
+      if(
+        className.toLowerCase()!==
+        selectedStudentClass.toLowerCase()
+      )
+        return false;
+
+
+      const studentNumber=
+        String(student.student_number);
+
+
+      if(
+        search&&
+        !studentNumber.includes(search)
+      )
+        return false;
+
+
+      return true;
+
+    });
+
+
+  if(filteredStudents.length===0){
+
+    tbody.innerHTML=
+      '<tr><td colspan="3">No students found.</td></tr>';
+
+    return;
+
+  }
+
+
+  filteredStudents.forEach(student=>{
+
+    const className=
+      getClassName(student.class_id);
+
+
+    const borrowed=
+      checkouts.filter(checkout=>
+        String(checkout.student_id)===
+          String(student.id)&&
+        !checkout["Return Date"]
+      ).length;
+
+
+    const row=
+      document.createElement("tr");
+
+
+    row.classList.add(
+      "clickable-row"
+    );
+
+
+    row.addEventListener(
+      "click",
+      ()=>showStudentHistory(student.id)
+    );
+
+
+    row.innerHTML=`
+
+      <td>${className}</td>
+
+      <td>
+        Student #${student.student_number}
+      </td>
+
+      <td>${borrowed}</td>
+
+    `;
+
+
+    tbody.appendChild(row);
+
+  });
+
+
+  document.querySelectorAll(
+    ".student-tab"
+  ).forEach(tab=>{
+
     tab.classList.toggle(
       "active",
-      tab.dataset.class.toLowerCase()===selectedStudentClass.toLowerCase()
+      tab.dataset.class.toLowerCase()===
+        selectedStudentClass.toLowerCase()
     );
+
   });
+
 }
+
 
 /* ============================================================
    STUDENT HISTORY
 ============================================================ */
 
 function showStudentHistory(studentId){
-  const student=getStudent(studentId);
-  if(!student)return;
 
-  currentStudentHistoryStudentId=studentId;
+  const student=
+    getStudent(studentId);
 
-  const className=getClassName(student.class_id);
 
-  document.getElementById("studentHistoryTitle").textContent=
+  if(!student)
+    return;
+
+
+  currentStudentHistoryStudentId=
+    studentId;
+
+
+  const className=
+    getClassName(student.class_id);
+
+
+  document.getElementById(
+    "studentHistoryTitle"
+  ).textContent=
     `Student #${student.student_number} — ${className}`;
 
-  const tbody=document.getElementById("studentHistoryTableBody");
+
+  const tbody=
+    document.getElementById(
+      "studentHistoryTableBody"
+    );
+
+
   tbody.innerHTML="";
 
-  const studentCheckouts=checkouts.filter(checkout=>
-    String(checkout.student_id)===String(studentId)
-  );
+
+  const studentCheckouts=
+    checkouts.filter(checkout=>
+      String(checkout.student_id)===
+        String(studentId)
+    );
+
 
   if(studentCheckouts.length===0){
-    tbody.innerHTML=`
-      <tr>
-        <td colspan="5">This student has not checked out any books yet.</td>
-      </tr>
-    `;
-  }else{
-    studentCheckouts.forEach(checkout=>{
-      const book=books.find(b=>String(b.id)===String(checkout.book_id));
-      const returned=Boolean(checkout["Return Date"]);
 
-      const row=document.createElement("tr");
+    tbody.innerHTML=`
+
+      <tr>
+
+        <td colspan="5">
+          This student has not checked out any books yet.
+        </td>
+
+      </tr>
+
+    `;
+
+  }else{
+
+    studentCheckouts.forEach(checkout=>{
+
+      const book=
+        books.find(
+          b=>String(b.id)===
+            String(checkout.book_id)
+        );
+
+
+      const returned=
+        Boolean(
+          checkout["Return Date"]
+        );
+
+
+      const row=
+        document.createElement("tr");
+
 
       row.innerHTML=`
-        <td>${book?book.Title:"Unknown Book"}</td>
-
-        <td>${formatDate(checkout["Check Out Date"])}</td>
 
         <td>
-          ${returned?formatDate(checkout["Return Date"]):"—"}
+          ${book?book.Title:"Unknown Book"}
+        </td>
+
+        <td>
+          ${formatDate(
+            checkout["Check Out Date"]
+          )}
         </td>
 
         <td>
           ${
             returned
-              ? '<span class="history-status-returned">Returned</span>'
-              : '<span class="history-status-out">Checked Out</span>'
+              ? formatDate(
+                  checkout["Return Date"]
+                )
+              : "—"
           }
         </td>
 
         <td>
+
+          ${
+            returned
+              ? '<span class="history-status-returned">Returned</span>'
+              : '<span class="history-status-out">Checked Out</span>'
+          }
+
+        </td>
+
+        <td>
+
           <div class="history-actions">
+
             <button
               class="edit-button"
               onclick="openEditCheckout(${checkout.id})"
@@ -817,212 +2524,469 @@ function showStudentHistory(studentId){
             >
               Delete
             </button>
+
           </div>
+
         </td>
+
       `;
 
+
       tbody.appendChild(row);
+
     });
+
   }
 
-  showPage("studentHistory");
+
+  showPage(
+    "studentHistory"
+  );
+
 }
+
 
 /* ============================================================
    EDIT CHECKOUT
 ============================================================ */
 
 function openEditCheckout(checkoutId){
-  const checkout=checkouts.find(c=>String(c.id)===String(checkoutId));
 
-  if(!checkout)return;
+  const checkout=
+    checkouts.find(
+      c=>String(c.id)===
+        String(checkoutId)
+    );
 
-  editingCheckoutId=checkoutId;
 
-  const book=getBookTitle(checkout.book_id);
+  if(!checkout)
+    return;
 
-  document.getElementById("editBookName").textContent=book;
 
-  document.getElementById("editCheckoutDate").value=
+  editingCheckoutId=
+    checkoutId;
+
+
+  const book=
+    getBookTitle(
+      checkout.book_id
+    );
+
+
+  document.getElementById(
+    "editBookName"
+  ).textContent=
+    book;
+
+
+  document.getElementById(
+    "editCheckoutDate"
+  ).value=
     checkout["Check Out Date"]
-      ? String(checkout["Check Out Date"]).substring(0,10)
+      ? String(
+          checkout["Check Out Date"]
+        ).substring(0,10)
       : "";
 
-  const returned=Boolean(checkout["Return Date"]);
 
-  document.getElementById("editStatus").value=
-    returned?"returned":"out";
+  const returned=
+    Boolean(
+      checkout["Return Date"]
+    );
 
-  document.getElementById("editReturnDate").value=
+
+  document.getElementById(
+    "editStatus"
+  ).value=
+    returned
+      ? "returned"
+      : "out";
+
+
+  document.getElementById(
+    "editReturnDate"
+  ).value=
     checkout["Return Date"]
-      ? String(checkout["Return Date"]).substring(0,10)
+      ? String(
+          checkout["Return Date"]
+        ).substring(0,10)
       : "";
+
 
   updateEditReturnDateVisibility();
 
-  document.getElementById("editModal").classList.remove("hidden");
+
+  document.getElementById(
+    "editModal"
+  ).classList.remove("hidden");
+
 }
+
 
 function closeEditCheckout(){
+
   editingCheckoutId=null;
-  document.getElementById("editModal").classList.add("hidden");
+
+  document.getElementById(
+    "editModal"
+  ).classList.add("hidden");
+
 }
+
 
 function updateEditReturnDateVisibility(){
-  const status=document.getElementById("editStatus").value;
-  const group=document.getElementById("editReturnDateGroup");
-  const input=document.getElementById("editReturnDate");
-
-  if(status==="returned"){
-    group.classList.remove("hidden");
-    input.disabled=false;
-
-    if(!input.value){
-      input.value=getTodayEastern();
-    }
-  }else{
-    group.classList.add("hidden");
-    input.disabled=true;
-    input.value="";
-  }
-}
-
-async function saveEditedCheckout(){
-  if(!editingCheckoutId)return;
-
-  const checkoutDate=
-    document.getElementById("editCheckoutDate").value;
 
   const status=
-    document.getElementById("editStatus").value;
+    document.getElementById(
+      "editStatus"
+    ).value;
+
+
+  const group=
+    document.getElementById(
+      "editReturnDateGroup"
+    );
+
+
+  const input=
+    document.getElementById(
+      "editReturnDate"
+    );
+
+
+  if(status==="returned"){
+
+    group.classList.remove(
+      "hidden"
+    );
+
+    input.disabled=false;
+
+
+    if(!input.value){
+
+      input.value=
+        getTodayEastern();
+
+    }
+
+  }else{
+
+    group.classList.add(
+      "hidden"
+    );
+
+    input.disabled=true;
+
+    input.value="";
+
+  }
+
+}
+
+
+async function saveEditedCheckout(){
+
+  if(!editingCheckoutId)
+    return;
+
+
+  const checkoutDate=
+    document.getElementById(
+      "editCheckoutDate"
+    ).value;
+
+
+  const status=
+    document.getElementById(
+      "editStatus"
+    ).value;
+
 
   const returnDate=
-    document.getElementById("editReturnDate").value;
+    document.getElementById(
+      "editReturnDate"
+    ).value;
+
 
   if(!checkoutDate){
-    alert("Please enter a checkout date.");
+
+    alert(
+      "Please enter a checkout date."
+    );
+
     return;
+
   }
 
-  if(status==="returned"&&!returnDate){
-    alert("Please enter a return date.");
+
+  if(
+    status==="returned"&&
+    !returnDate
+  ){
+
+    alert(
+      "Please enter a return date."
+    );
+
     return;
+
   }
 
-  const button=document.getElementById("saveEditButton");
+
+  const button=
+    document.getElementById(
+      "saveEditButton"
+    );
+
 
   button.disabled=true;
-  button.textContent="Saving...";
+
+  button.textContent=
+    "Saving...";
+
 
   try{
+
     const updateData={
-      "Check Out Date":`${checkoutDate}T12:00:00`,
+
+      "Check Out Date":
+        `${checkoutDate}T12:00:00`,
+
       "Return Date":
         status==="returned"
           ? `${returnDate}T12:00:00`
           : null
+
     };
 
-    const {error}=await supabaseClient
-      .from("Checkouts")
-      .update(updateData)
-      .eq("id",editingCheckoutId);
+
+    const {error}=
+      await supabaseClient
+        .from("Checkouts")
+        .update(updateData)
+        .eq(
+          "id",
+          editingCheckoutId
+        );
+
 
     if(error)throw error;
+
 
     closeEditCheckout();
 
     await loadData();
 
-    if(currentStudentHistoryStudentId){
-      showStudentHistory(currentStudentHistoryStudentId);
+
+    if(
+      currentStudentHistoryStudentId
+    ){
+
+      showStudentHistory(
+        currentStudentHistoryStudentId
+      );
+
     }
 
+
   }catch(error){
-    console.error("Edit checkout error:",error);
-    alert("Could not save the changes. Please try again.");
+
+    console.error(
+      "Edit checkout error:",
+      error
+    );
+
+    alert(
+      "Could not save the changes. Please try again."
+    );
+
   }finally{
+
     button.disabled=false;
-    button.textContent="Save Changes";
+
+    button.textContent=
+      "Save Changes";
+
   }
+
 }
+
 
 /* ============================================================
    DELETE CHECKOUT
 ============================================================ */
 
 async function deleteCheckout(checkoutId){
-  const checkout=checkouts.find(c=>String(c.id)===String(checkoutId));
 
-  if(!checkout)return;
+  const checkout=
+    checkouts.find(
+      c=>String(c.id)===
+        String(checkoutId)
+    );
 
-  const student=getStudent(checkout.student_id);
-  const book=getBookTitle(checkout.book_id);
 
-  const studentText=student
-    ? `Student #${student.student_number}`
-    : "this student";
+  if(!checkout)
+    return;
 
-  const confirmed=confirm(
-    `Delete this checkout record?\n\nBook: ${book}\nStudent: ${studentText}\n\nThis cannot be undone.`
-  );
 
-  if(!confirmed)return;
+  const student=
+    getStudent(
+      checkout.student_id
+    );
+
+
+  const book=
+    getBookTitle(
+      checkout.book_id
+    );
+
+
+  const studentText=
+    student
+      ? `Student #${student.student_number}`
+      : "this student";
+
+
+  const confirmed=
+    confirm(
+
+      `Delete this checkout record?\n\nBook: ${book}\nStudent: ${studentText}\n\nThis cannot be undone.`
+
+    );
+
+
+  if(!confirmed)
+    return;
+
 
   try{
-    const {error}=await supabaseClient
-      .from("Checkouts")
-      .delete()
-      .eq("id",checkoutId);
+
+    const {error}=
+      await supabaseClient
+        .from("Checkouts")
+        .delete()
+        .eq(
+          "id",
+          checkoutId
+        );
+
 
     if(error)throw error;
 
+
     await loadData();
 
-    if(currentStudentHistoryStudentId){
-      showStudentHistory(currentStudentHistoryStudentId);
+
+    if(
+      currentStudentHistoryStudentId
+    ){
+
+      showStudentHistory(
+        currentStudentHistoryStudentId
+      );
+
     }
 
+
   }catch(error){
-    console.error("Delete checkout error:",error);
-    alert("Could not delete the checkout record. Please try again.");
+
+    console.error(
+      "Delete checkout error:",
+      error
+    );
+
+    alert(
+      "Could not delete the checkout record. Please try again."
+    );
+
   }
+
 }
+
 
 /* ============================================================
    CURRENTLY CHECKED OUT
 ============================================================ */
 
 function renderCheckedOut(){
-  const tbody=document.getElementById("checkedOutTableBody");
+
+  const tbody=
+    document.getElementById(
+      "checkedOutTableBody"
+    );
+
+
   tbody.innerHTML="";
 
-  const activeCheckouts=checkouts.filter(c=>!c["Return Date"]);
+
+  const activeCheckouts=
+    checkouts.filter(
+      c=>!c["Return Date"]
+    );
+
 
   if(activeCheckouts.length===0){
-    tbody.innerHTML='<tr><td colspan="5">No books are currently checked out.</td></tr>';
+
+    tbody.innerHTML=
+      '<tr><td colspan="5">No books are currently checked out.</td></tr>';
+
     return;
+
   }
 
-  activeCheckouts.forEach(checkout=>{
-    const student=getStudent(checkout.student_id);
-    const book=books.find(b=>String(b.id)===String(checkout.book_id));
-    const className=student?getClassName(student.class_id):"";
 
-    const row=document.createElement("tr");
+  activeCheckouts.forEach(checkout=>{
+
+    const student=
+      getStudent(
+        checkout.student_id
+      );
+
+
+    const book=
+      books.find(
+        b=>String(b.id)===
+          String(checkout.book_id)
+      );
+
+
+    const className=
+      student
+        ? getClassName(
+            student.class_id
+          )
+        : "";
+
+
+    const row=
+      document.createElement("tr");
+
 
     row.innerHTML=`
-      <td>${book?book.Title:"Unknown Book"}</td>
 
       <td>
-        ${student?`Student #${student.student_number}`:"Unknown Student"}
+        ${book?book.Title:"Unknown Book"}
+      </td>
+
+      <td>
+        ${
+          student
+            ? `Student #${student.student_number}`
+            : "Unknown Student"
+        }
       </td>
 
       <td>${className}</td>
 
-      <td>${formatDate(checkout["Check Out Date"])}</td>
+      <td>
+        ${formatDate(
+          checkout["Check Out Date"]
+        )}
+      </td>
 
       <td>
+
         <div class="history-actions">
 
           <button
@@ -1047,303 +3011,786 @@ function renderCheckedOut(){
           </button>
 
         </div>
+
       </td>
+
     `;
 
+
     tbody.appendChild(row);
+
   });
+
 }
+
 
 /* ============================================================
    HISTORY
 ============================================================ */
 
 function renderHistory(){
-  const tbody=document.getElementById("historyTableBody");
-  const search=document.getElementById("historySearch").value.toLowerCase().trim();
+
+  const tbody=
+    document.getElementById(
+      "historyTableBody"
+    );
+
+
+  const search=
+    document.getElementById(
+      "historySearch"
+    ).value.toLowerCase().trim();
+
 
   tbody.innerHTML="";
 
-  let filteredCheckouts=[...checkouts];
+
+  let filteredCheckouts=
+    [...checkouts];
+
 
   if(search){
-    filteredCheckouts=filteredCheckouts.filter(checkout=>{
-      const student=getStudent(checkout.student_id);
-      const book=books.find(b=>String(b.id)===String(checkout.book_id));
-      const className=student?getClassName(student.class_id):"";
-      const studentText=student?`student ${student.student_number}`:"";
-      const bookText=book?book.Title:"";
-      const authorText=book?book.Author||"":"";
 
-      const combined=
-        `${bookText} ${authorText} ${studentText} ${className}`.toLowerCase();
+    filteredCheckouts=
+      filteredCheckouts.filter(
+        checkout=>{
 
-      return combined.includes(search);
-    });
+          const student=
+            getStudent(
+              checkout.student_id
+            );
+
+
+          const book=
+            books.find(
+              b=>String(b.id)===
+                String(checkout.book_id)
+            );
+
+
+          const className=
+            student
+              ? getClassName(
+                  student.class_id
+                )
+              : "";
+
+
+          const studentText=
+            student
+              ? `student ${student.student_number}`
+              : "";
+
+
+          const bookText=
+            book
+              ? book.Title
+              : "";
+
+
+          const authorText=
+            book
+              ? book.Author||""
+              : "";
+
+
+          const combined=
+            `${bookText} ${authorText} ${studentText} ${className}`
+              .toLowerCase();
+
+
+          return combined.includes(
+            search
+          );
+
+        }
+      );
+
   }
+
 
   if(filteredCheckouts.length===0){
-    tbody.innerHTML='<tr><td colspan="6">No checkout history found.</td></tr>';
+
+    tbody.innerHTML=
+      '<tr><td colspan="6">No checkout history found.</td></tr>';
+
     return;
+
   }
 
-  filteredCheckouts.forEach(checkout=>{
-    const student=getStudent(checkout.student_id);
-    const book=books.find(b=>String(b.id)===String(checkout.book_id));
-    const className=student?getClassName(student.class_id):"";
-    const returned=Boolean(checkout["Return Date"]);
 
-    const row=document.createElement("tr");
+  filteredCheckouts.forEach(
+    checkout=>{
 
-    row.innerHTML=`
-      <td>${book?book.Title:"Unknown Book"}</td>
+      const student=
+        getStudent(
+          checkout.student_id
+        );
 
-      <td>
-        ${student?`Student #${student.student_number}`:"Unknown Student"}
-      </td>
 
-      <td>${className}</td>
+      const book=
+        books.find(
+          b=>String(b.id)===
+            String(checkout.book_id)
+        );
 
-      <td>${formatDate(checkout["Check Out Date"])}</td>
 
-      <td>${returned?formatDate(checkout["Return Date"]):"—"}</td>
+      const className=
+        student
+          ? getClassName(
+              student.class_id
+            )
+          : "";
 
-      <td>
-        ${
-          returned
-            ? '<span class="history-status-returned">Returned</span>'
-            : '<span class="history-status-out">Checked Out</span>'
-        }
-      </td>
-    `;
 
-    tbody.appendChild(row);
-  });
+      const returned=
+        Boolean(
+          checkout["Return Date"]
+        );
+
+
+      const row=
+        document.createElement("tr");
+
+
+      row.innerHTML=`
+
+        <td>
+          ${book?book.Title:"Unknown Book"}
+        </td>
+
+        <td>
+          ${
+            student
+              ? `Student #${student.student_number}`
+              : "Unknown Student"
+          }
+        </td>
+
+        <td>${className}</td>
+
+        <td>
+          ${formatDate(
+            checkout["Check Out Date"]
+          )}
+        </td>
+
+        <td>
+          ${
+            returned
+              ? formatDate(
+                  checkout["Return Date"]
+                )
+              : "—"
+          }
+        </td>
+
+        <td>
+
+          ${
+            returned
+              ? '<span class="history-status-returned">Returned</span>'
+              : '<span class="history-status-out">Checked Out</span>'
+          }
+
+        </td>
+
+      `;
+
+
+      tbody.appendChild(row);
+
+    }
+  );
+
 }
+
 
 /* ============================================================
    NAVIGATION
 ============================================================ */
 
 function showPage(pageId){
-  document.querySelectorAll(".page").forEach(page=>{
-    page.classList.remove("active");
+
+  document.querySelectorAll(
+    ".page"
+  ).forEach(page=>{
+    page.classList.remove(
+      "active"
+    );
   });
 
-  document.querySelectorAll(".nav-button").forEach(button=>{
-    button.classList.remove("active");
+
+  document.querySelectorAll(
+    ".nav-button"
+  ).forEach(button=>{
+    button.classList.remove(
+      "active"
+    );
   });
 
-  const page=document.getElementById(pageId);
 
-  if(page)page.classList.add("active");
+  const page=
+    document.getElementById(
+      pageId
+    );
 
-  const activeButton=document.querySelector(
-    `.nav-button[data-page="${pageId}"]`
-  );
 
-  if(activeButton)activeButton.classList.add("active");
+  if(page)
+    page.classList.add(
+      "active"
+    );
 
-  if(pageId==="checkout")populateBooks();
-  if(pageId==="library")renderLibrary();
-  if(pageId==="students")renderStudents();
-  if(pageId==="checkedout")renderCheckedOut();
-  if(pageId==="history")renderHistory();
+
+  const activeButton=
+    document.querySelector(
+      `.nav-button[data-page="${pageId}"]`
+    );
+
+
+  if(activeButton)
+    activeButton.classList.add(
+      "active"
+    );
+
+
+  if(pageId==="checkout")
+    populateBooks();
+
+
+  if(pageId==="library")
+    renderLibrary();
+
+
+  if(pageId==="students")
+    renderStudents();
+
+
+  if(pageId==="checkedout")
+    renderCheckedOut();
+
+
+  if(pageId==="history")
+    renderHistory();
+
 }
+
 
 /* ============================================================
    LOGIN
 ============================================================ */
 
 async function login(){
-  const email=document.getElementById("email").value.trim();
-  const password=document.getElementById("password").value;
-  const errorElement=document.getElementById("loginError");
+
+  const email=
+    document.getElementById(
+      "email"
+    ).value.trim();
+
+
+  const password=
+    document.getElementById(
+      "password"
+    ).value;
+
+
+  const errorElement=
+    document.getElementById(
+      "loginError"
+    );
+
 
   errorElement.textContent="";
 
+
   if(!email||!password){
-    errorElement.textContent="Please enter your email and password.";
+
+    errorElement.textContent=
+      "Please enter your email and password.";
+
     return;
+
   }
 
-  const button=document.getElementById("loginButton");
-  button.disabled=true;
-  button.textContent="Logging in...";
 
-  const {error}=await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
+  const button=
+    document.getElementById(
+      "loginButton"
+    );
+
+
+  button.disabled=true;
+
+  button.textContent=
+    "Logging in...";
+
+
+  const {error}=
+    await supabaseClient.auth.signInWithPassword({
+
+      email,
+      password
+
+    });
+
 
   if(error){
-    console.error("Login error:",error);
-    errorElement.textContent="Incorrect email or password.";
+
+    console.error(
+      "Login error:",
+      error
+    );
+
+    errorElement.textContent=
+      "Incorrect email or password.";
+
     button.disabled=false;
-    button.textContent="Log In";
+
+    button.textContent=
+      "Log In";
+
     return;
+
   }
 
-  /*
-    Start the 8-hour login window.
 
-    This timestamp is only checked when the app is opened/reloaded.
-    There is NO timer running in the background, so the user will
-    never be kicked out while actively using the app.
-  */
-  localStorage.setItem(LOGIN_TIME_KEY,String(Date.now()));
+  localStorage.setItem(
+    LOGIN_TIME_KEY,
+    String(Date.now())
+  );
+
 
   await showApp();
+
 }
+
 
 async function showApp(){
-  document.getElementById("loginScreen").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
+
+  document.getElementById(
+    "loginScreen"
+  ).classList.add("hidden");
+
+
+  document.getElementById(
+    "app"
+  ).classList.remove("hidden");
+
+
   await loadData();
+
 }
+
 
 async function logout(){
+
   await supabaseClient.auth.signOut();
 
-  localStorage.removeItem(LOGIN_TIME_KEY);
+  localStorage.removeItem(
+    LOGIN_TIME_KEY
+  );
 
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("loginScreen").classList.remove("hidden");
-  document.getElementById("password").value="";
+
+  document.getElementById(
+    "app"
+  ).classList.add("hidden");
+
+
+  document.getElementById(
+    "loginScreen"
+  ).classList.remove("hidden");
+
+
+  document.getElementById(
+    "password"
+  ).value="";
+
 }
+
 
 /* ============================================================
    8-HOUR LOGIN CHECK
 ============================================================ */
 
 async function checkExistingSession(){
+
   const {
     data:{session}
-  }=await supabaseClient.auth.getSession();
+  }=
+    await supabaseClient.auth.getSession();
+
 
   if(!session){
-    localStorage.removeItem(LOGIN_TIME_KEY);
+
+    localStorage.removeItem(
+      LOGIN_TIME_KEY
+    );
+
     return;
+
   }
 
-  const storedLoginTime=localStorage.getItem(LOGIN_TIME_KEY);
 
-  /*
-    If an old session exists without our new timestamp,
-    start a fresh 8-hour window from now.
-  */
+  const storedLoginTime=
+    localStorage.getItem(
+      LOGIN_TIME_KEY
+    );
+
+
   if(!storedLoginTime){
-    localStorage.setItem(LOGIN_TIME_KEY,String(Date.now()));
+
+    localStorage.setItem(
+      LOGIN_TIME_KEY,
+      String(Date.now())
+    );
+
     await showApp();
+
     return;
+
   }
 
-  const loginTime=Number(storedLoginTime);
-  const elapsed=Date.now()-loginTime;
 
-  /*
-    8 hours have passed.
+  const loginTime=
+    Number(storedLoginTime);
 
-    We sign out only because the app has been opened/reloaded
-    after the 8-hour window. We do NOT run a timer while the
-    app is being used.
-  */
+
+  const elapsed=
+    Date.now()-loginTime;
+
+
   if(elapsed>=LOGIN_DURATION){
-    localStorage.removeItem(LOGIN_TIME_KEY);
+
+    localStorage.removeItem(
+      LOGIN_TIME_KEY
+    );
+
 
     await supabaseClient.auth.signOut();
 
-    document.getElementById("app").classList.add("hidden");
-    document.getElementById("loginScreen").classList.remove("hidden");
+
+    document.getElementById(
+      "app"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "loginScreen"
+    ).classList.remove("hidden");
+
 
     return;
+
   }
 
+
   await showApp();
+
 }
 
+
 checkExistingSession();
+
 
 /* ============================================================
    EVENT LISTENERS
 ============================================================ */
 
-document.getElementById("loginButton").addEventListener("click",login);
+document.getElementById(
+  "loginButton"
+).addEventListener(
+  "click",
+  login
+);
 
-document.getElementById("password").addEventListener("keydown",event=>{
-  if(event.key==="Enter")login();
-});
 
-document.getElementById("logoutButton").addEventListener("click",logout);
+document.getElementById(
+  "password"
+).addEventListener(
+  "keydown",
+  event=>{
 
-document.querySelectorAll(".nav-button").forEach(button=>{
-  button.addEventListener("click",()=>{
-    showPage(button.dataset.page);
-  });
-});
+    if(event.key==="Enter")
+      login();
 
-document.getElementById("classSelect").addEventListener("change",populateStudents);
-
-document.getElementById("studentSelect").addEventListener("change",()=>{
-  populateBooks();
-  updateCheckoutButton();
-});
-
-document.getElementById("bookSelect").addEventListener("focus",()=>{
-  populateBooks();
-  document.getElementById("bookDropdownList").classList.remove("hidden");
-});
-
-document.getElementById("bookSelect").addEventListener("input",()=>{
-  selectedBookId="";
-  populateBooks();
-  document.getElementById("bookDropdownList").classList.remove("hidden");
-  updateCheckoutButton();
-});
-
-document.getElementById("checkoutButton").addEventListener("click",checkoutBook);
-
-document.getElementById("librarySearch").addEventListener("input",renderLibrary);
-
-document.getElementById("studentSearch").addEventListener("input",renderStudents);
-
-document.getElementById("historySearch").addEventListener("input",renderHistory);
-
-document.addEventListener("click",event=>{
-  const dropdown=document.querySelector(".book-dropdown");
-
-  if(dropdown&&!dropdown.contains(event.target)){
-    document.getElementById("bookDropdownList").classList.add("hidden");
   }
+);
+
+
+document.getElementById(
+  "logoutButton"
+).addEventListener(
+  "click",
+  logout
+);
+
+
+document.querySelectorAll(
+  ".nav-button"
+).forEach(button=>{
+
+  button.addEventListener(
+    "click",
+    ()=>{
+      showPage(
+        button.dataset.page
+      );
+    }
+  );
+
 });
 
-document.querySelectorAll(".student-tab").forEach(tab=>{
-  tab.addEventListener("click",()=>{
-    selectedStudentClass=tab.dataset.class;
-    document.getElementById("studentSearch").value="";
-    renderStudents();
-  });
-});
 
-document.getElementById("backToStudentsButton").addEventListener("click",()=>{
-  showPage("students");
-});
+document.getElementById(
+  "classSelect"
+).addEventListener(
+  "change",
+  populateStudents
+);
 
-/* EDIT MODAL EVENTS */
 
-document.getElementById("editStatus").addEventListener("change",()=>{
-  updateEditReturnDateVisibility();
-});
+document.getElementById(
+  "studentSelect"
+).addEventListener(
+  "change",
+  ()=>{
 
-document.getElementById("saveEditButton").addEventListener("click",saveEditedCheckout);
+    populateBooks();
+    updateCheckoutButton();
 
-document.getElementById("cancelEditButton").addEventListener("click",closeEditCheckout);
-
-document.getElementById("editModal").addEventListener("click",event=>{
-  if(event.target.id==="editModal"){
-    closeEditCheckout();
   }
+);
+
+
+document.getElementById(
+  "bookSelect"
+).addEventListener(
+  "focus",
+  ()=>{
+
+    populateBooks();
+
+    document.getElementById(
+      "bookDropdownList"
+    ).classList.remove(
+      "hidden"
+    );
+
+  }
+);
+
+
+document.getElementById(
+  "bookSelect"
+).addEventListener(
+  "input",
+  ()=>{
+
+    selectedBookId="";
+
+    populateBooks();
+
+    document.getElementById(
+      "bookDropdownList"
+    ).classList.remove(
+      "hidden"
+    );
+
+    updateCheckoutButton();
+
+  }
+);
+
+
+document.getElementById(
+  "checkoutButton"
+).addEventListener(
+  "click",
+  checkoutBook
+);
+
+
+document.getElementById(
+  "librarySearch"
+).addEventListener(
+  "input",
+  renderLibrary
+);
+
+
+document.getElementById(
+  "studentSearch"
+).addEventListener(
+  "input",
+  renderStudents
+);
+
+
+document.getElementById(
+  "historySearch"
+).addEventListener(
+  "input",
+  renderHistory
+);
+
+
+document.addEventListener(
+  "click",
+  event=>{
+
+    const dropdown=
+      document.querySelector(
+        ".book-dropdown"
+      );
+
+
+    if(
+      dropdown&&
+      !dropdown.contains(
+        event.target
+      )
+    ){
+
+      document.getElementById(
+        "bookDropdownList"
+      ).classList.add(
+        "hidden"
+      );
+
+    }
+
+  }
+);
+
+
+document.querySelectorAll(
+  ".student-tab"
+).forEach(tab=>{
+
+  tab.addEventListener(
+    "click",
+    ()=>{
+
+      selectedStudentClass=
+        tab.dataset.class;
+
+      document.getElementById(
+        "studentSearch"
+      ).value="";
+
+      renderStudents();
+
+    }
+  );
+
 });
+
+
+document.getElementById(
+  "backToStudentsButton"
+).addEventListener(
+  "click",
+  ()=>{
+    showPage(
+      "students"
+    );
+  }
+);
+
+
+/* ============================================================
+   EDIT CHECKOUT EVENTS
+============================================================ */
+
+document.getElementById(
+  "editStatus"
+).addEventListener(
+  "change",
+  ()=>{
+    updateEditReturnDateVisibility();
+  }
+);
+
+
+document.getElementById(
+  "saveEditButton"
+).addEventListener(
+  "click",
+  saveEditedCheckout
+);
+
+
+document.getElementById(
+  "cancelEditButton"
+).addEventListener(
+  "click",
+  closeEditCheckout
+);
+
+
+document.getElementById(
+  "editModal"
+).addEventListener(
+  "click",
+  event=>{
+
+    if(event.target.id==="editModal"){
+      closeEditCheckout();
+    }
+
+  }
+);
+
+
+/* ============================================================
+   BOOK EVENTS
+============================================================ */
+
+document.getElementById(
+  "addBookButton"
+).addEventListener(
+  "click",
+  openAddBook
+);
+
+
+document.getElementById(
+  "saveBookButton"
+).addEventListener(
+  "click",
+  saveBook
+);
+
+
+document.getElementById(
+  "cancelBookButton"
+).addEventListener(
+  "click",
+  closeBookModal
+);
+
+
+document.getElementById(
+  "bookCategoryInput"
+).addEventListener(
+  "change",
+  updateBookCategoryFields
+);
+
+
+document.getElementById(
+  "bookModal"
+).addEventListener(
+  "click",
+  event=>{
+
+    if(event.target.id==="bookModal"){
+      closeBookModal();
+    }
+
+  }
+);
+
 </script>
 
 </body>
