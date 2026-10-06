@@ -2341,341 +2341,76 @@ function renderLibrary(){
       "click",
       event=>{
         event.stopPropagation();
-        openEditBook(book.id);
-      }
-    );
-
-
-    actionButtons[1].addEventListener(
-      "click",
-      event=>{
-        event.stopPropagation();
-        deleteBook(book.id);
-      }
-    );
-
-
-    tbody.appendChild(row);
-
-  });
-
-}
-
-
-/* ============================================================
-   SERIES OPTIONS
-============================================================ */
-
-function updateSeriesOptions(){
-
-  const datalist=
-    document.getElementById(
-      "seriesOptions"
-    );
-
-
-  if(!datalist)
-    return;
-
-
-  const seriesNames=
-    [...new Set(
-      books
-        .map(book=>String(book.Series||"").trim())
-        .filter(Boolean)
-    )]
-    .sort();
-
-
-  datalist.innerHTML="";
-
-
-  seriesNames.forEach(series=>{
-
-    const option=
-      document.createElement("option");
-
-    option.value=series;
-
-    datalist.appendChild(option);
-
-  });
-
-}
-
-
-/* ============================================================
-   ADD / EDIT BOOK
-============================================================ */
-
-function resetBookModal(){
-
-  editingBookId=null;
-
-  selectedExistingBookId=null;
-
-
-  document.getElementById(
-    "bookModalTitle"
-  ).textContent=
-    "Add Book";
-
-
-  document.getElementById(
-    "bookModalMessage"
-  ).innerHTML="";
-
-
-  document.getElementById(
-    "quickAddSection"
-  ).classList.remove(
-    "hidden"
-  );
-
-
-  document.getElementById(
-    "newBookDetailsSection"
-  ).classList.add(
-    "hidden"
-  );
-
-
-  document.getElementById(
-    "backToBookSearchButton"
-  ).classList.remove(
-    "hidden"
-  );
-
-
-  document.getElementById(
-    "bookTitleInput"
-  ).value="";
-
-
-  document.getElementById(
-    "bookCopiesInput"
-  ).value="1";
-
-
-  document.getElementById(
-    "bookSearchResults"
-  ).innerHTML="";
-
-
-  document.getElementById(
-    "newBookAuthorInput"
-  ).value="";
-
-
-  document.getElementById(
-    "newBookCategoryInput"
-  ).value="";
-
-
-  document.getElementById(
-    "newBookSeriesInput"
-  ).value="";
-
-
-  document.getElementById(
-    "newBookSeriesNumberInput"
-  ).value="";
-
-
-  const coverInput=
-    document.getElementById(
-      "newBookCoverInput"
-    );
-
-
-  if(coverInput)
-    coverInput.value="";
-
-
-  document.querySelector(
-    "#newBookDetailsSection h3"
-  ).textContent=
-    "New Book Details";
-
-
-  document.querySelector(
-    "#newBookDetailsSection p"
-  ).textContent=
-    "This book isn't already in your library. Enter the information below to add it.";
-
-
-  document.getElementById(
-    "saveNewBookButton"
-  ).textContent=
-    "Add New Book";
-
-
-  updateNewBookCategoryFields();
-
-}
-
-
-function openAddBook(){
-
-  resetBookModal();
-
-
-  document.getElementById(
-    "bookModal"
-  ).classList.remove(
-    "hidden"
-  );
-
-
-  document.getElementById(
-    "bookTitleInput"
-  ).focus();
-
-}
-
-
-function openEditBook(bookId){
-
-  const book=
-    books.find(
-      b=>String(b.id)===String(bookId)
-    );
-
-
-  if(!book)
-    return;
-
+       function openEditBook(bookId){
+  const book=books.find(b=>String(b.id)===String(bookId));
+  if(!book) return;
 
   editingBookId=book.id;
-
   selectedExistingBookId=null;
 
+  const detailsSection=document.getElementById("newBookDetailsSection");
 
-  document.getElementById(
-    "bookModalTitle"
-  ).textContent=
-    "Edit Book";
+  document.getElementById("bookModalTitle").textContent="Edit Book";
+  document.getElementById("quickAddSection").classList.add("hidden");
+  detailsSection.classList.remove("hidden");
+  document.getElementById("backToBookSearchButton").classList.add("hidden");
 
+  document.querySelector("#newBookDetailsSection h3").textContent="Edit Book Details";
+  document.querySelector("#newBookDetailsSection p").textContent="Update the information for this book.";
 
-  document.getElementById(
-    "quickAddSection"
-  ).classList.add(
-    "hidden"
-  );
+  let editTitleGroup=document.getElementById("editBookTitleGroup");
 
+  if(!editTitleGroup){
+    editTitleGroup=document.createElement("div");
+    editTitleGroup.id="editBookTitleGroup";
+    editTitleGroup.className="form-group";
 
-  document.getElementById(
-    "newBookDetailsSection"
-  ).classList.remove(
-    "hidden"
-  );
+    editTitleGroup.innerHTML=`
+      <label for="editBookTitleInput">
+        Book Title
+      </label>
 
+      <input
+        type="text"
+        id="editBookTitleInput"
+        placeholder="Book title"
+      >
+    `;
 
-  document.getElementById(
-    "backToBookSearchButton"
-  ).classList.add(
-    "hidden"
-  );
+    const heading=detailsSection.querySelector("h3");
 
-
-  document.querySelector(
-    "#newBookDetailsSection h3"
-  ).textContent=
-    "Edit Book Details";
-
-
-  document.querySelector(
-    "#newBookDetailsSection p"
-  ).textContent=
-    "Update the information for this book.";
-
-
-  document.getElementById(
-    "bookTitleInput"
-  ).value=
-    book.Title||"";
-
-
-  document.getElementById(
-    "newBookAuthorInput"
-  ).value=
-    book.Author||"";
-
-
-  document.getElementById(
-    "newBookCategoryInput"
-  ).value=
-    book.Category||"";
-
-
-  document.getElementById(
-    "newBookSeriesInput"
-  ).value=
-    book.Series||"";
-
-
-  document.getElementById(
-    "newBookSeriesNumberInput"
-  ).value=
-    book["Series #"]||"";
-
-
-  document.getElementById(
-    "bookCopiesInput"
-  ).value=
-    Number(book.Copies||1);
-
-
-  const coverInput=
-    document.getElementById(
-      "newBookCoverInput"
-    );
-
-
-  if(coverInput){
-
-    coverInput.value=
-      getBookCoverUrl(book);
-
+    if(heading){
+      heading.insertAdjacentElement("afterend",editTitleGroup);
+    }else{
+      detailsSection.prepend(editTitleGroup);
+    }
   }
 
+  editTitleGroup.classList.remove("hidden");
 
-  document.getElementById(
-    "bookModalMessage"
-  ).innerHTML="";
+  document.getElementById("editBookTitleInput").value=book.Title||"";
+  document.getElementById("newBookAuthorInput").value=book.Author||"";
+  document.getElementById("newBookCategoryInput").value=book.Category||"";
+  document.getElementById("newBookSeriesInput").value=book.Series||"";
+  document.getElementById("newBookSeriesNumberInput").value=book["Series #"]||"";
+  document.getElementById("bookCopiesInput").value=Number(book.Copies||1);
 
+  const coverInput=document.getElementById("newBookCoverInput");
+
+  if(coverInput){
+    coverInput.value=getBookCoverUrl(book);
+  }
+
+  document.getElementById("bookModalMessage").innerHTML="";
 
   updateNewBookCategoryFields();
 
+  document.getElementById("saveNewBookButton").textContent="Save Changes";
 
-  document.getElementById(
-    "saveNewBookButton"
-  ).textContent=
-    "Save Changes";
+  document.getElementById("bookModal").classList.remove("hidden");
 
-
-  document.getElementById(
-    "bookModal"
-  ).classList.remove(
-    "hidden"
-  );
-
-
-  /*
-    The title input normally lives in the quick-add
-    section. During editing that section is hidden,
-    so temporarily show only the title field.
-  */
-
-  const titleInput=
-    document.getElementById(
-      "bookTitleInput"
-    );
-
-
-  if(titleInput){
-
-    titleInput.style.display="block";
+  document.getElementById("editBookTitleInput").focus();
+}
 
 
     const titleGroup=
