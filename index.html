@@ -1035,6 +1035,16 @@ tr:hover td{background:#f8fafc}
       </select>
     </div>
 
+    <div class="online-filter-group">
+      <label for="onlineBookSort">Sort</label>
+      <select id="onlineBookSort">
+        <option value="title-az">Title: A–Z</option>
+        <option value="title-za">Title: Z–A</option>
+        <option value="author-az">Author: A–Z</option>
+        <option value="author-za">Author: Z–A</option>
+      </select>
+    </div>
+
     <button id="clearOnlineFiltersButton" class="clear-filter-button" type="button">
       Clear Filters
     </button>
@@ -4024,6 +4034,15 @@ function renderLibrary(){
       }
     );
 
+  const onlineBookSort=document.getElementById("onlineBookSort")?.value||"title-az";
+  const [sortField,sortDirection]=onlineBookSort.split("-");
+  const sortKey=sortField==="author"?"Author":"Title";
+  filteredBooks.sort((a,b)=>{
+    const result=String(a[sortKey]||"").localeCompare(String(b[sortKey]||""),undefined,{sensitivity:"base"});
+    if(result!==0)return sortDirection==="za"?-result:result;
+    return String(a.Title||"").localeCompare(String(b.Title||""),undefined,{sensitivity:"base"});
+  });
+
   tbody.innerHTML="";
   if(grid)grid.innerHTML="";
 
@@ -6062,7 +6081,7 @@ document.getElementById(
   renderLibrary
 );
 
-["onlineCategoryFilter","onlineSeriesFilter","onlineAvailabilityFilter"].forEach(id=>{
+["onlineCategoryFilter","onlineSeriesFilter","onlineAvailabilityFilter","onlineBookSort"].forEach(id=>{
   document.getElementById(id).addEventListener("change",renderLibrary);
 });
 
@@ -6070,6 +6089,7 @@ document.getElementById("clearOnlineFiltersButton").addEventListener("click",()=
   document.getElementById("onlineCategoryFilter").value="";
   document.getElementById("onlineSeriesFilter").value="";
   document.getElementById("onlineAvailabilityFilter").value="";
+  document.getElementById("onlineBookSort").value="title-az";
   document.getElementById("librarySearch").value="";
   renderLibrary();
 });
