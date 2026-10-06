@@ -967,6 +967,15 @@ tbody tr{transition:background .12s ease}
 @media(max-width:600px){#editModal .edit-modal-delete{margin-left:0;width:100%;order:3}}
 
 #history .history-class-tabs{margin:0 0 16px}
+
+#studentHistory .library-card-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 22px}
+#studentHistory .library-card-summary-item{background:rgba(255,255,255,.62);border:1px solid #eadfcb;border-radius:12px;padding:13px 14px;display:flex;flex-direction:column;gap:3px}
+#studentHistory .library-card-summary-item strong{font-size:22px;color:#3d2f20}
+#studentHistory .library-card-summary-item span{font-size:11px;font-weight:800;letter-spacing:.04em;color:#927b5d;text-transform:uppercase}
+#studentHistory .library-card-section-table{margin-bottom:24px}
+#studentHistory .library-card-reading-label{margin-top:2px}
+#studentHistory .library-card-empty{text-align:center;color:#927b5d;padding:20px}
+@media(max-width:600px){#studentHistory .library-card-summary{grid-template-columns:1fr}.library-card-summary-item{flex-direction:row!important;align-items:center;justify-content:space-between}}
 </style>
 </head>
 
@@ -1354,28 +1363,27 @@ tbody tr{transition:background .12s ease}
       <div class="library-card-icon" aria-hidden="true">📚</div>
     </div>
     <div class="library-card-divider"></div>
-    <div class="library-card-history-label">BOOK HISTORY</div>
 
-    <div class="table-container">
+    <div class="library-card-summary">
+      <div class="library-card-summary-item"><strong id="studentCurrentCount">0</strong><span>Currently Out</span></div>
+      <div class="library-card-summary-item"><strong id="studentReadCount">0</strong><span>Books Returned</span></div>
+      <div class="library-card-summary-item"><strong id="studentTotalCount">0</strong><span>Total Checkouts</span></div>
+    </div>
 
+    <div class="library-card-history-label">CURRENTLY CHECKED OUT</div>
+    <div class="table-container library-card-section-table">
       <table>
-
-        <thead>
-
-          <tr>
-            <th>Book</th>
-            <th>Checked Out</th>
-            <th>Returned</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-
-        </thead>
-
-        <tbody id="studentHistoryTableBody"></tbody>
-
+        <thead><tr><th>Book</th><th>Checked Out</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="studentCurrentTableBody"></tbody>
       </table>
+    </div>
 
+    <div class="library-card-history-label library-card-reading-label">READING HISTORY</div>
+    <div class="table-container">
+      <table>
+        <thead><tr><th>Book</th><th>Checked Out</th><th>Returned</th><th>Actions</th></tr></thead>
+        <tbody id="studentHistoryTableBody"></tbody>
+      </table>
     </div>
 
     <div class="library-card-footer">
@@ -5117,132 +5125,62 @@ function renderStudents(){
 
 function showStudentHistory(studentId){
 
-  const student=
-    getStudent(studentId);
-
+  const student=getStudent(studentId);
   if(!student)return;
 
-  currentStudentHistoryStudentId=
-    studentId;
+  currentStudentHistoryStudentId=studentId;
+  const className=getClassName(student.class_id);
 
-  const className=
-    getClassName(
-      student.class_id
-    );
-
-  document.getElementById(
-    "studentHistoryTitle"
-  ).textContent=
+  document.getElementById("studentHistoryTitle").textContent=
     `Library Card — Student #${student.student_number} · ${className}`;
 
-  const tbody=
-    document.getElementById(
-      "studentHistoryTableBody"
-    );
+  const studentCheckouts=checkouts.filter(
+    checkout=>String(checkout.student_id)===String(studentId)
+  );
 
-  tbody.innerHTML="";
+  const currentCheckouts=studentCheckouts.filter(checkout=>!checkout["Return Date"]);
+  const returnedCheckouts=studentCheckouts.filter(checkout=>Boolean(checkout["Return Date"]));
 
-  const studentCheckouts=
-    checkouts.filter(
-      checkout=>
-        String(checkout.student_id)===
-        String(studentId)
-    );
+  document.getElementById("studentCurrentCount").textContent=currentCheckouts.length;
+  document.getElementById("studentReadCount").textContent=returnedCheckouts.length;
+  document.getElementById("studentTotalCount").textContent=studentCheckouts.length;
 
-  if(studentCheckouts.length===0){
+  const currentBody=document.getElementById("studentCurrentTableBody");
+  const historyBody=document.getElementById("studentHistoryTableBody");
 
-    tbody.innerHTML=`
-
-      <tr>
-        <td colspan="5">
-          This student has not checked out any books yet.
-        </td>
-      </tr>
-
-    `;
-
+  if(currentCheckouts.length===0){
+    currentBody.innerHTML='<tr><td colspan="4" class="library-card-empty">No books currently checked out.</td></tr>';
   }else{
-
-    studentCheckouts.forEach(
-      checkout=>{
-
-        const book=
-          books.find(
-            b=>
-              String(b.id)===
-              String(checkout.book_id)
-          );
-
-        const returned=
-          Boolean(
-            checkout["Return Date"]
-          );
-
-        const row=
-          document.createElement("tr");
-
-        row.innerHTML=`
-
+    currentBody.innerHTML=currentCheckouts.map(checkout=>{
+      const book=books.find(b=>String(b.id)===String(checkout.book_id));
+      return `
+        <tr>
+          <td>${book?book.Title:"Unknown Book"}</td>
+          <td>${formatDate(checkout["Check Out Date"])}</td>
+          <td><span class="history-status-out">Checked Out</span></td>
           <td>
-            ${
-              book
-                ? book.Title
-                : "Unknown Book"
-            }
-          </td>
-
-          <td>
-            ${formatDate(
-              checkout["Check Out Date"]
-            )}
-          </td>
-
-          <td>
-            ${
-              returned
-                ? formatDate(
-                    checkout["Return Date"]
-                  )
-                : "—"
-            }
-          </td>
-
-          <td>
-            ${
-              returned
-                ? '<span class="history-status-returned">Returned</span>'
-                : '<span class="history-status-out">Checked Out</span>'
-            }
-          </td>
-
-          <td>
-
             <div class="history-actions">
-
-              <button
-                class="edit-button"
-                onclick="openEditCheckout(${checkout.id})"
-              >
-                Edit
-              </button>
-
-              ${!returned ? `
-              <button
-                class="return-button"
-                onclick="returnBook(${checkout.id}, this, true)"
-              >
-                Return Book
-              </button>` : ""}
-
+              <button class="edit-button" onclick="openEditCheckout(${checkout.id})">Edit</button>
+              <button class="return-button" onclick="returnBook(${checkout.id}, this, true)">Return Book</button>
             </div>
-
           </td>
+        </tr>`;
+    }).join("");
+  }
 
-        `;
-
-        tbody.appendChild(row);
-      }
-    );
+  if(returnedCheckouts.length===0){
+    historyBody.innerHTML='<tr><td colspan="4" class="library-card-empty">No returned books yet.</td></tr>';
+  }else{
+    historyBody.innerHTML=returnedCheckouts.map(checkout=>{
+      const book=books.find(b=>String(b.id)===String(checkout.book_id));
+      return `
+        <tr>
+          <td>${book?book.Title:"Unknown Book"}</td>
+          <td>${formatDate(checkout["Check Out Date"])}</td>
+          <td>${formatDate(checkout["Return Date"])}</td>
+          <td><div class="history-actions"><button class="edit-button" onclick="openEditCheckout(${checkout.id})">Edit</button></div></td>
+        </tr>`;
+    }).join("");
   }
 
   showPage("studentHistory");
