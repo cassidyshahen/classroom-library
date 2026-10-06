@@ -887,6 +887,54 @@ tr:hover td{background:#f8fafc}
   .history-actions{flex-direction:column}
   .modal-buttons{flex-direction:column}
 }
+
+/* 2026 visual polish */
+:root{--ink:#172033;--muted:#64748b;--line:#e2e8f0;--blue:#2563eb;--blue-soft:#eff6ff;--surface:#fff;--surface-soft:#f8fafc}
+body{background:linear-gradient(180deg,#eef4fb 0,#f7f9fc 240px,#f4f6f8 100%);color:var(--ink)}
+header{background:linear-gradient(120deg,#172033,#243b5a);padding:18px 28px;box-shadow:0 5px 18px rgba(15,23,42,.16)}
+header h1{font-size:25px;letter-spacing:-.02em}
+#logoutButton{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.10);border-radius:9px}
+nav{position:sticky;top:0;z-index:50;padding:9px 22px;border-bottom:1px solid rgba(203,213,225,.8);box-shadow:0 2px 10px rgba(15,23,42,.04)}
+nav button{font-weight:700;color:#526077;border-radius:9px;transition:.15s ease}
+nav button:hover{background:#f1f5f9;color:#1e293b}
+nav button.active{background:#eaf2ff;color:#1d4ed8;box-shadow:inset 0 0 0 1px #dbeafe}
+main{max-width:1240px;padding:30px 25px 45px}
+.page>h2,.library-header h2{font-size:27px;letter-spacing:-.025em;color:#172033}
+.page>h2:after,.library-header h2:after{content:"";display:block;width:38px;height:3px;border-radius:99px;background:#3b82f6;margin-top:8px}
+.card,.dashboard-panel,.stat-card{border:1px solid rgba(226,232,240,.9);border-radius:14px;box-shadow:0 5px 18px rgba(15,23,42,.055)}
+.card{padding:24px}
+.stat-card{transition:transform .15s ease,box-shadow .15s ease}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(15,23,42,.08)}
+.form-group label{color:#334155;font-size:13px}
+.form-group select,.form-group input,.search-box input,.book-dropdown-input{border-radius:10px;border-color:#cbd5e1;transition:border-color .15s,box-shadow .15s}
+.form-group select:focus,.form-group input:focus,.search-box input:focus,.book-dropdown-input:focus,.online-filter-group select:focus{outline:none;border-color:#60a5fa;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.search-box input{background:white;box-shadow:0 2px 8px rgba(15,23,42,.035);padding:13px 15px}
+.primary-button,.add-button,.edit-button,.return-button,.table-checkout-button,.cancel-button,.small-button{border-radius:9px;box-shadow:0 2px 5px rgba(15,23,42,.09);transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+.primary-button:hover,.add-button:hover,.edit-button:hover,.return-button:hover,.table-checkout-button:hover,.cancel-button:hover,.small-button:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(15,23,42,.13)}
+.student-tabs{background:#e9eef5;padding:4px;border-radius:11px;width:max-content;max-width:100%}
+.student-tab{border:0;border-radius:8px;padding:10px 24px;background:transparent}
+.student-tab.active{box-shadow:0 2px 6px rgba(37,99,235,.18)}
+table{border-radius:10px;overflow:hidden}
+th{color:#475569;font-size:12px;text-transform:uppercase;letter-spacing:.035em}
+tbody tr{transition:background .12s ease}
+.message{border-radius:10px;border:1px solid transparent}
+.success{border-color:#bbf7d0}.error{border-color:#fecaca}.info{border-color:#bfdbfe}
+.modal-overlay{backdrop-filter:blur(3px);background:rgba(15,23,42,.52)}
+.modal{border-radius:16px;border:1px solid rgba(255,255,255,.7);box-shadow:0 22px 55px rgba(15,23,42,.24)}
+.modal h2{color:#172033;letter-spacing:-.02em}
+.library-header{background:white;border:1px solid #e2e8f0;border-radius:14px;padding:16px 18px;box-shadow:0 4px 14px rgba(15,23,42,.045)}
+.library-view-toggle{border-radius:10px;background:#edf2f7}
+.online-library-filters{border-radius:14px;box-shadow:0 4px 14px rgba(15,23,42,.045)}
+.online-filter-group select{border-radius:9px}
+.online-book-card{border:1px solid #e5eaf0;border-radius:14px;box-shadow:0 4px 14px rgba(15,23,42,.07);transition:transform .15s ease,box-shadow .15s ease}
+.online-book-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.11)}
+.genre-option-card{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.genre-option-card:hover{transform:translateY(-3px);border-color:#bfdbfe;box-shadow:0 9px 22px rgba(37,99,235,.09)}
+.series-option-card{border-radius:15px}
+.book-details-cover{box-shadow:0 6px 18px rgba(15,23,42,.16)}
+.dashboard-list-item{border:1px solid #eef2f7}
+.dashboard-mini-stat{background:linear-gradient(145deg,#fbfdff,#f4f7fb)}
+@media(max-width:700px){main{padding:20px 14px 35px}.library-header{align-items:flex-start;flex-direction:column}.library-actions{width:100%;justify-content:space-between}.page>h2,.library-header h2{font-size:24px}}
 </style>
 </head>
 
