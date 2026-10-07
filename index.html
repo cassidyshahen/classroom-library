@@ -1120,7 +1120,7 @@ tbody tr{transition:background .12s ease}
 }
 
 /* Checkout class split */
-.checkout-class-tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.checkout-class-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .checkout-class-tab{border:1px solid #cbd5e1;background:#f8fafc;color:#334155;border-radius:10px;padding:14px 18px;font-size:16px;font-weight:800;cursor:pointer;transition:.15s ease}
 .checkout-class-tab:hover{background:#eef4fb;border-color:#94a3b8}
 .checkout-class-tab.active{background:#2563eb;color:white;border-color:#2563eb;box-shadow:0 4px 12px rgba(37,99,235,.18)}
@@ -1245,6 +1245,7 @@ tbody tr{transition:background .12s ease}
       <label>Class</label>
 
       <div class="checkout-class-tabs" aria-label="Choose class">
+        <button type="button" class="checkout-class-tab active" data-checkout-class="all">View All</button>
         <button type="button" class="checkout-class-tab" data-checkout-class="7S">7S</button>
         <button type="button" class="checkout-class-tab" data-checkout-class="7K">7K</button>
       </div>
@@ -3552,68 +3553,41 @@ function populateClasses(){
       select.appendChild(option);
     }
   );
+
+  // View All is the default each time the library data loads.
+  select.value="";
+  document.querySelectorAll(".checkout-class-tab").forEach(tab=>{
+    tab.classList.toggle("active",tab.dataset.checkoutClass==="all");
+  });
+  populateStudents();
 }
 
 
 function populateStudents(){
+  const classId=document.getElementById("classSelect").value;
+  const studentSelect=document.getElementById("studentSelect");
+  studentSelect.innerHTML='<option value="">Select a student...</option>';
 
-  const classId=
-    document.getElementById(
-      "classSelect"
-    ).value;
+  const classStudents=students
+    .filter(student=>!classId||String(student.class_id)===String(classId))
+    .sort((a,b)=>{
+      const byClass=String(getClassName(a.class_id)||"").localeCompare(String(getClassName(b.class_id)||""));
+      return byClass||Number(a.student_number)-Number(b.student_number);
+    });
 
-  const studentSelect=
-    document.getElementById(
-      "studentSelect"
-    );
-
-  studentSelect.innerHTML=
-    '<option value="">Select a student...</option>';
-
-  if(!classId){
-
-    studentSelect.disabled=true;
-    clearBookSelection();
-
-    document.getElementById(
-      "bookSelect"
-    ).disabled=true;
-
-    return;
-  }
-
-  const classStudents=
-    students.filter(
-      student=>
-        String(student.class_id)===
-        String(classId)
-    );
-
-  classStudents.forEach(
-    student=>{
-
-      const option=
-        document.createElement("option");
-
-      option.value=
-        student.id;
-
-      option.textContent=
-        `Student #${student.student_number}`;
-
-      studentSelect.appendChild(option);
-    }
-  );
+  classStudents.forEach(student=>{
+    const option=document.createElement("option");
+    option.value=student.id;
+    option.textContent=classId
+      ? `Student #${student.student_number}`
+      : `${getClassName(student.class_id)} — Student #${student.student_number}`;
+    studentSelect.appendChild(option);
+  });
 
   studentSelect.disabled=false;
-
-  document.getElementById(
-    "bookSelect"
-  ).disabled=false;
-
+  document.getElementById("bookSelect").disabled=false;
   populateBooks();
 }
-
 
 function getFilteredBooks(){
 
@@ -3818,7 +3792,6 @@ function updateCheckoutButton(){
   document.getElementById(
     "checkoutButton"
   ).disabled=
-    !classValue||
     !studentValue||
     !bookValue;
 }
@@ -3904,7 +3877,7 @@ async function checkoutBook(){
       "classSelect"
     ).value="";
 
-    document.querySelectorAll(".checkout-class-tab").forEach(tab=>tab.classList.remove("active"));
+    document.querySelectorAll(".checkout-class-tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.checkoutClass==="all"));
 
     document.getElementById(
       "studentSelect"
@@ -3913,13 +3886,13 @@ async function checkoutBook(){
 
     document.getElementById(
       "studentSelect"
-    ).disabled=true;
+    ).disabled=false;
 
     clearBookSelection();
 
     document.getElementById(
       "bookSelect"
-    ).disabled=true;
+    ).disabled=false;
 
     await loadData();
 
@@ -6349,9 +6322,13 @@ document.querySelectorAll(".checkout-class-tab").forEach(tab=>{
     studentSelect.value="";
     clearBookSelection();
 
-    const classItem=classes.find(item=>String(getClassName(item.id)||"").toLowerCase()===String(className||"").toLowerCase());
-    if(!classItem)return;
-    classSelect.value=classItem.id;
+    if(className==="all"){
+      classSelect.value="";
+    }else{
+      const classItem=classes.find(item=>String(getClassName(item.id)||"").toLowerCase()===String(className||"").toLowerCase());
+      if(!classItem)return;
+      classSelect.value=classItem.id;
+    }
     populateStudents();
 
     updateCheckoutButton();
