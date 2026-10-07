@@ -1125,6 +1125,26 @@ tbody tr{transition:background .12s ease}
 .checkout-class-tab:hover{background:#eef4fb;border-color:#94a3b8}
 .checkout-class-tab.active{background:#2563eb;color:white;border-color:#2563eb;box-shadow:0 4px 12px rgba(37,99,235,.18)}
 @media(max-width:700px){.checkout-class-tabs{gap:8px}.checkout-class-tab{padding:13px 10px;min-height:48px}}
+
+/* Mobile-only: three series/genre tiles per row and larger homepage actions */
+@media(max-width:700px){
+  .series-options-grid,.genre-options-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .series-option-card{padding:7px;border-radius:10px;min-width:0}
+  .series-option-image-wrap{margin-bottom:6px;border-radius:7px}
+  .series-option-name{font-size:11px;line-height:1.25;overflow-wrap:anywhere}
+  .series-option-count{font-size:10px}
+  .series-option-icon{font-size:22px;margin-bottom:5px}
+  .genre-option-card{padding:12px 4px;min-width:0;border-radius:10px}
+  .genre-option-icon{font-size:25px;margin-bottom:6px}
+  .genre-option-name{font-size:11px;line-height:1.2;overflow-wrap:anywhere}
+  .genre-option-count{font-size:10px}
+  .dashboard-quick-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .dashboard-action{min-height:58px;padding:14px 12px;font-size:14px;line-height:1.3}
+}
+@media(max-width:390px){
+  .series-options-grid,.genre-options-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .dashboard-quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 </style>
 </head>
 
