@@ -3600,9 +3600,29 @@ function getFilteredBooks(){
         String(book.Series||"")
           .toLowerCase();
 
+      const seriesNumber=
+        String(book["Series #"]||"")
+          .toLowerCase();
+
+      // Also treat a series name + book number as searchable text.
+      // Example: "harry potter 5" matches Harry Potter, Series #5.
+      const seriesWithNumber=
+        [series,seriesNumber]
+          .filter(Boolean)
+          .join(" ");
+
+      const normalizedSearch=
+        search
+          .replace(/#/g," ")
+          .replace(/\b(book|number|no)\.?\s*(\d+)\b/g," $2 ")
+          .replace(/\s+/g," ")
+          .trim();
+
       return title.includes(search)||
         author.includes(search)||
-        series.includes(search);
+        series.includes(search)||
+        seriesWithNumber.includes(normalizedSearch);
+
     }
   );
 }
