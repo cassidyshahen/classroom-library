@@ -1262,6 +1262,102 @@ tbody tr{transition:background .12s ease}
   #students .students-card tbody>tr:not(.clickable-row){display:block;padding:18px;text-align:center;background:white;border-radius:12px}
   #students .students-card tbody>tr:not(.clickable-row) td{display:block;border:0}
 }
+
+/* ============================================================
+   THE COZY READING ROOM — warm library-wide visual identity
+   Visual styling only: checkout, filters, data and actions unchanged
+============================================================ */
+:root{
+  --library-cream:#f6efe3;
+  --library-paper:#fffaf1;
+  --library-parchment:#efe3d0;
+  --library-ink:#44382f;
+  --library-muted:#78695a;
+  --library-wood:#704936;
+  --library-wood-dark:#4c3027;
+  --library-sage:#526b55;
+  --library-border:#dfd0bb;
+  --library-shadow:0 5px 20px rgba(83,57,37,.09);
+}
+body{font-family:Georgia,"Times New Roman",serif;background:var(--library-cream);color:var(--library-ink)}
+button,input,select,textarea{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+body,#app{background-color:var(--library-cream)}
+#app{background-image:radial-gradient(ellipse at 12% 3%,rgba(222,195,151,.24),transparent 42%),radial-gradient(ellipse at 95% 75%,rgba(156,123,82,.10),transparent 48%)}
+header{background:linear-gradient(110deg,#40291f 0%,#62412e 54%,#78543b 100%);border-bottom:3px solid #a37b50;color:#fff5e4;box-shadow:0 4px 15px rgba(62,38,24,.17)}
+header h1{font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:.02em;color:#fff2d9}
+#logoutButton{background:rgba(255,245,226,.13);border:1px solid rgba(255,238,209,.38);color:#fff5e7}
+#logoutButton:hover{background:rgba(255,245,226,.24)}
+nav{background:#f0e4d2;border-bottom:1px solid #d5bea2;box-shadow:0 3px 12px rgba(80,53,33,.07)}
+nav button{color:#604937;font-weight:700}
+nav button:hover{background:#e5d4bc;color:#4d3425}
+nav button.active{background:#72513c;color:#fff8ec;box-shadow:0 2px 8px rgba(82,50,29,.18)}
+main{color:var(--library-ink)}
+.page>h2,.library-header h2,.students-page-header h2{font-family:Georgia,"Times New Roman",serif;color:#523a2d}
+.card,.stat-card,.login-box,.modal{background:var(--library-paper);border:1px solid var(--library-border);box-shadow:var(--library-shadow)}
+.card,.stat-card{border-radius:14px}
+.dashboard-hero{background:linear-gradient(120deg,rgba(53,73,52,.96),rgba(82,106,78,.94)),radial-gradient(circle at 85% 30%,#bd9b66,transparent 45%);border:1px solid #72846a;box-shadow:0 9px 25px rgba(56,72,48,.17);color:#fff9ed;position:relative;overflow:hidden}
+.dashboard-hero:after{content:"☕  ✦  📖";position:absolute;right:24px;bottom:13px;font-size:24px;letter-spacing:9px;opacity:.18;pointer-events:none}
+.dashboard-hero h2{font-family:Georgia,"Times New Roman",serif;letter-spacing:.01em;color:#fff7e5}
+.dashboard-hero p{color:#f2e5d2}
+.dashboard-action{background:#fff6e6;color:#503a2b;border:1px solid #e1d1b9;box-shadow:0 2px 6px rgba(33,29,21,.10)}
+.dashboard-action.primary{background:#b77949;color:#fffaf1;border-color:#d8a879}
+.dashboard-action:hover{background:#f4e5cd}
+.dashboard-action.primary:hover{background:#a5653b}
+.dashboard-stat{background:#fff9ef;border:1px solid #dfceb6}
+.dashboard-stat .number,.stat-card .number{color:#563d2d}
+.dashboard-stat .label,.stat-card .label{color:#82705c}
+.primary-button,.login-box button,.return-button{background:#526d53;color:#fffaf1;border-color:#526d53}
+.primary-button:hover,.login-box button:hover,.return-button:hover{background:#3e5940}
+.student-tab,.checkout-class-tab,.checkedout-class-tab,.history-class-tab{background:#fff9ef;color:#644d3b;border:1px solid #d7c4a9}
+.student-tab:hover,.checkout-class-tab:hover{background:#efe1ca;border-color:#c9ac86}
+.student-tab.active,.checkout-class-tab.active,.checkedout-class-tab.active,.history-class-tab.active,#students .student-tab.active{background:#6d503b;color:#fff9ef;border-color:#6d503b;box-shadow:0 2px 8px rgba(82,50,29,.16)}
+#students .student-tabs{background:#e8dac5}
+#students .students-page-header{background:linear-gradient(120deg,#f7e9d4,#eee0ca);border-color:#dfc7a9}
+#students .students-class-summary>div{background:#f4e9d7;border-color:#ddcbb1}
+#students .students-card,#students .students-card .table-container,#students .students-card table{background:#f3e8d7;border-color:#dfcdb4}
+#students .students-card th{background:#e9d9c2;color:#634b36;border-bottom-color:#d9c4a7}
+#students .students-card td,#students .students-card tbody tr:nth-child(even) td{background:#fff8ed;border-bottom-color:#eadbc8}
+#students .students-card tbody tr:nth-child(even) td{background:#f8efdf}
+#students #studentSearch{background:#fffaf1;border-color:#d9c5a8}
+.student-avatar,.student-class-badge{background:#e9dec9;color:#694a34}
+.student-count-badge.has-books{background:#e3ebdb;color:#426145}
+.students-eyebrow,.library-card-eyebrow{color:#8a6542}
+input,select,textarea,.book-dropdown-input{border-color:#d7c4aa;background:#fffdf8;color:#493a2f}
+input:focus,select:focus,textarea:focus,.book-dropdown-input:focus{outline-color:#b58a59;border-color:#b58a59}
+.search-box input{background:#fffaf2;border:1px solid #d9c4a8;color:#4b382a}
+th{background:#eadbc6;color:#604834;border-bottom-color:#d8c5a8}
+td{border-bottom-color:#e9dbc8}
+tr:hover td{background:#f6ebda}
+.online-book-card,.series-option-card,.genre-option-card{background:#fff9ef;border-color:#e0cdb4;box-shadow:0 3px 12px rgba(79,51,28,.07)}
+.online-book-card:hover,.series-option-card:hover,.genre-option-card:hover{box-shadow:0 7px 18px rgba(79,51,28,.14);border-color:#c6a27b}
+.library-card-back{color:#725037}
+.student-library-card{background:#fff8ea;border-color:#d9bd91}
+.library-card-history-label{color:#755437}
+#studentHistory .library-card-summary-item{background:#f5e7cf;border-color:#e0c7a2}
+#studentHistory th{background:#ead8bb;color:#624831}
+#studentHistory td{background:#fff9ef}
+#checkedout .checkedout-class{background:#eee0c9!important;color:#65462e}
+#checkedout .checkedout-record{border-color:#ddc7a9;background:#fff9ef}
+#checkedout .checkedout-record .checkedout-book{color:#4b3528}
+#checkedout .checkedout-date{color:#806d58}
+#checkedout .checkedout-actions{border-top-color:#e9d9c2!important}
+.login-box{background:#fff8ec}
+.login-box h1{font-family:Georgia,"Times New Roman",serif;color:#5b3d2b}
+.login-box p{color:#806c55}
+#loginScreen{background:radial-gradient(circle at 50% 10%,#e8d4b3,#f6efe3 68%)}
+@media(max-width:700px){
+  body,#app{background-color:#f5ecdf}
+  header{padding:13px 14px}
+  header h1{font-size:18px}
+  nav{background:#eee0cb}
+  nav button{color:#654a37}
+  nav button.active{background:#72513c;color:#fff9ef}
+  #students .clickable-row{background:#fff8ed;border-color:#dcc6a7}
+  #students .clickable-row td{background:transparent!important}
+  #students .clickable-row td.student-current-cell,#students .clickable-row td.student-total-cell{border-top-color:#e9d9c2}
+  #checkedout .checkedout-record{background:#fff9ef;border-color:#dcc7a8}
+  #dashboard .dashboard-action{border-radius:12px}
+}
 </style>
 </head>
 
@@ -1306,7 +1402,7 @@ tbody tr{transition:background .12s ease}
   <div class="dashboard-hero">
     <div>
       <h2>Classroom Library</h2>
-      <p>Your library at a glance.</p>
+      <p>A cozy little corner for stories, discoveries, and your next great read.</p>
     </div>
     <div class="dashboard-quick-actions">
       <button class="dashboard-action primary" type="button" onclick="showPage('checkout')">+ Check Out a Book</button>
