@@ -1398,6 +1398,33 @@ tr:hover td{background:#f6ebda}
   .popular-browse-intro{font-size:12px;margin-bottom:12px}
   .popular-browse-rank{padding:7px 3px;font-size:10px}
 }
+
+/* Compact genre-labeled cards in All Books and Browse by Series */
+#onlineLibraryGrid .online-book-info,
+#seriesBooksGrid .online-book-info{padding:11px 12px 12px}
+#onlineLibraryGrid .online-book-title,
+#seriesBooksGrid .online-book-title{font-size:14px;line-height:1.25;margin-bottom:3px}
+#onlineLibraryGrid .online-book-author,
+#seriesBooksGrid .online-book-author{font-size:12px;margin-bottom:5px}
+#onlineLibraryGrid .online-book-series,
+#seriesBooksGrid .online-book-series{margin-bottom:5px}
+#onlineLibraryGrid .online-book-genres,
+#seriesBooksGrid .online-book-genres{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+#onlineLibraryGrid .online-book-genre,
+#seriesBooksGrid .online-book-genre{display:inline-block;align-self:auto;margin:0 4px 5px 0;padding:3px 6px;font-size:10px;background:#efe3d1;color:#674b36;border-radius:7px}
+#onlineLibraryGrid .online-book-genres .online-book-genre{margin:0}
+#onlineLibraryGrid .online-book-availability,
+#seriesBooksGrid .online-book-availability{font-size:12px;margin-bottom:6px}
+#onlineLibraryGrid .online-checkout-button,
+#seriesBooksGrid .online-checkout-button{padding:7px 8px;margin-bottom:5px}
+#onlineLibraryGrid .book-card-details-button,
+#seriesBooksGrid .book-card-details-button{padding-top:7px;padding-bottom:7px}
+@media(max-width:700px){
+  #onlineLibraryGrid .online-book-info,#seriesBooksGrid .online-book-info{padding:8px 7px 9px}
+  #onlineLibraryGrid .online-book-title,#seriesBooksGrid .online-book-title{font-size:12px}
+  #onlineLibraryGrid .online-book-author,#seriesBooksGrid .online-book-author{font-size:10px}
+  #onlineLibraryGrid .online-book-genre,#seriesBooksGrid .online-book-genre{font-size:9px;padding:3px 5px}
+}
 </style>
 </head>
 
@@ -4825,6 +4852,7 @@ function renderLibrary(){
           <div class="online-book-info">
             <div class="online-book-title">${book.Title||""}</div>
             <div class="online-book-author">${book.Author||""}</div>
+            <div class="online-book-genres">${getBookGenres(book).map(genre=>`<span class="online-book-genre">${genre}</span>`).join("")}</div>
             <div class="online-book-bottom">
               <div class="online-book-availability ${available>0 ? "available-good" : "available-none"}">
                 ${available>0
