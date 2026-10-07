@@ -1189,6 +1189,12 @@ tbody tr{transition:background .12s ease}
 /* History class tabs on both mobile and desktop */
 #history .history-class-tabs{display:flex;gap:8px;margin-bottom:14px}
 @media(max-width:700px){#history .history-class-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}#history .history-class-tab{min-height:48px;padding:12px 8px}}
+
+/* Larger top navigation tabs on phones only */
+@media(max-width:700px){
+  nav{padding:10px 10px;gap:8px}
+  nav button{min-height:48px;padding:13px 16px;font-size:14px;font-weight:800;border-radius:11px}
+}
 </style>
 </head>
 
