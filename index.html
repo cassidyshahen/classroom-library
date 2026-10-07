@@ -992,6 +992,14 @@ tbody tr{transition:background .12s ease}
 #students #studentSearch{background:#eef2f6;border-color:#d3dce6}
 #students .student-tabs{background:#dfe6ee}
 #students .student-tab.active{background:#cbdcf1;color:#1f4f8b}
+
+/* Book card admin menu: reveal on hover for mouse/trackpad */
+@media (hover:hover) and (pointer:fine){
+  .online-book-card .book-admin-menu{opacity:0;visibility:hidden;transform:translateY(-3px);transition:opacity .14s ease,transform .14s ease,visibility .14s}
+  .online-book-card:hover .book-admin-menu,
+  .online-book-card:focus-within .book-admin-menu,
+  .online-book-card .book-admin-menu[open]{opacity:1;visibility:visible;transform:translateY(0)}
+}
 </style>
 </head>
 
@@ -3845,7 +3853,7 @@ function getOnlineBookCardHtml(book){
   const coverUrl=book["Cover URL"]||book.CoverURL||"";
   const seriesText=book.Series
     ? `${book.Series}${book["Series #"] ? ` • Book ${book["Series #"]}` : ""}`
-    : (book.Category||"Standalone");
+    : "";
 
   const onlineCover=coverUrl
     ? `<img class="online-book-cover" src="${coverUrl}" alt="${book.Title||"Book cover"}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -4323,7 +4331,7 @@ function renderLibrary(){
         const seriesText=
           book.Series
             ? `${book.Series}${book["Series #"] ? ` • Book ${book["Series #"]}` : ""}`
-            : (book.Category||"Standalone");
+            : "";
 
         const onlineCover=
           coverUrl
