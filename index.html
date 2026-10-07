@@ -1226,6 +1226,42 @@ tbody tr{transition:background .12s ease}
   #checkedout .history-actions{width:100%;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr))}
   #checkedout .history-actions button{min-width:0;white-space:normal}
 }
+
+/* Student roster mobile redesign: compact, legible portrait layout */
+.student-mobile-stat-label{display:none}
+@media(max-width:700px){
+  #students .students-page-header{padding:14px 15px;margin-bottom:10px;border-radius:13px}
+  #students .students-page-header h2{font-size:23px;margin-bottom:3px}
+  #students .students-page-header p{font-size:12px;line-height:1.35}
+  #students .students-toolbar{gap:10px;margin-bottom:10px}
+  #students .student-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:5px;border-radius:12px}
+  #students .student-tab{min-width:0;min-height:45px;padding:10px 5px;font-size:14px;border-radius:9px}
+  #students .search-box,#students #studentSearch{width:100%;max-width:100%;box-sizing:border-box}
+  #students #studentSearch{min-height:48px;padding:12px 14px;border-radius:11px}
+  #students .students-class-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:12px}
+  #students .students-class-summary>div{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:11px 4px;border-radius:11px;text-align:center}
+  #students .students-class-summary strong{font-size:22px;line-height:1}
+  #students .students-class-summary span{font-size:10px;line-height:1.15}
+  #students .students-card{padding:0}
+  #students .students-card .table-container,#students .students-card table,#students .students-card tbody{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+  #students .students-card tbody{gap:8px}
+  #students .clickable-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:12px;border-radius:12px;align-items:center;min-width:0}
+  #students .clickable-row td{display:block;min-width:0;width:auto!important;padding:0!important;margin:0!important}
+  #students .clickable-row td:first-child{position:static;grid-column:2;grid-row:1;justify-self:end}
+  #students .clickable-row td:nth-child(2){grid-column:1;grid-row:1;min-width:0}
+  #students .student-number-cell{gap:9px;min-width:0}
+  #students .student-avatar{width:38px;height:38px;flex-basis:38px;font-size:13px}
+  #students .student-number-cell strong{font-size:14px}
+  #students .student-number-cell span:last-child{font-size:11px}
+  #students .clickable-row td.student-current-cell,#students .clickable-row td.student-total-cell{grid-row:2;display:flex;align-items:center;justify-content:flex-start;gap:7px;padding-top:8px!important;border-top:1px solid #e0e6ee}
+  #students .clickable-row td.student-current-cell{grid-column:1}
+  #students .clickable-row td.student-total-cell{grid-column:2;justify-content:flex-end}
+  #students .student-mobile-stat-label{display:inline;font-size:11px;color:#64748b;font-weight:700;white-space:nowrap}
+  #students .student-count-badge{min-width:25px;height:25px;font-size:12px}
+  #students .student-alltime-count{font-size:13px}
+  #students .students-card tbody>tr:not(.clickable-row){display:block;padding:18px;text-align:center;background:white;border-radius:12px}
+  #students .students-card tbody>tr:not(.clickable-row) td{display:block;border:0}
+}
 </style>
 </head>
 
@@ -5365,8 +5401,8 @@ function renderStudents(){
 
         <td><span class="student-class-badge">${className}</span></td>
         <td><div class="student-number-cell"><span class="student-avatar">${student.student_number}</span><div><strong>Student #${student.student_number}</strong><span>View Library Card →</span></div></div></td>
-        <td><span class="student-count-badge ${borrowed ? "has-books" : ""}">${borrowed}</span></td>
-        <td><strong class="student-alltime-count">${allTime}</strong></td>
+        <td class="student-current-cell"><span class="student-mobile-stat-label">Out now</span><span class="student-count-badge ${borrowed ? "has-books" : ""}">${borrowed}</span></td>
+        <td class="student-total-cell"><span class="student-mobile-stat-label">All time</span><strong class="student-alltime-count">${allTime}</strong></td>
 
       `;
 
