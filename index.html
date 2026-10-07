@@ -1185,6 +1185,10 @@ tbody tr{transition:background .12s ease}
   #checkedout .checkedout-class-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
   #checkedout .checkedout-class-tab{min-height:50px;padding:12px 7px;font-size:14px}
 }
+
+/* History class tabs on both mobile and desktop */
+#history .history-class-tabs{display:flex;gap:8px;margin-bottom:14px}
+@media(max-width:700px){#history .history-class-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}#history .history-class-tab{min-height:48px;padding:12px 8px}}
 </style>
 </head>
 
@@ -1668,7 +1672,8 @@ tbody tr{transition:background .12s ease}
   <h2>Checkout History</h2>
 
   <div class="student-tabs history-class-tabs">
-    <button class="student-tab history-class-tab active" data-history-class="7S">7S</button>
+    <button class="student-tab history-class-tab active" data-history-class="all">View All</button>
+    <button class="student-tab history-class-tab" data-history-class="7S">7S</button>
     <button class="student-tab history-class-tab" data-history-class="7K">7K</button>
   </div>
 
@@ -2083,7 +2088,7 @@ let checkouts=[];
 let seriesCovers=[];
 
 let selectedStudentClass="7S";
-let selectedHistoryClass="7S";
+let selectedHistoryClass="all";
 let currentStudentHistoryStudentId=null;
 let editingCheckoutId=null;
 let selectedBookId="";
@@ -5876,7 +5881,7 @@ function renderHistory(){
     checkouts.filter(checkout=>{
       const student=getStudent(checkout.student_id);
       if(!student)return false;
-      return getClassName(student.class_id).toLowerCase()===selectedHistoryClass.toLowerCase();
+      return selectedHistoryClass==="all"||String(getClassName(student.class_id)||"").toLowerCase()===selectedHistoryClass.toLowerCase();
     });
 
   document.querySelectorAll(".history-class-tab").forEach(tab=>{
