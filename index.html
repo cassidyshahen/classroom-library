@@ -5158,8 +5158,8 @@ function renderStudents(){
           );
 
         if(
-          className.toLowerCase()!==
-          selectedStudentClass.toLowerCase()
+          String(className||"").toLowerCase()!==
+          String(selectedStudentClass||"7S").toLowerCase()
         )
           return false;
 
@@ -5178,7 +5178,7 @@ function renderStudents(){
       }
     );
 
-  const classStudents=students.filter(student=>getClassName(student.class_id).toLowerCase()===selectedStudentClass.toLowerCase());
+  const classStudents=students.filter(student=>String(getClassName(student.class_id)||"").toLowerCase()===String(selectedStudentClass||"7S").toLowerCase());
   const classStudentIds=new Set(classStudents.map(student=>String(student.id)));
   const classActiveCheckouts=checkouts.filter(checkout=>classStudentIds.has(String(checkout.student_id))&&!checkout["Return Date"]);
   const borrowingStudents=new Set(classActiveCheckouts.map(checkout=>String(checkout.student_id)));
