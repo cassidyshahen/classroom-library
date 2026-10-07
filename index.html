@@ -1377,6 +1377,17 @@ tr:hover td{background:#f6ebda}
     pointer-events:none;
   }
 }
+
+/* Most Popular Books: show each saved book cover alongside its rank */
+#dashboardPopularBooks .dashboard-list-item{min-width:0;background:#fff8ed;border:1px solid #e5d3ba}
+#dashboardPopularBooks .dashboard-list-cover{width:42px;height:60px;object-fit:cover;flex:0 0 42px;border-radius:5px;box-shadow:0 2px 6px rgba(64,42,24,.14)}
+#dashboardPopularBooks .dashboard-popular-cover-fallback{width:42px;height:60px;flex:0 0 42px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#e8d9c2;font-size:23px}
+#dashboardPopularBooks .dashboard-popular-info{min-width:0;flex:1}
+#dashboardPopularBooks .dashboard-list-title{overflow-wrap:anywhere}
+@media(max-width:700px){
+  #dashboardPopularBooks .dashboard-list-cover,#dashboardPopularBooks .dashboard-popular-cover-fallback{width:38px;height:54px;flex-basis:38px}
+  #dashboardPopularBooks .dashboard-list-item{gap:9px;padding:9px}
+}
 </style>
 </head>
 
@@ -3743,7 +3754,11 @@ function updateDashboard(){
     const items=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
     popular.innerHTML=items.length ? items.map(([bookId,count],index)=>{
       const book=books.find(b=>String(b.id)===String(bookId));
-      return '<div class="dashboard-list-item"><div class="dashboard-rank">#'+(index+1)+'</div><div><div class="dashboard-list-title">'+(book?.Title||"Unknown Book")+'</div><div class="dashboard-list-meta">'+count+' checkout'+(count===1?"":"s")+'</div></div></div>';
+      const cover=String(book?.["Cover URL"]||book?.CoverURL||"").trim();
+      const coverHtml=cover
+        ? '<img class="dashboard-list-cover" src="'+cover+'" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';"><div class="dashboard-popular-cover-fallback" style="display:none;" aria-hidden="true">📖</div>'
+        : '<div class="dashboard-popular-cover-fallback" aria-hidden="true">📖</div>';
+      return '<div class="dashboard-list-item"><div class="dashboard-rank">#'+(index+1)+'</div>'+coverHtml+'<div class="dashboard-popular-info"><div class="dashboard-list-title">'+(book?.Title||"Unknown Book")+'</div><div class="dashboard-list-meta">'+count+' checkout'+(count===1?"":"s")+'</div></div></div>';
     }).join("") : '<div class="dashboard-empty">Popular books will appear after checkouts.</div>';
   }
 }
