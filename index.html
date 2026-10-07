@@ -1000,6 +1000,124 @@ tbody tr{transition:background .12s ease}
   .online-book-card:focus-within .book-admin-menu,
   .online-book-card .book-admin-menu[open]{opacity:1;visibility:visible;transform:translateY(0)}
 }
+
+/* ============================================================
+   MOBILE-ONLY APP POLISH — desktop intentionally unchanged
+============================================================ */
+@media(max-width:700px){
+  html,body{max-width:100%;overflow-x:hidden}
+  body{background:#eef2f6}
+  header{padding:12px 14px;gap:10px}
+  header h1{font-size:18px;line-height:1.15}
+  #logoutButton{padding:8px 10px;font-size:12px;white-space:nowrap}
+
+  nav{padding:7px 8px;gap:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  nav::-webkit-scrollbar{display:none}
+  nav button{padding:9px 11px;font-size:12px;flex:0 0 auto}
+
+  main{padding:15px 11px 34px}
+  .page>h2,.library-header h2{font-size:23px}
+  .card{padding:15px;border-radius:12px}
+
+  .dashboard-hero{padding:19px 17px;margin-bottom:15px}
+  .dashboard-hero h2{font-size:23px}
+  .dashboard-quick-actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .dashboard-action{padding:11px 8px;font-size:12px}
+  .stats{grid-template-columns:1fr 1fr;gap:9px;margin-bottom:15px}
+  .stat-card{padding:13px}
+  .stat-card .number{font-size:24px}
+  .dashboard-grid{grid-template-columns:1fr;gap:12px}
+  .dashboard-panel{padding:15px}
+
+  .library-header{padding:14px;margin-bottom:13px;gap:12px}
+  .library-actions{display:grid;width:100%;grid-template-columns:1fr 1fr;gap:7px}
+  .library-actions button{width:100%;padding:10px 7px;font-size:12px}
+  .library-view-toggle{width:100%;display:flex}
+  .library-view-toggle button{flex:1}
+  .online-library-filters{padding:12px;gap:9px}
+  .online-filter-group{min-width:0;width:100%}
+  .online-filter-group select{width:100%}
+  .online-browse-tabs{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .online-library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .online-book-card{border-radius:11px}
+  .online-book-info{padding:10px}
+  .online-book-title{font-size:13px;line-height:1.25}
+  .online-book-author,.online-book-series{font-size:11px}
+  .online-book-genre{font-size:9px;padding:3px 6px}
+  .online-book-no-cover{min-height:0;padding:10px;font-size:11px}
+  .online-book-bottom{gap:6px}
+  .online-book-availability{font-size:10px}
+  .online-checkout-button{font-size:11px;padding:8px 5px}
+  .book-admin-menu{top:6px;right:6px}
+  .book-admin-menu summary{width:36px;height:36px;font-size:20px}
+  .book-admin-menu-popover{top:40px;width:145px}
+  .book-admin-menu-popover button{padding:11px 10px}
+
+  .genre-options-grid{grid-template-columns:1fr 1fr;gap:9px}
+  .genre-option-card{padding:14px 8px}
+  .series-options-grid{grid-template-columns:1fr;gap:10px}
+
+  .students-page-header{padding:17px 16px;margin-bottom:12px}
+  .students-page-header h2{font-size:23px}
+  .students-page-header p{font-size:12px}
+  .students-toolbar{gap:9px;margin-bottom:10px}
+  #students .student-tabs{display:flex;width:100%}
+  #students .student-tab{flex:1}
+  #students .search-box{width:100%;flex:auto}
+  .students-class-summary{grid-template-columns:repeat(3,1fr);gap:6px}
+  .students-class-summary>div{padding:10px 5px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px}
+  .students-class-summary strong{font-size:19px}
+  .students-class-summary span{font-size:9px}
+  #students .students-card{background:transparent;border:0;box-shadow:none;overflow:visible}
+  #students .table-container{overflow:visible}
+  #students table,#students tbody,#students tr,#students td{display:block;width:100%}
+  #students thead{display:none}
+  #students tbody{display:grid;gap:8px}
+  #students .clickable-row{position:relative;background:#f3f5f7;border:1px solid #d9e0e8;border-radius:12px;padding:10px 11px}
+  #students .clickable-row td{background:transparent!important;border:0;padding:2px 0}
+  #students .clickable-row td:first-child{position:absolute;right:10px;top:10px;width:auto}
+  #students .clickable-row td:nth-child(2){padding-right:50px}
+  #students .clickable-row td:nth-child(3),#students .clickable-row td:nth-child(4){display:inline-block;width:auto;margin:7px 8px 0 47px}
+  #students .clickable-row td:nth-child(4){margin-left:0}
+  .student-number-cell span:last-child{font-size:10px}
+
+  .student-library-card{border-radius:15px;padding:0 13px 14px}
+  .student-library-card-top{padding:18px 2px 13px}
+  .student-library-card-top h2{font-size:20px}
+  .library-card-icon{display:none}
+  #studentHistory .library-card-summary{grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px}
+  #studentHistory .library-card-summary-item{padding:9px 5px!important;display:flex!important;flex-direction:column!important;align-items:center!important;text-align:center}
+  #studentHistory .library-card-summary-item strong{font-size:19px}
+  #studentHistory .library-card-summary-item span{font-size:8px}
+  #studentHistory .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #studentHistory table{min-width:600px}
+  .library-card-footer{gap:8px;flex-direction:column;align-items:flex-start}
+
+  .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #libraryTableView table,#checkedout table,#history table{min-width:760px}
+  th,td{font-size:12px}
+
+  .modal-overlay{padding:10px;align-items:flex-end}
+  .modal{width:100%;max-width:none;max-height:92vh;overflow-y:auto;border-radius:18px 18px 10px 10px;padding:18px}
+  .modal h2{font-size:21px}
+  .modal-buttons{display:grid;grid-template-columns:1fr;gap:8px}
+  .modal-buttons button{width:100%;min-height:44px}
+  .form-group input,.form-group select,.book-dropdown-input,.search-box input{font-size:16px;min-height:44px}
+  .genre-checkbox-grid{grid-template-columns:1fr 1fr;gap:7px}
+  .genre-checkbox-grid label{padding:9px 7px}
+
+  .history-class-tabs{display:flex;width:100%}
+  .history-class-tab{flex:1}
+  .history-actions button,.return-button,.edit-button,.table-checkout-button{min-height:38px}
+}
+
+@media(max-width:390px){
+  .online-library-grid{gap:8px}
+  .online-book-info{padding:8px}
+  .genre-options-grid{grid-template-columns:1fr}
+  .dashboard-quick-actions{grid-template-columns:1fr}
+  .students-class-summary{gap:4px}
+}
 </style>
 </head>
 
