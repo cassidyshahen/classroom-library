@@ -5830,7 +5830,7 @@ function renderHistory(){
   if(filteredCheckouts.length===0){
 
     tbody.innerHTML=
-      '<tr><td colspan="6">No checkout history found.</td></tr>';
+      '<tr><td colspan="7">No checkout history found.</td></tr>';
 
     return;
   }
@@ -5909,6 +5909,10 @@ function renderHistory(){
               ? '<span class="history-status-returned">Returned</span>'
               : '<span class="history-status-out">Checked Out</span>'
           }
+        </td>
+
+        <td>
+          <button class="edit-button" type="button" onclick="openEditCheckout(${checkout.id})">Edit</button>
         </td>
 
       `;
