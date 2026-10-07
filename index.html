@@ -706,6 +706,7 @@ tr:hover td{background:#f8fafc}
 }
 .series-option-icon{font-size:28px;margin-bottom:10px}
 .series-option-name{font-size:15px;font-weight:800;color:#1e293b;line-height:1.25;text-align:center}
+.series-option-genre{font-size:12px;font-weight:600;color:#475569;text-align:center;line-height:1.4;margin-top:6px;overflow-wrap:anywhere}
 .series-option-count{font-size:11px;color:#64748b;margin-top:3px;text-align:center}
 .series-status{
   display:inline-flex;
@@ -4365,6 +4366,9 @@ function renderSeriesBrowser(){
     optionsGrid.innerHTML=names.map(name=>{
       const seriesBooks=books.filter(b=>String(b.Series||"").trim()===name);
       const count=seriesBooks.length;
+      const seriesGenres=[...new Set(seriesBooks.flatMap(book=>getBookGenres(book)).map(genre=>String(genre).trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+      const genreLabel=seriesGenres.length?seriesGenres.join(" • "):"Genre not assigned";
+      const safeGenreLabel=genreLabel.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
       const seriesRecord=seriesCovers.find(item=>String(item.Name||"").trim()===name);
       const savedImage=String(seriesRecord?.["Cover URL"]||"").trim();
       const safeName=name.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
@@ -4382,6 +4386,7 @@ function renderSeriesBrowser(){
         <button class="series-card-main" type="button" onclick="openBrowseSeries('${safeName}')">
           <div class="series-option-image-wrap">${imageHtml}</div>
           <div class="series-option-name">${name}</div>
+          <div class="series-option-genre">${safeGenreLabel}</div>
           <div class="series-option-count">${count} ${count===1 ? "book" : "books"}</div>
           <div class="series-status ${seriesRecord?.Complete ? "complete" : "incomplete"}"><span class="series-status-icon">${seriesRecord?.Complete ? "✓" : "•"}</span><span>${seriesRecord?.Complete ? "Complete Set" : "Incomplete Set"}</span></div>
         </button>
