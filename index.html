@@ -1214,6 +1214,18 @@ tbody tr{transition:background .12s ease}
   #checkedout .checkedout-class-tabs{margin-bottom:10px;gap:6px}
   #checkedout .checkedout-class-tab{min-height:42px;padding:9px 6px;font-size:13px}
 }
+
+/* Portrait-phone fix: override the shared 760px table minimum on Checked Out */
+@media(max-width:700px){
+  #checkedout,#checkedout>.card,#checkedout .table-container{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+  #checkedout table{display:block;width:100%;max-width:100%;min-width:0!important;table-layout:auto}
+  #checkedout tbody{display:block;width:100%;min-width:0}
+  #checkedout .checkedout-record{width:100%;max-width:100%;min-width:0;box-sizing:border-box;grid-template-columns:minmax(0,1fr) auto}
+  #checkedout .checkedout-record td{max-width:100%;min-width:0;overflow-wrap:anywhere;white-space:normal}
+  #checkedout .checkedout-actions{width:100%;min-width:0}
+  #checkedout .history-actions{width:100%;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr))}
+  #checkedout .history-actions button{min-width:0;white-space:normal}
+}
 </style>
 </head>
 
