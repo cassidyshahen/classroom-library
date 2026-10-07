@@ -1118,6 +1118,13 @@ tbody tr{transition:background .12s ease}
   .dashboard-quick-actions{grid-template-columns:1fr}
   .students-class-summary{gap:4px}
 }
+
+/* Checkout class split */
+.checkout-class-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checkout-class-tab{border:1px solid #cbd5e1;background:#f8fafc;color:#334155;border-radius:10px;padding:14px 18px;font-size:16px;font-weight:800;cursor:pointer;transition:.15s ease}
+.checkout-class-tab:hover{background:#eef4fb;border-color:#94a3b8}
+.checkout-class-tab.active{background:#2563eb;color:white;border-color:#2563eb;box-shadow:0 4px 12px rgba(37,99,235,.18)}
+@media(max-width:700px){.checkout-class-tabs{gap:8px}.checkout-class-tab{padding:13px 10px;min-height:48px}}
 </style>
 </head>
 
@@ -1202,11 +1209,16 @@ tbody tr{transition:background .12s ease}
 
   <div class="card">
 
-    <div class="form-group">
+    <div class="form-group checkout-class-group">
 
-      <label for="classSelect">Class</label>
+      <label>Class</label>
 
-      <select id="classSelect">
+      <div class="checkout-class-tabs" aria-label="Choose class">
+        <button type="button" class="checkout-class-tab" data-checkout-class="7S">7S</button>
+        <button type="button" class="checkout-class-tab" data-checkout-class="7K">7K</button>
+      </div>
+
+      <select id="classSelect" class="hidden" aria-hidden="true">
         <option value="">Select a class...</option>
       </select>
 
@@ -3857,6 +3869,8 @@ async function checkoutBook(){
       "classSelect"
     ).value="";
 
+    document.querySelectorAll(".checkout-class-tab").forEach(tab=>tab.classList.remove("active"));
+
     document.getElementById(
       "studentSelect"
     ).innerHTML=
@@ -6285,6 +6299,25 @@ document.getElementById(
   "change",
   populateStudents
 );
+
+document.querySelectorAll(".checkout-class-tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    const className=tab.dataset.checkoutClass;
+    const classItem=classes.find(item=>String(getClassName(item.id)||"").toLowerCase()===String(className||"").toLowerCase());
+    if(!classItem)return;
+
+    document.getElementById("classSelect").value=classItem.id;
+    document.querySelectorAll(".checkout-class-tab").forEach(button=>{
+      button.classList.toggle("active",button===tab);
+    });
+
+    // Changing classes starts a fresh student/book choice.
+    document.getElementById("studentSelect").value="";
+    clearBookSelection();
+    populateStudents();
+    updateCheckoutButton();
+  });
+});
 
 
 document.getElementById(
