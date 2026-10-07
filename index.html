@@ -1145,6 +1145,17 @@ tbody tr{transition:background .12s ease}
   .series-options-grid,.genre-options-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .dashboard-quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* Larger mobile homepage and checkout controls; desktop unchanged */
+@media(max-width:700px){
+  #dashboard .dashboard-quick-actions{gap:12px}
+  #dashboard .dashboard-action{min-height:72px;padding:18px 12px;font-size:15px;font-weight:800;border-radius:12px}
+  #checkout .checkout-class-tabs{gap:12px}
+  #checkout .checkout-class-tab{min-height:66px;padding:18px 12px;font-size:19px;border-radius:12px}
+  #checkout #checkoutButton{width:100%;min-height:62px;padding:16px 18px;font-size:17px;font-weight:800;border-radius:12px}
+  #checkout #studentSelect,#checkout #bookSelect{min-height:54px;font-size:16px;padding:13px 14px}
+  #checkout .book-dropdown-option{min-height:48px;padding:13px 14px;font-size:15px}
+}
 </style>
 </head>
 
