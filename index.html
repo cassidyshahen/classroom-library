@@ -1358,6 +1358,25 @@ tr:hover td{background:#f6ebda}
   #checkedout .checkedout-record{background:#fff9ef;border-color:#dcc7a8}
   #dashboard .dashboard-action{border-radius:12px}
 }
+
+/* Desktop homepage: place cozy decorative icons neatly without overlapping actions */
+@media(min-width:701px){
+  #dashboard .dashboard-hero{position:relative;min-height:170px;padding:27px 30px 65px;align-items:flex-start}
+  #dashboard .dashboard-hero>div:first-child{position:relative;z-index:1;min-width:0;max-width:46%}
+  #dashboard .dashboard-quick-actions{position:relative;z-index:1;max-width:54%;justify-content:flex-end}
+  #dashboard .dashboard-hero:after{
+    content:"☕  ✦  📖";
+    position:absolute;
+    right:30px;
+    bottom:17px;
+    font-size:25px;
+    line-height:1.25;
+    letter-spacing:5px;
+    opacity:.6;
+    white-space:nowrap;
+    pointer-events:none;
+  }
+}
 </style>
 </head>
 
