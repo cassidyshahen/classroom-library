@@ -1195,6 +1195,25 @@ tbody tr{transition:background .12s ease}
   nav{padding:10px 10px;gap:8px}
   nav button{min-height:48px;padding:13px 16px;font-size:14px;font-weight:800;border-radius:11px}
 }
+
+/* Compact mobile Checked Out entries: all details and actions visible without sideways scrolling */
+@media(max-width:700px){
+  #checkedout>h2{font-size:21px;margin-bottom:10px}
+  #checkedout .checkedout-record{
+    grid-template-columns:minmax(0,1fr) auto;
+    column-gap:8px;row-gap:5px;
+    padding:10px 12px;margin-bottom:8px;border-radius:11px;
+  }
+  #checkedout .checkedout-book{grid-column:1/-1;font-size:14px;line-height:1.25}
+  #checkedout .checkedout-student{font-size:12px}
+  #checkedout .checkedout-class{font-size:11px;padding:3px 8px!important}
+  #checkedout .checkedout-date{font-size:11px;line-height:1.2}
+  #checkedout .checkedout-actions{padding-top:7px!important}
+  #checkedout .history-actions{gap:6px}
+  #checkedout .history-actions button{min-height:36px;padding:7px 4px;font-size:12px;border-radius:7px}
+  #checkedout .checkedout-class-tabs{margin-bottom:10px;gap:6px}
+  #checkedout .checkedout-class-tab{min-height:42px;padding:9px 6px;font-size:13px}
+}
 </style>
 </head>
 
