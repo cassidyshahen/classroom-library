@@ -1120,7 +1120,7 @@ tbody tr{transition:background .12s ease}
 }
 
 /* Checkout class split */
-.checkout-class-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.checkout-class-tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .checkout-class-tab{border:1px solid #cbd5e1;background:#f8fafc;color:#334155;border-radius:10px;padding:14px 18px;font-size:16px;font-weight:800;cursor:pointer;transition:.15s ease}
 .checkout-class-tab:hover{background:#eef4fb;border-color:#94a3b8}
 .checkout-class-tab.active{background:#2563eb;color:white;border-color:#2563eb;box-shadow:0 4px 12px rgba(37,99,235,.18)}
@@ -1216,7 +1216,6 @@ tbody tr{transition:background .12s ease}
       <div class="checkout-class-tabs" aria-label="Choose class">
         <button type="button" class="checkout-class-tab" data-checkout-class="7S">7S</button>
         <button type="button" class="checkout-class-tab" data-checkout-class="7K">7K</button>
-        <button type="button" class="checkout-class-tab" data-checkout-class="all">View All</button>
       </div>
 
       <select id="classSelect" class="hidden" aria-hidden="true">
@@ -1461,6 +1460,10 @@ tbody tr{transition:background .12s ease}
 
     <button class="student-tab" data-class="7K">
       7K
+    </button>
+
+    <button class="student-tab" data-class="all">
+      View All
     </button>
 
   </div>
@@ -3781,13 +3784,10 @@ function updateCheckoutButton(){
   const bookValue=
     selectedBookId;
 
-  const viewingAll=
-    document.querySelector('.checkout-class-tab[data-checkout-class="all"]')?.classList.contains("active");
-
   document.getElementById(
     "checkoutButton"
   ).disabled=
-    (!classValue&&!viewingAll)||
+    !classValue||
     !studentValue||
     !bookValue;
 }
@@ -5196,6 +5196,7 @@ function renderStudents(){
           );
 
         if(
+          selectedStudentClass!=="all"&&
           String(className||"").toLowerCase()!==
           String(selectedStudentClass||"7S").toLowerCase()
         )
@@ -5216,7 +5217,7 @@ function renderStudents(){
       }
     );
 
-  const classStudents=students.filter(student=>String(getClassName(student.class_id)||"").toLowerCase()===String(selectedStudentClass||"7S").toLowerCase());
+  const classStudents=students.filter(student=>selectedStudentClass==="all"||String(getClassName(student.class_id)||"").toLowerCase()===String(selectedStudentClass||"7S").toLowerCase());
   const classStudentIds=new Set(classStudents.map(student=>String(student.id)));
   const classActiveCheckouts=checkouts.filter(checkout=>classStudentIds.has(String(checkout.student_id))&&!checkout["Return Date"]);
   const borrowingStudents=new Set(classActiveCheckouts.map(checkout=>String(checkout.student_id)));
@@ -6317,29 +6318,10 @@ document.querySelectorAll(".checkout-class-tab").forEach(tab=>{
     studentSelect.value="";
     clearBookSelection();
 
-    if(className==="all"){
-      classSelect.value="";
-      studentSelect.innerHTML='<option value="">Select a student...</option>';
-      [...students]
-        .sort((a,b)=>{
-          const classCompare=String(getClassName(a.class_id)||"").localeCompare(String(getClassName(b.class_id)||""));
-          return classCompare||Number(a.student_number)-Number(b.student_number);
-        })
-        .forEach(student=>{
-          const option=document.createElement("option");
-          option.value=student.id;
-          option.textContent=`${getClassName(student.class_id)} — Student #${student.student_number}`;
-          studentSelect.appendChild(option);
-        });
-      studentSelect.disabled=false;
-      document.getElementById("bookSelect").disabled=false;
-      populateBooks();
-    }else{
-      const classItem=classes.find(item=>String(getClassName(item.id)||"").toLowerCase()===String(className||"").toLowerCase());
-      if(!classItem)return;
-      classSelect.value=classItem.id;
-      populateStudents();
-    }
+    const classItem=classes.find(item=>String(getClassName(item.id)||"").toLowerCase()===String(className||"").toLowerCase());
+    if(!classItem)return;
+    classSelect.value=classItem.id;
+    populateStudents();
 
     updateCheckoutButton();
   });
