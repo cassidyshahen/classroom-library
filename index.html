@@ -1646,12 +1646,18 @@ tr:hover td{background:#f6ebda}
   <div id="onlineLibraryView" class="hidden">
     <div class="online-browse-tabs">
       <button id="browseBooksTab" class="online-browse-tab active" type="button">All Books</button>
+      <button id="browsePopularTab" class="online-browse-tab" type="button">Browse Most Popular</button>
       <button id="browseSeriesTab" class="online-browse-tab" type="button">Browse by Series</button>
       <button id="browseGenreTab" class="online-browse-tab" type="button">Browse by Genre</button>
     </div>
 
     <div id="onlineBooksBrowse">
       <div id="onlineLibraryGrid" class="online-library-grid"></div>
+    </div>
+
+    <div id="onlinePopularBrowse" class="hidden">
+      <p class="popular-browse-intro">Our most-loved books, ranked by how often they have been checked out.</p>
+      <div id="onlinePopularGrid" class="online-library-grid"></div>
     </div>
 
     <div id="onlineSeriesBrowse" class="hidden">
@@ -4489,24 +4495,49 @@ function openBrowseGenre(name){
   renderGenreBrowser();
 }
 
+function renderPopularBrowser(){
+  const grid=document.getElementById("onlinePopularGrid");
+  if(!grid)return;
+  const counts=new Map();
+  checkouts.forEach(checkout=>{
+    const key=String(checkout.book_id);
+    counts.set(key,(counts.get(key)||0)+1);
+  });
+  const popularBooks=books
+    .filter(book=>(counts.get(String(book.id))||0)>0)
+    .sort((a,b)=>(counts.get(String(b.id))||0)-(counts.get(String(a.id))||0)||
+      String(a.Title||"").localeCompare(String(b.Title||""),undefined,{sensitivity:"base"}));
+  grid.innerHTML=popularBooks.length
+    ?popularBooks.map((book,index)=>
+      '<div class="online-book-card popular-browse-card">'+
+      '<div class="popular-browse-rank">#'+(index+1)+' · '+counts.get(String(book.id))+' checkout'+(counts.get(String(book.id))===1?'':'s')+'</div>'+
+      getOnlineBookCardHtml(book)+'</div>'
+    ).join("")
+    :'<div class="online-library-empty">Popular books will appear after your first checkout.</div>';
+}
+
 function setOnlineBrowseMode(mode){
   onlineBrowseMode=mode;
 
   const booksMode=mode==="books";
+  const popularMode=mode==="popular";
   const seriesMode=mode==="series";
   const genreMode=mode==="genre";
 
   document.getElementById("onlineBooksBrowse").classList.toggle("hidden",!booksMode);
+  document.getElementById("onlinePopularBrowse").classList.toggle("hidden",!popularMode);
   document.getElementById("onlineSeriesBrowse").classList.toggle("hidden",!seriesMode);
   document.getElementById("onlineGenreBrowse").classList.toggle("hidden",!genreMode);
 
   document.getElementById("browseBooksTab").classList.toggle("active",booksMode);
+  document.getElementById("browsePopularTab").classList.toggle("active",popularMode);
   document.getElementById("browseSeriesTab").classList.toggle("active",seriesMode);
   document.getElementById("browseGenreTab").classList.toggle("active",genreMode);
 
   document.getElementById("onlineLibraryFilters").classList.toggle("hidden",!booksMode);
 
-  if(seriesMode)renderSeriesBrowser();
+  if(popularMode)renderPopularBrowser();
+  else if(seriesMode)renderSeriesBrowser();
   else if(genreMode)renderGenreBrowser();
   else renderLibrary();
 }
@@ -6716,6 +6747,7 @@ function setLibraryView(view){
 document.getElementById("tableViewButton").addEventListener("click",()=>setLibraryView("table"));
 document.getElementById("onlineLibraryViewButton").addEventListener("click",()=>setLibraryView("online"));
 document.getElementById("browseBooksTab").addEventListener("click",()=>setOnlineBrowseMode("books"));
+document.getElementById("browsePopularTab").addEventListener("click",()=>setOnlineBrowseMode("popular"));
 document.getElementById("browseSeriesTab").addEventListener("click",()=>setOnlineBrowseMode("series"));
 document.getElementById("browseGenreTab").addEventListener("click",()=>setOnlineBrowseMode("genre"));
 document.getElementById("seriesSortSelect").addEventListener("change",renderSeriesBrowser);
