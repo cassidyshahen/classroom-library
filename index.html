@@ -5521,17 +5521,35 @@ async function saveEditedCheckout(){
     if(error)
       throw error;
 
+    const editedId=String(editingCheckoutId);
+
+    // Update the in-memory record immediately so the visible page
+    // reflects the saved dates without requiring a refresh.
+    const localCheckout=checkouts.find(
+      item=>String(item.id)===editedId
+    );
+    if(localCheckout){
+      localCheckout["Check Out Date"]=updateData["Check Out Date"];
+      localCheckout["Return Date"]=updateData["Return Date"];
+    }
+
     closeEditCheckout();
 
+    // Re-render whichever history view the teacher is currently using.
+    const studentHistoryPage=document.getElementById("studentHistory");
+    if(studentHistoryPage&&studentHistoryPage.classList.contains("active")&&currentStudentHistoryStudentId){
+      showStudentHistory(currentStudentHistoryStudentId);
+    }else{
+      renderHistory();
+    }
+
+    // Refresh all data afterward to keep every page/count synchronized.
     await loadData();
 
-    if(
-      currentStudentHistoryStudentId
-    ){
-
-      showStudentHistory(
-        currentStudentHistoryStudentId
-      );
+    if(studentHistoryPage&&studentHistoryPage.classList.contains("active")&&currentStudentHistoryStudentId){
+      showStudentHistory(currentStudentHistoryStudentId);
+    }else{
+      renderHistory();
     }
 
   }catch(error){
