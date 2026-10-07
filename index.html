@@ -5261,8 +5261,8 @@ function renderStudents(){
 
       tab.classList.toggle(
         "active",
-        (tab.dataset.class||"").toLowerCase()===
-          selectedStudentClass.toLowerCase()
+        String(tab.dataset.class||"").toLowerCase()===
+          String(selectedStudentClass||"7S").toLowerCase()
       );
     }
   );
