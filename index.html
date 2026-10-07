@@ -1178,6 +1178,13 @@ tbody tr{transition:background .12s ease}
   #checkedout tbody>tr:not(.checkedout-record){display:block;padding:22px 14px;text-align:center;border-radius:14px;background:white}
   #checkedout tbody>tr:not(.checkedout-record) td{display:block;border:0;text-align:center}
 }
+
+/* Checked Out class filters on desktop and mobile */
+.checkedout-class-tabs{display:flex;gap:8px;margin:0 0 16px}
+@media(max-width:700px){
+  #checkedout .checkedout-class-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+  #checkedout .checkedout-class-tab{min-height:50px;padding:12px 7px;font-size:14px}
+}
 </style>
 </head>
 
@@ -1267,8 +1274,7 @@ tbody tr{transition:background .12s ease}
       <label>Class</label>
 
       <div class="checkout-class-tabs" aria-label="Choose class">
-        <button type="button" class="checkout-class-tab active" data-checkout-class="all">View All</button>
-        <button type="button" class="checkout-class-tab" data-checkout-class="7S">7S</button>
+        <button type="button" class="checkout-class-tab active" data-checkout-class="7S">7S</button>
         <button type="button" class="checkout-class-tab" data-checkout-class="7K">7K</button>
       </div>
 
@@ -1621,6 +1627,12 @@ tbody tr{transition:background .12s ease}
 <section id="checkedout" class="page">
 
   <h2>Checked Out Books</h2>
+
+  <div class="student-tabs checkedout-class-tabs" aria-label="Filter checked out books by class">
+    <button type="button" class="student-tab checkedout-class-tab active" data-checkedout-class="all">View All</button>
+    <button type="button" class="student-tab checkedout-class-tab" data-checkedout-class="7S">7S</button>
+    <button type="button" class="student-tab checkedout-class-tab" data-checkedout-class="7K">7K</button>
+  </div>
 
   <div class="card">
 
@@ -3576,10 +3588,11 @@ function populateClasses(){
     }
   );
 
-  // View All is the default each time the library data loads.
-  select.value="";
+  // Default checkout class is 7S; both classes remain selectable.
+  const defaultClass=classes.find(item=>String(getClassName(item.id)||"").toLowerCase()==="7s");
+  select.value=defaultClass?defaultClass.id:"";
   document.querySelectorAll(".checkout-class-tab").forEach(tab=>{
-    tab.classList.toggle("active",tab.dataset.checkoutClass==="all");
+    tab.classList.toggle("active",tab.dataset.checkoutClass==="7S");
   });
   populateStudents();
 }
@@ -3899,7 +3912,7 @@ async function checkoutBook(){
       "classSelect"
     ).value="";
 
-    document.querySelectorAll(".checkout-class-tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.checkoutClass==="all"));
+    document.querySelectorAll(".checkout-class-tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.checkoutClass==="7S"));
 
     document.getElementById(
       "studentSelect"
@@ -3908,13 +3921,13 @@ async function checkoutBook(){
 
     document.getElementById(
       "studentSelect"
-    ).disabled=false;
+    ).disabled=true;
 
     clearBookSelection();
 
     document.getElementById(
       "bookSelect"
-    ).disabled=false;
+    ).disabled=true;
 
     await loadData();
 
@@ -5727,15 +5740,22 @@ function renderCheckedOut(){
 
   tbody.innerHTML="";
 
-  const activeCheckouts=
-    checkouts.filter(
-      c=>!c["Return Date"]
-    );
+  const selectedClass=window.selectedCheckedOutClass||"all";
+  document.querySelectorAll(".checkedout-class-tab").forEach(tab=>{
+    tab.classList.toggle("active",tab.dataset.checkedoutClass===selectedClass);
+  });
+
+  const activeCheckouts=checkouts.filter(checkout=>{
+    if(checkout["Return Date"])return false;
+    if(selectedClass==="all")return true;
+    const student=getStudent(checkout.student_id);
+    return student&&String(getClassName(student.class_id)||"").toLowerCase()===selectedClass.toLowerCase();
+  });
 
   if(activeCheckouts.length===0){
 
     tbody.innerHTML=
-      '<tr><td colspan="5">No books are currently checked out.</td></tr>';
+      '<tr><td colspan="5">No books are currently checked out in this view.</td></tr>';
 
     return;
   }
@@ -6332,6 +6352,13 @@ document.getElementById(
   "change",
   populateStudents
 );
+
+document.querySelectorAll(".checkedout-class-tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    window.selectedCheckedOutClass=tab.dataset.checkedoutClass;
+    renderCheckedOut();
+  });
+});
 
 document.querySelectorAll(".checkout-class-tab").forEach(tab=>{
   tab.addEventListener("click",()=>{
