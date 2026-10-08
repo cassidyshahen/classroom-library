@@ -1431,7 +1431,7 @@ tr:hover td{background:#f6ebda}
   #onlineLibraryGrid .online-book-genre,#seriesBooksGrid .online-book-genre{font-size:9px;padding:3px 5px}
 }
 </style>
-<style>.library-recommendation{display:block;width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;text-align:left;background:#f8fafc}.due-date-label{font-size:12px;margin-bottom:6px}.stats-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stats-metrics>div{padding:18px;border:1px solid #ddd;border-radius:10px}.stats-metrics strong{display:block;font-size:24px}.stats-never{max-height:350px;overflow:auto}</style></head>
+<style>.library-recommendation{display:block;width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;text-align:left;background:#f8fafc}.due-date-label{font-size:12px;margin-bottom:6px}.stats-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stats-metrics>div{padding:18px;border:1px solid #ddd;border-radius:10px}.stats-metrics strong{display:block;font-size:24px}.stats-never{max-height:350px;overflow:auto}</style><style>.stats-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.stats-panels section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}.stats-row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #e2e8f0;padding:8px 0}.stats-never{max-height:300px;overflow:auto}.stats-metrics{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}</style></head>
 
 <body>
 
@@ -6779,6 +6779,7 @@ document.getElementById(
 });
 
 document.getElementById("clearOnlineFiltersButton").addEventListener("click",()=>{
+  ["onlineAuthorFilter","onlineTypeFilter","onlineCompleteFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
   document.getElementById("onlineCategoryFilter").value="";
   document.getElementById("onlineSeriesFilter").value="";
   document.getElementById("onlineAvailabilityFilter").value="";
