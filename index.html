@@ -1448,7 +1448,7 @@ tr:hover td{background:#f6ebda}
 .details-rec strong{font-size:13px}
 .details-rec span{font-size:11px;color:#64748b}
 @media(max-width:540px){.details-hero{grid-template-columns:110px minmax(0,1fr);gap:13px}.details-recs-rail{gap:5px}.details-rec{padding:5px}.details-rec strong{font-size:10px}.details-rec span{font-size:9px}}
-</style><style>.book-details-modal{position:relative;padding-top:52px}.book-details-close{position:sticky;top:0;float:right;z-index:5;display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-42px -4px 4px 8px;border:1px solid #cbd5e1;border-radius:50%;background:#fff;color:#334155;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}.book-details-close:hover{background:#f1f5f9}</style></head>
+</style><style>.book-details-modal{position:relative;padding-top:52px}.book-details-close{position:sticky;top:0;float:right;z-index:5;display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-42px -4px 4px 8px;border:1px solid #cbd5e1;border-radius:50%;background:#fff;color:#334155;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}.book-details-close:hover{background:#f1f5f9}</style><style>.details-series{margin:8px 0 14px;color:#334155;font-size:14px}</style></head>
 
 <body>
 
@@ -4372,7 +4372,12 @@ function openBookDetails(id){
 const book=books.find(b=>String(b.id)===String(id));if(!book)return;
 const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*3+(book.Series&&book.Series===b.Series?8:0)+(book.Author&&book.Author===b.Author?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
 const recs=matches.length?'<div class="details-recs-heading"><h3>You Might Also Like</h3></div><div id="detailsRecommendationRail" class="details-recs-rail">'+matches.map(x=>'<button type="button" class="details-rec" onclick="openBookDetails('+Number(x.book.id)+')">'+detailsCover(x.book)+'<strong>'+escapeLibraryHtml(x.book.Title)+'</strong><span>'+escapeLibraryHtml(x.book.Author||"")+'</span></button>').join("")+'</div>':'<h3>You Might Also Like</h3><p>No similar books found.</p>';
-document.getElementById("bookDetailsContent").innerHTML='<div class="details-hero">'+detailsCover(book)+'<div><h2>'+escapeLibraryHtml(book.Title)+'</h2><p>by '+escapeLibraryHtml(book.Author||"Unknown author")+'</p><p><strong>Available: '+getAvailableCopies(book)+' of '+Number(book.Copies||0)+'</strong></p><h3>About This Book</h3><p class="details-description">'+escapeLibraryHtml(book.Description||"No description yet.")+'</p><button class="edit-button" onclick="closeBookDetails();openEditBook('+Number(book.id)+')">Edit Book</button></div></div>'+recs;
+const seriesName=String(book.Series||"").trim();
+const seriesNumber=book["Series #"];
+const seriesLabel=seriesName
+  ? '<p class="details-series"><strong>Series:</strong> '+escapeLibraryHtml(seriesName)+(seriesNumber!==null&&seriesNumber!==undefined&&String(seriesNumber).trim()!==""?' · <strong>Book '+escapeLibraryHtml(seriesNumber)+'</strong>':'')+'</p>'
+  : '';
+document.getElementById("bookDetailsContent").innerHTML='<div class="details-hero">'+detailsCover(book)+'<div><h2>'+escapeLibraryHtml(book.Title)+'</h2><p>by '+escapeLibraryHtml(book.Author||"Unknown author")+'</p>'+seriesLabel+'<p><strong>Available: '+getAvailableCopies(book)+' of '+Number(book.Copies||0)+'</strong></p><h3>About This Book</h3><p class="details-description">'+escapeLibraryHtml(book.Description||"No description yet.")+'</p><button class="edit-button" onclick="closeBookDetails();openEditBook('+Number(book.id)+')">Edit Book</button></div></div>'+recs;
 document.getElementById("bookDetailsModal").classList.remove("hidden");
 document.getElementById("bookDetailsContent").closest(".modal").scrollTop=0;
 }
