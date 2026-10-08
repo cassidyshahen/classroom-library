@@ -12,6 +12,17 @@ as $$
       where c."Check Out Date" >= date_trunc('month', timezone('America/New_York', now())) at time zone 'America/New_York'
         and c."Check Out Date" <= now()
     ),
+    'currently_checked_out', coalesce((
+      select jsonb_agg(jsonb_build_object('book_id', active.book_id, 'copies_out', active.copies_out)
+        order by active.last_checkout desc, active.book_id)
+      from (
+        select c.book_id, count(*) as copies_out, max(c."Check Out Date") as last_checkout
+        from public."Checkouts" c
+        join public."Books" b on b.id=c.book_id
+        where c."Return Date" is null
+        group by c.book_id
+      ) active
+    ), '[]'::jsonb),
     'recent', coalesce((
       select jsonb_agg(jsonb_build_object(
         'book_id', x.book_id,
