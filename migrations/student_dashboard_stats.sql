@@ -26,6 +26,19 @@ as $$
         limit 5
       ) x
     ), '[]'::jsonb),
+    -- Every book, including books never checked out, ranked by checkout count.
+    'all_popular', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'book_id', ranked.book_id,
+        'checkouts', ranked.checkouts
+      ) order by ranked.checkouts desc, ranked.title, ranked.book_id)
+      from (
+        select b.id as book_id, b."Title" as title, count(c.id) as checkouts
+        from public."Books" b
+        left join public."Checkouts" c on c.book_id=b.id
+        group by b.id, b."Title"
+      ) ranked
+    ), '[]'::jsonb),
     'popular', coalesce((
       select jsonb_agg(jsonb_build_object(
         'book_id', p.book_id,
