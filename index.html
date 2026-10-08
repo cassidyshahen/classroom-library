@@ -1621,7 +1621,7 @@ tr:hover td{background:#f6ebda}
 
   </div>
 
-  <div id="onlineLibraryFilters" class="online-library-filters hidden"><div class="online-filter-group"><label>Author <select id="onlineAuthorFilter" onchange="renderLibrary()"><option value="">All Authors</option></select></label></div><div class="online-filter-group"><label>Book Type <select id="onlineTypeFilter" onchange="renderLibrary()"><option value="">All Types</option><option>Series</option><option>Standalone</option></select></label></div><div class="online-filter-group"><label>Series Status <select id="onlineCompleteFilter" onchange="renderLibrary()"><option value="">All</option><option value="complete">Complete</option><option value="incomplete">Incomplete</option></select></label></div>
+  <div id="onlineLibraryFilters" class="online-library-filters hidden"><div class="online-filter-group"><label>Author <select id="onlineAuthorFilter" onchange="renderLibrary()"><option value="">All Authors</option></select></label></div><div class="online-filter-group"><label>Book Type <select id="onlineTypeFilter" onchange="renderLibrary()"><option value="">All Types</option><option>Series</option><option>Standalone</option></select></label></div><div class="online-filter-group"><label>Genre <select id="onlineGenreFilter"><option value="">All Genres</option></select></label></div>
     <div class="online-filter-group">
       <label for="onlineSeriesFilter">Series</label>
       <select id="onlineSeriesFilter">
@@ -4637,12 +4637,12 @@ function populateOnlineLibraryFilters(){
   if(!categorySelect||!seriesSelect)return;
 
   const authorSelect=document.getElementById("onlineAuthorFilter");if(authorSelect){const old=authorSelect.value;const authors=[...new Set(books.map(b=>String(b.Author||"").trim()).filter(Boolean))].sort();authorSelect.replaceChildren(new Option("All Authors",""),...authors.map(a=>new Option(a,a)));authorSelect.value=authors.includes(old)?old:"";}
+  const genreSelect=document.getElementById("onlineGenreFilter");const currentGenre=genreSelect?.value||"";
   const currentCategory=categorySelect.value;
   const currentSeries=seriesSelect.value;
 
-  const categories=[...new Set(
-    books.flatMap(book=>getBookGenres(book)).map(g=>String(g).trim()).filter(Boolean)
-  )].sort();
+  const categories=[...new Set(books.map(book=>String(book.Category||"").trim()).filter(Boolean))].sort();
+  const genres=[...new Set(books.flatMap(book=>getBookGenres(book)).map(g=>String(g).trim()).filter(Boolean))].sort();
 
   const series=[...new Set(
     books.map(book=>String(book.Series||"").trim()).filter(Boolean)
@@ -4656,6 +4656,7 @@ function populateOnlineLibraryFilters(){
     '<option value="">All Series</option>'+
     series.map(value=>`<option value="${value}">${value}</option>`).join("");
 
+  if(genreSelect){genreSelect.replaceChildren(new Option("All Genres",""),...genres.map(g=>new Option(g,g)));genreSelect.value=genres.includes(currentGenre)?currentGenre:"";}
   if(categories.includes(currentCategory))categorySelect.value=currentCategory;
   if(series.includes(currentSeries))seriesSelect.value=currentSeries;
 }
@@ -4708,8 +4709,8 @@ function renderLibrary(){
 
         if(!matchesSearch)return false;
 
-        if(onlineMode){const author=document.getElementById("onlineAuthorFilter")?.value||"";const type=document.getElementById("onlineTypeFilter")?.value||"";const status=document.getElementById("onlineCompleteFilter")?.value||"";if(author&&book.Author!==author)return false;if(type&&book.Category!==type)return false;if(status){const entry=seriesCovers.find(x=>String(x.Name||"").trim()===String(book.Series||"").trim());if(!book.Series||!entry||Boolean(entry.Complete)!==(status==="complete"))return false;}
-          if(categoryFilter&&!getBookGenres(book).includes(categoryFilter))
+        if(onlineMode){const author=document.getElementById("onlineAuthorFilter")?.value||"";const type=document.getElementById("onlineTypeFilter")?.value||"";const genre=document.getElementById("onlineGenreFilter")?.value||"";if(author&&book.Author!==author)return false;if(type&&book.Category!==type)return false;if(genre&&!getBookGenres(book).includes(genre))return false;
+          if(categoryFilter&&String(book.Category||"")!==categoryFilter)
             return false;
 
           if(seriesFilter&&String(book.Series||"")!==seriesFilter)
@@ -4720,7 +4721,7 @@ function renderLibrary(){
           if(availabilityFilter==="available"&&available<=0)
             return false;
 
-          if(availabilityFilter==="out"&&available>0)
+          if(availabilityFilter==="out"&&getActiveCheckoutCount(book.id)===0)
             return false;
         }
 
@@ -6808,12 +6809,12 @@ document.getElementById(
   renderLibrary
 );
 
-["onlineCategoryFilter","onlineSeriesFilter","onlineAvailabilityFilter","onlineBookSort"].forEach(id=>{
+["onlineCategoryFilter","onlineGenreFilter","onlineSeriesFilter","onlineAvailabilityFilter","onlineBookSort"].forEach(id=>{
   document.getElementById(id).addEventListener("change",renderLibrary);
 });
 
 document.getElementById("clearOnlineFiltersButton").addEventListener("click",()=>{
-  ["onlineAuthorFilter","onlineTypeFilter","onlineCompleteFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  ["onlineAuthorFilter","onlineTypeFilter","onlineGenreFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
   document.getElementById("onlineCategoryFilter").value="";
   document.getElementById("onlineSeriesFilter").value="";
   document.getElementById("onlineAvailabilityFilter").value="";
