@@ -4729,6 +4729,12 @@ function renderLibrary(){
       }
     );
 
+  // Counts represent titles matching each availability state; multi-copy books may be in both.
+  const availableOption=document.querySelector('#onlineAvailabilityFilter option[value="available"]');
+  const outOption=document.querySelector('#onlineAvailabilityFilter option[value="out"]');
+  if(availableOption)availableOption.textContent='Available Now ('+books.filter(b=>getAvailableCopies(b)>0).length+')';
+  if(outOption)outOption.textContent='Checked Out ('+books.filter(b=>getActiveCheckoutCount(b.id)>0).length+')';
+
   const onlineBookSort=document.getElementById("onlineBookSort")?.value||"title-az";
   const [sortField,sortDirection]=onlineBookSort.split("-");
   const sortKey=sortField==="author"?"Author":"Title";
