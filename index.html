@@ -4382,7 +4382,7 @@ const seriesNumber=book["Series #"];
 const seriesLabel=seriesName
   ? '<p class="details-series"><strong>Series:</strong> '+escapeLibraryHtml(seriesName)+(seriesNumber!==null&&seriesNumber!==undefined&&String(seriesNumber).trim()!==""?' · <strong>Book '+escapeLibraryHtml(seriesNumber)+'</strong>':'')+'</p>'
   : '';
-document.getElementById("bookDetailsContent").innerHTML='<div class="details-hero">'+detailsCover(book)+'<div><h2>'+escapeLibraryHtml(book.Title)+'</h2><p>by '+escapeLibraryHtml(book.Author||"Unknown author")+'</p>'+seriesLabel+'<p><strong>Available: '+getAvailableCopies(book)+' of '+Number(book.Copies||0)+'</strong></p><h3>About This Book</h3><p class="details-description">'+escapeLibraryHtml(book.Description||"No description yet.")+'</p><button class="edit-button" onclick="closeBookDetails();openEditBook('+Number(book.id)+')">Edit Book</button></div></div>'+recs;
+document.getElementById("bookDetailsContent").innerHTML=(bookDetailsHistory.length?'<button type="button" class="details-back-button" onclick="goBackBookDetails()">← Back to Previous Book</button>':'')+'<div class="details-hero">'+detailsCover(book)+'<div><h2>'+escapeLibraryHtml(book.Title)+'</h2><p>by '+escapeLibraryHtml(book.Author||"Unknown author")+'</p>'+seriesLabel+'<p><strong>Available: '+getAvailableCopies(book)+' of '+Number(book.Copies||0)+'</strong></p><h3>About This Book</h3><p class="details-description">'+escapeLibraryHtml(book.Description||"No description yet.")+'</p><button class="edit-button" onclick="closeBookDetails();openEditBook('+Number(book.id)+')">Edit Book</button></div></div>'+recs;
 document.getElementById("bookDetailsModal").classList.remove("hidden");
 document.getElementById("bookDetailsContent").closest(".modal").scrollTop=0;
 }
