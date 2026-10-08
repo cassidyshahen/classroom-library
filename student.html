@@ -1439,6 +1439,33 @@ tr:hover td{background:#f6ebda}
 #home .dashboard-grid .dashboard-list-item .dashboard-list-title{display:block}
 #home .dashboard-grid .dashboard-list-item .dashboard-list-meta{display:block}
 @media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.dashboard-grid{grid-template-columns:1fr}}
+
+/* Student dashboard and teacher-style read-only book details */
+#home .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+#home .dashboard-stat{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#home .dashboard-stat-icon{margin-bottom:12px}
+#browseLibraryHero{white-space:nowrap}
+#detailDialog{width:min(920px,calc(100vw - 32px));max-width:920px;max-height:calc(100dvh - 48px);padding:0;border:0;border-radius:16px;box-shadow:0 18px 70px #0004;overflow:auto}
+#detailDialog::backdrop{background:rgba(15,23,42,.65)}
+#detailDialog .dialog-head{position:sticky;top:0;z-index:2;background:white;padding:18px 22px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between}
+#detailDialog .dialog-head h2{margin:0;font-size:19px}
+#detailDialog #detailContent{padding:22px}
+#detailDialog .details-hero{display:grid;grid-template-columns:220px minmax(0,1fr);gap:26px;align-items:start}
+#detailDialog .details-cover{width:100%;max-width:220px;min-width:0}
+#detailDialog .details-cover img{display:block;width:100%;height:auto;max-height:330px;object-fit:contain;border-radius:9px}
+#detailDialog .details-cover-fallback{height:280px;background:#f1f5f9;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+#detailDialog .details-hero h2{margin:0 0 8px}
+#detailDialog .details-description{line-height:1.65;white-space:pre-line}
+#detailDialog .details-recs-heading{margin:28px 0 12px}
+#detailDialog .details-recs-rail{display:flex;gap:12px;overflow-x:auto;padding:3px 0 14px;scroll-snap-type:x mandatory}
+#detailDialog .details-rec{flex:0 0 148px;min-width:0;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px;text-align:left;cursor:pointer;scroll-snap-align:start}
+#detailDialog .details-rec .details-cover{width:100%;max-width:100%;height:145px;margin-bottom:9px;display:flex;justify-content:center}
+#detailDialog .details-rec .details-cover img{height:145px;max-height:145px;object-fit:contain}
+#detailDialog .details-rec .details-cover-fallback{height:145px}
+#detailDialog .details-rec strong,#detailDialog .details-rec span{display:block;font-size:13px;overflow-wrap:anywhere}
+#detailDialog .details-rec span{color:#64748b;margin-top:4px}
+#detailDialog .details-back-button{border:0;background:#e2e8f0;border-radius:7px;padding:8px 12px;margin-bottom:16px;cursor:pointer}
+@media(max-width:650px){#home .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}#home .dashboard-stat{padding:12px 4px}#home .dashboard-stat .number{font-size:24px}#home .dashboard-stat .label{font-size:11px}#home .dashboard-stat-icon{font-size:18px}#detailDialog .details-hero{grid-template-columns:1fr}#detailDialog .details-cover{margin:auto;max-width:170px}#detailDialog .details-cover img{max-height:240px}.dashboard-hero{flex-wrap:wrap}}
 </style></head><body>
 <header><h1>📚 Classroom Library</h1><span class="student-view-note">Student browsing</span></header>
 <nav><button class="active" data-page="home">Homepage</button><button data-page="library">Library</button></nav>
@@ -1450,7 +1477,7 @@ tr:hover td{background:#f6ebda}
       <h2>Classroom Library</h2>
       <p>A cozy little corner for stories, discoveries, and your next great read.</p>
     </div>
-    
+    <div class="dashboard-quick-actions"><button class="dashboard-action primary" id="browseLibraryHero" type="button">📚 Browse Library</button></div>
   </div>
 
   <div class="stats">
@@ -1491,7 +1518,7 @@ const genres=b=>Array.isArray(b.genres)&&b.genres.length?b.genres.filter(Boolean
 const unique=arr=>[...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b));
 const cover=b=>'<div class="online-book-cover-wrap">'+(b.cover?'<img class="online-book-cover" loading="lazy" src="'+esc(b.cover)+'" alt="Cover of '+esc(b.title)+'">':'<div class="online-book-no-cover"><div class="online-book-no-cover-icon">📖</div><span>'+esc(b.title)+'</span></div>')+'</div>';
 function showPage(page){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===page));document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===page))}
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));el("browseLibraryHero").onclick=()=>showPage("library");
 
 function filtered(){let q=el("search").value.toLowerCase().trim(),author=el("author").value,type=el("type").value,series=el("series").value,genre=el("genre").value,availability=el("availability").value;
 let arr=catalog.filter(b=>(!q||[b.title,b.author,b.series,...genres(b)].join(" ").toLowerCase().includes(q))&&(!author||b.author===author)&&(!type||(type==="series"?!!b.series:!b.series))&&(!series||b.series===series)&&(!genre||genres(b).includes(genre))&&(!availability||(availability==="available"?b.available>0:b.available<=0)));
@@ -1505,19 +1532,30 @@ el("seriesSortControls").classList.toggle("hidden",tab!=="series"||!!selected);
 if(selected){el("browseTitle").textContent=selected;el("browseCount").textContent=books.filter(b=>tab==="series"?b.series===selected:genres(b).includes(selected)).length+" books in this "+(tab==="series"?"series":"genre");el("backButton").textContent=tab==="series"?"← All Series":"← All Genres";}
 if(tab==="books"||tab==="popular"||selected){let shown=selected?books.filter(b=>tab==="series"?b.series===selected:genres(b).includes(selected)):books;
 if(tab==="series"&&selected)shown.sort((a,b)=>(Number(a.series_number)||999)-(Number(b.series_number)||999));
-if(tab==="popular"){const ranks=new Map((dashboardStats?.popular||[]).map((p,i)=>[String(p.book_id),{rank:i+1,count:p.checkouts}]));shown=shown.filter(b=>ranks.has(String(b.id))).sort((a,b)=>ranks.get(String(a.id)).rank-ranks.get(String(b.id)).rank);}
+if(tab==="popular"){const counts=new Map((dashboardStats?.all_popular||dashboardStats?.popular||[]).map(p=>[String(p.book_id),Number(p.checkouts)||0]));shown.sort((a,b)=>(counts.get(String(b.id))||0)-(counts.get(String(a.id))||0)||String(a.title).localeCompare(String(b.title)));}
 el("count").textContent=shown.length+" books"+(selected?" in "+selected:"");
 el("grid").classList.remove("hidden");el("options").classList.add("hidden");
-el("grid").innerHTML=shown.map(b=>'<div class="'+(tab==="popular"?"popular-browse-card":"")+'">'+(tab==="popular"?'<div class="popular-browse-rank">#'+(dashboardStats.popular.findIndex(p=>String(p.book_id)===String(b.id))+1)+' · '+dashboardStats.popular.find(p=>String(p.book_id)===String(b.id)).checkouts+' checkouts</div>':'')+card(b)+'</div>').join("")||'<div class="online-library-empty">No books to display.</div>';
+el("grid").innerHTML=shown.map((b,index)=>'<div class="'+(tab==="popular"?"popular-browse-card":"")+'">'+(tab==="popular"?'<div class="popular-browse-rank">#'+(index+1)+' · '+(new Map((dashboardStats?.all_popular||dashboardStats?.popular||[]).map(p=>[String(p.book_id),Number(p.checkouts)||0])).get(String(b.id))||0)+' checkout(s)</div>':'')+card(b)+'</div>').join("")||'<div class="online-library-empty">No books to display.</div>';
 }else{
 let values=unique(tab==="series"?books.map(b=>b.series):books.flatMap(genres));
 if(tab==="series"){const sort=el("seriesSortSelect").value;const count=v=>books.filter(b=>b.series===v).length;const complete=v=>seriesCatalog.find(x=>x.name===v)?.complete===true;values.sort((a,b)=>sort==="status"?(Number(complete(b))-Number(complete(a))||a.localeCompare(b)):sort==="za"?b.localeCompare(a):sort==="count-desc"?count(b)-count(a)||a.localeCompare(b):sort==="count-asc"?count(a)-count(b)||a.localeCompare(b):a.localeCompare(b));}
 el("grid").classList.add("hidden");el("options").classList.remove("hidden");el("options").className=tab==="series"?"series-options-grid":"genre-options-grid";
 el("options").innerHTML=values.map(v=>{const subset=books.filter(b=>tab==="series"?b.series===v:genres(b).includes(v));const gs=unique(subset.flatMap(genres));const record=seriesCatalog.find(x=>x.name===v);return tab==="series"?'<div class="series-option-card"><button type="button" class="series-card-main" data-option="'+esc(v)+'"><div class="series-option-image-wrap">'+(record?.cover?'<img class="series-option-image" src="'+esc(record.cover)+'" alt="'+esc(v)+'">':'<div class="series-option-placeholder">📚</div>')+'</div><div class="series-option-name">'+esc(v)+'</div><div class="series-option-genre">'+esc(gs.join(" • ")||"Genre not assigned")+'</div><div class="series-option-count">'+subset.length+' books</div><div class="series-status '+(record?.complete?"complete":"incomplete")+'"><span class="series-status-icon">'+(record?.complete?"✓":"•")+'</span><span>'+(record?.complete?"Complete Set":"Incomplete Set")+'</span></div></button></div>':'<button type="button" class="genre-option-card" data-option="'+esc(v)+'"><div class="genre-option-icon">'+(genreIcons[v]||"📚")+'</div><div class="genre-option-name">'+esc(v)+'</div><div class="genre-option-count">'+subset.length+' books</div></button>'}).join("");
 }}
-function openBook(id){let b=catalog.find(x=>String(x.id)===String(id));if(!b)return;el("detailTitle").textContent=b.title;el("detailContent").innerHTML='<div class="detail">'+cover(b)+'<div><strong>'+esc(b.author||"")+'</strong><h3>About This Book</h3><p>'+(b.series?'Series: '+esc(b.series)+(b.series_number?' · Book '+esc(b.series_number):'')+'\n':'')+'Genres: '+esc(genres(b).join(", ")||"Not listed")+'\n'+(b.reading_level?'Reading level: '+esc(b.reading_level)+'\n':'')+'Availability: '+(b.available>0?'Available':'Checked Out')+'</p><p>'+esc(b.description||"No description yet.")+'</p></div></div>';el("detailDialog").showModal()}
+let bookDetailHistory=[];
+function detailCover(b){return '<div class="details-cover">'+(b.cover?'<img src="'+esc(b.cover)+'" alt="Cover of '+esc(b.title)+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="details-cover-fallback" style="display:none">📚<small>Cover unavailable</small></div>':'<div class="details-cover-fallback">📚<small>Cover unavailable</small></div>')+'</div>';}
+function openBook(id,goingBack=false){const b=catalog.find(x=>String(x.id)===String(id));if(!b)return;
+const dialog=el("detailDialog");if(!goingBack){if(!dialog.open)bookDetailHistory=[];else if(dialog.dataset.bookId&&dialog.dataset.bookId!==String(id))bookDetailHistory.push(dialog.dataset.bookId);}
+dialog.dataset.bookId=String(id);
+const matches=catalog.filter(x=>String(x.id)!==String(b.id)).map(x=>({book:x,score:genres(b).filter(g=>genres(x).includes(g)).length*5+(b.series&&b.series===x.series?9:0)+(b.author&&b.author===x.author?5:0)+(b.reading_level&&b.reading_level===x.reading_level?4:0)})).filter(x=>x.score>0).sort((a,c)=>c.score-a.score||String(a.book.title).localeCompare(String(c.book.title))).slice(0,5);
+const recommendations=matches.length?'<div class="details-recs-heading"><h3>You Might Also Like</h3></div><div class="details-recs-rail" id="detailsRecommendationRail">'+matches.map(x=>'<button type="button" class="details-rec" data-book="'+esc(x.book.id)+'">'+detailCover(x.book)+'<strong>'+esc(x.book.title)+'</strong><span>'+esc(x.book.author||"")+'</span></button>').join("")+'</div>':'<div class="details-recs-heading"><h3>You Might Also Like</h3></div><p>No similar books found.</p>';
+el("detailTitle").textContent="Book Details";
+el("detailContent").innerHTML=(bookDetailHistory.length?'<button class="details-back-button" id="bookDetailsBack" type="button">← Back to Previous Book</button>':'')+'<div class="details-hero">'+detailCover(b)+'<div><h2>'+esc(b.title)+'</h2><p>by '+esc(b.author||"Unknown author")+'</p>'+(b.series?'<p class="details-series"><strong>Series:</strong> '+esc(b.series)+(b.series_number?' · <strong>Book '+esc(b.series_number)+'</strong>':'')+'</p>':'')+'<p><strong>'+(b.available>0?'Available':'Checked Out')+'</strong></p>'+(genres(b).length?'<p><strong>Genres:</strong> '+esc(genres(b).join(" • "))+'</p>':'')+(b.reading_level?'<p><strong>Reading Level:</strong> '+esc(b.reading_level)+'</p>':'')+'<h3>About This Book</h3><p class="details-description">'+esc(b.description||"No description yet.")+'</p></div></div>'+recommendations;
+if(bookDetailHistory.length)el("bookDetailsBack").onclick=()=>openBook(bookDetailHistory.pop(),true);
+if(!dialog.open)dialog.showModal();dialog.scrollTop=0;
+}
 document.addEventListener("click",e=>{let b=e.target.closest("[data-book]");if(b)openBook(b.dataset.book);let o=e.target.closest("[data-option]");if(o){selected=o.dataset.option;render()}});
-el("closeDetail").onclick=()=>el("detailDialog").close();el("backButton").onclick=()=>{selected="";render()};el("seriesSortSelect").onchange=render;
+el("closeDetail").onclick=()=>el("detailDialog").close();el("detailDialog").addEventListener("close",()=>{bookDetailHistory=[];el("detailDialog").dataset.bookId="";});el("backButton").onclick=()=>{selected="";render()};el("seriesSortSelect").onchange=render;
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;selected="";document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));render()});
 ["search","author","type","series","genre","availability","sort"].forEach(id=>el(id).addEventListener("input",()=>{selected="";render()}));
 function setView(v){view=v;el("onlineView").classList.toggle("hidden",v!=="online");el("tableView").classList.toggle("hidden",v!=="table");el("filters").classList.toggle("hidden",v!=="online");el("tableViewButton").classList.toggle("active",v==="table");el("onlineLibraryViewButton").classList.toggle("active",v==="online");render()}
@@ -1536,7 +1574,7 @@ if(statsError){
   el("dashboardMonthCheckouts").textContent=Number(stats?.monthly_checkouts||0);
   const bookById=id=>catalog.find(b=>String(b.id)===String(id));
   const safeCover=b=>b.cover?'<img class="dashboard-list-cover" src="'+esc(b.cover)+'" alt="">':'<div class="dashboard-popular-cover-fallback" aria-hidden="true">📖</div>';
-  const current=catalog.filter(b=>b.available<=0).slice(0,5);
+  const current=catalog.filter(b=>b.available<=0);
   recentEl.innerHTML=current.length?current.map(b=>'<button class="dashboard-list-item" data-book="'+esc(b.id)+'">'+safeCover(b)+'<span><span class="dashboard-list-title">'+esc(b.title)+'</span><span class="dashboard-list-meta">Checked Out</span></span></button>').join(""):'<div class="dashboard-empty">No books are currently checked out.</div>';
   const popular=(stats?.popular||[]).map(item=>({...item,book:bookById(item.book_id)})).filter(item=>item.book);
   popularEl.innerHTML=popular.length?popular.map((item,index)=>'<button class="dashboard-list-item" data-book="'+esc(item.book.id)+'"><span class="dashboard-rank">#'+(index+1)+'</span>'+safeCover(item.book)+'<span class="dashboard-popular-info"><span class="dashboard-list-title">'+esc(item.book.title)+'</span><span class="dashboard-list-meta">'+Number(item.checkouts)+' checkout'+(Number(item.checkouts)===1?'':'s')+'</span></span></button>').join(""):'<div class="dashboard-empty">Popular books will appear after checkouts.</div>';
