@@ -20,3 +20,15 @@ return '<div class="v2-panel"><h3>'+escapeLibraryHtml(name)+'</h3><label>Number 
 async function v2Target(name,value){const rec=seriesCovers.find(r=>r.Name===name),n=value===""?null:Number(value);if(!rec||n!==null&&(!Number.isInteger(n)||n<0||n>500))return;const {error}=await supabaseClient.from("Series").update({"Expected Books":n}).eq("id",rec.id);if(error){alert(error.message);return}rec["Expected Books"]=n;v2Series()}
 function v2Browse(){const el=document.getElementById("v2Browse");if(!el)return;const q=document.getElementById("v2Search").value.toLowerCase();el.innerHTML=books.filter(b=>[b.Title,b.Author,b.Series,...getBookGenres(b)].join(" ").toLowerCase().includes(q)).map(b=>'<button onclick="v2Detail('+Number(b.id)+')">'+detailsCover(b)+'<strong>'+escapeLibraryHtml(b.Title)+'</strong><small>'+escapeLibraryHtml(b.Author||"")+'</small><small>'+(getAvailableCopies(b)>0?'Available':'Checked out')+'</small></button>').join("")}
 function v2Detail(id){const b=books.find(x=>String(x.id)===String(id));if(!b)return;const modal=document.getElementById("v2DetailsModal");document.getElementById("v2Details").innerHTML='<div class="details-hero">'+detailsCover(b)+'<div><h2>'+escapeLibraryHtml(b.Title)+'</h2><p>'+escapeLibraryHtml(b.Author||"")+'</p><p>'+escapeLibraryHtml(b.Description||"No description yet.")+'</p></div></div>';modal.classList.remove("hidden")}
+
+const v2OriginalStats=renderStatistics;
+renderStatistics=function(){
+v2OriginalStats();
+const el=document.getElementById("statisticsContent");if(!el)return;
+const cls=document.getElementById("statsClass").value,from=document.getElementById("statsFrom").value,to=document.getElementById("statsTo").value;
+const rows=checkouts.filter(c=>{const st=getStudent(c.student_id),d=String(c["Check Out Date"]||"").slice(0,10);return(cls==="all"||st&&getClassName(st.class_id)===cls)&&(!from||d>=from)&&(!to||d<=to)});
+const authors=new Map(),classesCount=new Map(),durations=[];let overdue=0;
+rows.forEach(c=>{const b=books.find(x=>String(x.id)===String(c.book_id));if(b?.Author)authors.set(b.Author,(authors.get(b.Author)||0)+1);const st=getStudent(c.student_id),name=st?getClassName(st.class_id):"Unknown";classesCount.set(name,(classesCount.get(name)||0)+1);if(c["Return Date"]){const d=(new Date(c["Return Date"])-new Date(c["Check Out Date"]))/86400000;if(Number.isFinite(d)&&d>=0)durations.push(d)}else if(checkoutDueDate(c)<getTodayEastern())overdue++});
+const avg=durations.length?(durations.reduce((a,b)=>a+b,0)/durations.length).toFixed(1):"—";
+el.insertAdjacentHTML("beforeend",'<div class="v2-stats"><div class="v2-panel"><h3>Popular Authors</h3>'+[...authors].sort((a,b)=>b[1]-a[1]).slice(0,10).map(([a,n])=>'<p>'+escapeLibraryHtml(a)+': '+n+'</p>').join("")+'</div><div class="v2-panel"><h3>Checkout Health</h3><p>Average completed loan: '+avg+' days</p><p>Overdue: '+overdue+'</p></div><div class="v2-panel"><h3>Class Comparison</h3><p>7S: '+(classesCount.get("7S")||0)+' checkouts</p><p>7K: '+(classesCount.get("7K")||0)+' checkouts</p></div></div>');
+};
