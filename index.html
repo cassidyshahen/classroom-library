@@ -1448,7 +1448,7 @@ tr:hover td{background:#f6ebda}
 .details-rec strong{font-size:13px}
 .details-rec span{font-size:11px;color:#64748b}
 @media(max-width:540px){.details-hero{grid-template-columns:110px minmax(0,1fr);gap:13px}.details-recs-rail{gap:5px}.details-rec{padding:5px}.details-rec strong{font-size:10px}.details-rec span{font-size:9px}}
-</style></head>
+</style><style>.book-details-modal{position:relative;padding-top:52px}.book-details-close{position:sticky;top:0;float:right;z-index:5;display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-42px -4px 4px 8px;border:1px solid #cbd5e1;border-radius:50%;background:#fff;color:#334155;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}.book-details-close:hover{background:#f1f5f9}</style></head>
 
 <body>
 
@@ -2326,7 +2326,7 @@ tr:hover td{background:#f6ebda}
 </div>
 
 
-<div id="bookDetailsModal" class="modal-overlay hidden"><div class="modal book-details-modal"><div id="bookDetailsContent"></div><div class="modal-buttons"><button class="cancel-button" type="button" onclick="closeBookDetails()">Close</button></div></div></div>
+<div id="bookDetailsModal" class="modal-overlay hidden" onclick="if(event.target===this)closeBookDetails()"><div class="modal book-details-modal"><button type="button" class="book-details-close" onclick="closeBookDetails()" aria-label="Close book details" title="Close book details">×</button><div id="bookDetailsContent"></div><div class="modal-buttons"><button class="cancel-button" type="button" onclick="closeBookDetails()">Close</button></div></div></div>
 
 <script>
 
@@ -4377,6 +4377,7 @@ document.getElementById("bookDetailsModal").classList.remove("hidden");
 document.getElementById("bookDetailsContent").closest(".modal").scrollTop=0;
 }
 function closeBookDetails(){document.getElementById("bookDetailsModal").classList.add("hidden");}
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!document.getElementById("bookDetailsModal").classList.contains("hidden"))closeBookDetails();});
 
 function renderSeriesBrowser(){
   const optionsGrid=document.getElementById("seriesOptionsGrid");
