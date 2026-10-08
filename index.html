@@ -1430,7 +1430,7 @@ tr:hover td{background:#f6ebda}
   #onlineLibraryGrid .online-book-author,#seriesBooksGrid .online-book-author{font-size:10px}
   #onlineLibraryGrid .online-book-genre,#seriesBooksGrid .online-book-genre{font-size:9px;padding:3px 5px}
 }
-</style>
+.checkout-student-link-row{cursor:pointer}.checkout-student-link-row:hover{background:#f1f5f9}.checkout-student-link-row .checkedout-student{text-decoration:underline;text-underline-offset:3px}.student-card-checkout{padding:16px;margin:16px 0 22px;border:1px solid #d9c7a9;background:#fffaf1;border-radius:12px}.student-card-checkout-controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}.student-card-checkout-controls select{flex:1;min-width:220px;padding:10px;border:1px solid #cbd5e1;border-radius:8px}.student-card-checkout-controls button{padding:10px 20px;background:#35664b;color:white;border:0;border-radius:8px;cursor:pointer}.student-card-checkout-controls button:disabled{opacity:.55;cursor:wait}#studentCardCheckoutMessage{margin-top:8px;font-size:14px}</style>
 <style>.library-recommendation{display:block;width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;text-align:left;background:#f8fafc}.due-date-label{font-size:12px;margin-bottom:6px}.stats-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stats-metrics>div{padding:18px;border:1px solid #ddd;border-radius:10px}.stats-metrics strong{display:block;font-size:24px}.stats-never{max-height:350px;overflow:auto}</style><style>.stats-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.stats-panels section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}.stats-row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #e2e8f0;padding:8px 0}.stats-never{max-height:300px;overflow:auto}.stats-metrics{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}</style><style>
 .book-details-modal{width:min(920px,96vw);max-width:920px;max-height:90vh;overflow-y:auto}
 .details-hero{display:grid;grid-template-columns:minmax(130px,200px) minmax(0,1fr);gap:24px}
@@ -1868,6 +1868,14 @@ tr:hover td{background:#f6ebda}
       <div class="library-card-summary-item"><strong id="studentTotalCount">0</strong><span>Total Checkouts</span></div>
     </div>
 
+    <div class="student-card-checkout">
+      <label for="studentCardBookSelect"><strong>Check Out a Book</strong></label>
+      <div class="student-card-checkout-controls">
+        <select id="studentCardBookSelect" aria-label="Choose an available book"><option value="">Select an available book...</option></select>
+        <button type="button" id="studentCardCheckoutButton" onclick="checkoutFromStudentCard()">Check Out</button>
+      </div>
+      <div id="studentCardCheckoutMessage" role="status" aria-live="polite"></div>
+    </div>
     <div class="library-card-history-label">CURRENTLY CHECKED OUT</div>
     <div class="table-container library-card-section-table">
       <table>
@@ -5719,6 +5727,13 @@ function showStudentHistory(studentId){
   if(!student)return;
 
   currentStudentHistoryStudentId=studentId;
+  const cardBookSelect=document.getElementById("studentCardBookSelect");
+  if(cardBookSelect){
+    cardBookSelect.replaceChildren(new Option("Select an available book...",""),
+      ...books.filter(b=>getAvailableCopies(b)>0).sort((a,b)=>String(a.Title||"").localeCompare(String(b.Title||""))).map(b=>new Option(b.Title+" ("+getAvailableCopies(b)+" available)",String(b.id))));
+  }
+  const cardMessage=document.getElementById("studentCardCheckoutMessage");
+  if(cardMessage)cardMessage.textContent="";
   const className=getClassName(student.class_id);
 
   document.getElementById("studentHistoryTitle").textContent=
@@ -5776,6 +5791,37 @@ function showStudentHistory(studentId){
   showPage("studentHistory");
 }
 
+
+async function checkoutFromStudentCard(){
+  const studentId=currentStudentHistoryStudentId;
+  const select=document.getElementById("studentCardBookSelect");
+  const button=document.getElementById("studentCardCheckoutButton");
+  const message=document.getElementById("studentCardCheckoutMessage");
+  const book=books.find(b=>String(b.id)===String(select.value));
+  if(!studentId||!getStudent(studentId)||!book){message.textContent="Choose a book first.";return;}
+  if(getAvailableCopies(book)<1){message.textContent="That book is no longer available.";return;}
+  button.disabled=true;
+  button.textContent="Checking Out...";
+  message.textContent="";
+  try{
+    const {error}=await supabaseClient.from("Checkouts").insert({
+      "Check Out Date":getTodayEastern()+"T12:00:00",
+      "Return Date":null,
+      student_id:Number(studentId),
+      book_id:Number(book.id)
+    });
+    if(error)throw error;
+    await loadData();
+    showStudentHistory(studentId);
+    document.getElementById("studentCardCheckoutMessage").textContent="Book successfully checked out!";
+  }catch(error){
+    console.error("Student card checkout error:",error);
+    message.textContent="Could not check out the book. Please try again.";
+  }finally{
+    button.disabled=false;
+    button.textContent="Check Out";
+  }
+}
 
 /* ============================================================
    EDIT CHECKOUT
@@ -6155,6 +6201,7 @@ function renderCheckedOut(){
         document.createElement("tr");
 
       row.className="checkedout-record";
+      if(student){row.classList.add("checkout-student-link-row");row.title="Open Student #"+student.student_number+" library card";row.addEventListener("click",event=>{if(event.target.closest("button,a,input,select"))return;showStudentHistory(student.id);});}
 
       row.innerHTML=`
 
@@ -6370,6 +6417,7 @@ function renderHistory(){
 
       `;
 
+      if(student){row.classList.add("checkout-student-link-row");row.title="Open Student #"+student.student_number+" library card";row.addEventListener("click",event=>{if(event.target.closest("button,a,input,select"))return;showStudentHistory(student.id);});}
       tbody.appendChild(row);
     }
   );
