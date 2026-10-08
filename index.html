@@ -1431,7 +1431,7 @@ tr:hover td{background:#f6ebda}
   #onlineLibraryGrid .online-book-genre,#seriesBooksGrid .online-book-genre{font-size:9px;padding:3px 5px}
 }
 </style>
-</head>
+<style>.library-recommendation{display:block;width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;text-align:left;background:#f8fafc}.due-date-label{font-size:12px;margin-bottom:6px}.stats-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stats-metrics>div{padding:18px;border:1px solid #ddd;border-radius:10px}.stats-metrics strong{display:block;font-size:24px}.stats-never{max-height:350px;overflow:auto}</style><style>.stats-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.stats-panels section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}.stats-row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #e2e8f0;padding:8px 0}.stats-never{max-height:300px;overflow:auto}.stats-metrics{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}</style></head>
 
 <body>
 
@@ -1464,7 +1464,7 @@ tr:hover td{background:#f6ebda}
   <button class="nav-button" data-page="booklist">Book List</button>
   <button class="nav-button" data-page="students">Students</button>
   <button class="nav-button" data-page="checkedout">Checked Out</button>
-  <button class="nav-button" data-page="history">History</button>
+  <button class="nav-button" data-page="history">History</button><button class="nav-button" data-page="statistics">Statistics</button>
 </nav>
 
 <main>
@@ -1604,7 +1604,7 @@ tr:hover td{background:#f6ebda}
 
   </div>
 
-  <div id="onlineLibraryFilters" class="online-library-filters hidden">
+  <div id="onlineLibraryFilters" class="online-library-filters hidden"><div class="online-filter-group"><label>Author <select id="onlineAuthorFilter" onchange="renderLibrary()"><option value="">All Authors</option></select></label></div><div class="online-filter-group"><label>Book Type <select id="onlineTypeFilter" onchange="renderLibrary()"><option value="">All Types</option><option>Series</option><option>Standalone</option></select></label></div><div class="online-filter-group"><label>Series Status <select id="onlineCompleteFilter" onchange="renderLibrary()"><option value="">All</option><option value="complete">Complete</option><option value="incomplete">Incomplete</option></select></label></div>
     <div class="online-filter-group">
       <label for="onlineSeriesFilter">Series</label>
       <select id="onlineSeriesFilter">
@@ -1915,7 +1915,7 @@ tr:hover td{background:#f6ebda}
 </section>
 
 
-<section id="history" class="page">
+<section id="statistics" class="page"><h2>Library Statistics</h2><div class="online-library-filters"><label>Class <select id="statsClass" onchange="renderStatistics()"><option value="all">All Classes</option><option value="7S">7S</option><option value="7K">7K</option></select></label><label>From <input type="date" id="statsFrom" onchange="renderStatistics()"></label><label>To <input type="date" id="statsTo" onchange="renderStatistics()"></label></div><div id="statisticsContent"></div></section><section id="history" class="page">
 
   <h2>Checkout History</h2>
 
@@ -2185,7 +2185,7 @@ tr:hover td{background:#f6ebda}
 
       <!-- CATEGORY -->
 
-      <div class="form-group">
+      <div class="form-group"><label for="newBookDescriptionInput">Description</label><textarea id="newBookDescriptionInput" rows="4" placeholder="Spoiler-free summary"></textarea></div><div class="form-group">
 
         <label for="newBookCategoryInput">
           Category
@@ -3323,6 +3323,7 @@ function collectNewBookData(){
 
   const genres=[...document.querySelectorAll("#newBookGenreInput input:checked")].map(input=>input.value);
   const genre=genres[0]||"";
+  const description=document.getElementById("newBookDescriptionInput").value.trim();
 
   const series=
     document.getElementById(
@@ -3420,6 +3421,7 @@ function collectNewBookData(){
     title,
     coverUrl,
     author,
+    description,
     category,
     genre,
     genres,
@@ -3561,6 +3563,7 @@ async function insertNewBook(data){
 
           "Title":data.title,
           "Author":data.author,
+          "Description":data.description||null,
           "Category":data.category,
           "Genre":data.genre||null,
           "Genres":data.genres||[],
@@ -3723,6 +3726,7 @@ async function loadData(){
     renderStudents();
     renderCheckedOut();
     renderHistory();
+    renderStatistics();
     updateSeriesOptions();
 
   }catch(error){
@@ -4339,7 +4343,8 @@ function getOnlineBookCardHtml(book){
     </div>`;
 }
 
-function openBookDetails(bookId){const book=books.find(b=>String(b.id)===String(bookId));if(!book)return;const history=checkouts.filter(x=>String(x.book_id)===String(bookId)).sort((a,b)=>String(b["Check Out Date"]||"").localeCompare(String(a["Check Out Date"]||"")));const active=history.filter(x=>!x["Return Date"]);const available=getAvailableCopies(book);const cover=String(book["Cover URL"]||book.CoverURL||"").trim();const tags=[...getBookGenres(book),book.Category,book.Series?(book.Series+(book["Series #"]?" • Book "+book["Series #"]:"")):""].filter(Boolean);const currentText=active.length?active.map(x=>{const s=students.find(v=>String(v.id)===String(x.student_id));return s?getClassName(s.class_id)+" • Student #"+s.student_number:"Student";}).join(", "):"None";document.getElementById("bookDetailsContent").innerHTML='<div class="book-details-layout"><div>'+(cover?'<img class="book-details-cover" src="'+cover+'" alt="">':'<div class="book-details-cover-placeholder">📖</div>')+'</div><div><h2 class="book-details-title">'+(book.Title||"")+'</h2><div class="book-details-author">'+(book.Author||"")+'</div><div class="book-details-tags">'+tags.map(t=>'<span class="book-detail-tag">'+t+'</span>').join("")+'</div><div class="book-details-stats"><div class="book-detail-stat"><strong>'+history.length+'</strong><span>Total Checkouts</span></div><div class="book-detail-stat"><strong>'+available+'</strong><span>Available</span></div><div class="book-detail-stat"><strong>'+(book.Copies||0)+'</strong><span>Total Copies</span></div></div><div style="font-size:13px;margin-bottom:14px;"><strong>Currently checked out to:</strong> '+currentText+'</div><h3 style="margin-bottom:8px;">Checkout History</h3><div class="book-history-list">'+(history.length?history.map(x=>{const s=students.find(v=>String(v.id)===String(x.student_id));const who=s?getClassName(s.class_id)+" • Student #"+s.student_number:"Student";return '<div class="book-history-row"><span>'+who+'</span><span>'+formatDate(x["Check Out Date"])+' → '+(x["Return Date"]?formatDate(x["Return Date"]):"Checked Out")+'</span></div>';}).join(""):'<div class="dashboard-empty">No checkout history yet.</div>')+'</div></div></div>';document.getElementById("bookDetailsModal").classList.remove("hidden");}
+function escapeLibraryHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function openBookDetails(id){const book=books.find(b=>String(b.id)===String(id));if(!book)return;const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*3+(book.Series&&book.Series===b.Series?8:0)+(book.Author&&book.Author===b.Author?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);document.getElementById("bookDetailsContent").innerHTML='<h2>'+escapeLibraryHtml(book.Title)+'</h2><p>by '+escapeLibraryHtml(book.Author)+'</p><h3>About This Book</h3><p>'+escapeLibraryHtml(book.Description||"No description yet.")+'</p><p>Available: '+getAvailableCopies(book)+' of '+Number(book.Copies||0)+'</p><button class="edit-button" onclick="closeBookDetails();openEditBook('+Number(book.id)+')">Edit Book</button><h3>You Might Also Like</h3>'+(matches.length?matches.map(x=>'<button class="library-recommendation" onclick="openBookDetails('+Number(x.book.id)+')">'+escapeLibraryHtml(x.book.Title)+'</button>').join(""):'<p>No similar books found.</p>');document.getElementById("bookDetailsModal").classList.remove("hidden");}
 function closeBookDetails(){document.getElementById("bookDetailsModal").classList.add("hidden");}
 
 function renderSeriesBrowser(){
@@ -4585,6 +4590,7 @@ function populateOnlineLibraryFilters(){
 
   if(!categorySelect||!seriesSelect)return;
 
+  const authorSelect=document.getElementById("onlineAuthorFilter");if(authorSelect){const old=authorSelect.value;const authors=[...new Set(books.map(b=>String(b.Author||"").trim()).filter(Boolean))].sort();authorSelect.replaceChildren(new Option("All Authors",""),...authors.map(a=>new Option(a,a)));authorSelect.value=authors.includes(old)?old:"";}
   const currentCategory=categorySelect.value;
   const currentSeries=seriesSelect.value;
 
@@ -4656,7 +4662,7 @@ function renderLibrary(){
 
         if(!matchesSearch)return false;
 
-        if(onlineMode){
+        if(onlineMode){const author=document.getElementById("onlineAuthorFilter")?.value||"";const type=document.getElementById("onlineTypeFilter")?.value||"";const status=document.getElementById("onlineCompleteFilter")?.value||"";if(author&&book.Author!==author)return false;if(type&&book.Category!==type)return false;if(status){const entry=seriesCovers.find(x=>String(x.Name||"").trim()===String(book.Series||"").trim());if(!book.Series||!entry||Boolean(entry.Complete)!==(status==="complete"))return false;}
           if(categoryFilter&&!getBookGenres(book).includes(categoryFilter))
             return false;
 
@@ -4988,6 +4994,7 @@ function resetBookModal(){
   document.getElementById(
     "newBookAuthorInput"
   ).value="";
+  document.getElementById("newBookDescriptionInput").value="";
 
   document.querySelectorAll("#newBookGenreInput input").forEach(input=>input.checked=false);
 
@@ -5089,6 +5096,7 @@ function openEditBook(bookId){
     "newBookAuthorInput"
   ).value=
     book.Author||"";
+  document.getElementById("newBookDescriptionInput").value=book.Description||"";
 
   document.getElementById(
     "newBookCategoryInput"
@@ -5376,6 +5384,7 @@ async function saveEditedBook(){
 
       "Title":title,
       "Author":author,
+      "Description":document.getElementById("newBookDescriptionInput").value.trim()||null,
       "Category":category,
       "Genre":genre||null,
       "Genres":genres,
@@ -5684,11 +5693,11 @@ function showStudentHistory(studentId){
         <tr>
           <td>${book?book.Title:"Unknown Book"}</td>
           <td>${formatDate(checkout["Check Out Date"])}</td>
-          <td><span class="history-status-out">Checked Out</span></td>
+          <td>${checkoutDueLabel(checkout)}</td>
           <td>
             <div class="history-actions">
               <button class="edit-button" onclick="openEditCheckout(${checkout.id})">Edit</button>
-              <button class="return-button" onclick="returnBook(${checkout.id}, this, true)">Return Book</button>
+              <button class="edit-button" onclick="changeCheckoutDueDate(${checkout.id})">Due Date</button><button class="edit-button" onclick="renewCheckout(${checkout.id})">Renew</button><button class="return-button" onclick="returnBook(${checkout.id}, this, true)">Return Book</button>
             </div>
           </td>
         </tr>`;
@@ -6114,7 +6123,7 @@ function renderCheckedOut(){
           )}
         </td>
 
-        <td class="checkedout-actions">
+        <td class="checkedout-actions"><div class="due-date-label">${checkoutDueLabel(checkout)}</div><button class="edit-button" onclick="changeCheckoutDueDate(${checkout.id})">Due Date</button><button class="edit-button" onclick="renewCheckout(${checkout.id})">Renew</button>
 
           <div class="history-actions">
 
@@ -6356,6 +6365,20 @@ function renderBookList(){
   tbody.innerHTML=sorted.map(book=>`<tr><td><strong>${book.Title||""}</strong></td><td>${book.Author||"—"}</td></tr>`).join("");
 }
 
+function checkoutDueDate(c){if(c["Due Date"])return String(c["Due Date"]).slice(0,10);const d=new Date(c["Check Out Date"]);if(isNaN(d))return "";d.setDate(d.getDate()+14);return d.toISOString().slice(0,10);}
+function checkoutDueLabel(c){const date=checkoutDueDate(c);if(!date)return "No due date";const days=Math.ceil((new Date(date+"T23:59:59")-Date.now())/86400000);return (days<0?"Overdue: ":days<=3?"Due soon: ":"Due: ")+date;}
+async function changeCheckoutDueDate(id){const c=checkouts.find(x=>String(x.id)===String(id));if(!c||c["Return Date"])return;const date=prompt("Due date (YYYY-MM-DD)",checkoutDueDate(c));if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){alert("Use YYYY-MM-DD.");return;}const {error}=await supabaseClient.from("Checkouts").update({"Due Date":date}).eq("id",id);if(error){alert(error.message);return;}await loadData();if(currentStudentHistoryStudentId)showStudentHistory(currentStudentHistoryStudentId);}
+async function renewCheckout(id){const c=checkouts.find(x=>String(x.id)===String(id));if(!c||c["Return Date"])return;const d=new Date(checkoutDueDate(c)+"T12:00:00");if(isNaN(d))return;d.setDate(d.getDate()+14);const date=d.toISOString().slice(0,10);if(!confirm("Renew until "+date+"?"))return;const {error}=await supabaseClient.from("Checkouts").update({"Due Date":date,"Renewal Count":Number(c["Renewal Count"]||0)+1}).eq("id",id);if(error){alert(error.message);return;}await loadData();if(currentStudentHistoryStudentId)showStudentHistory(currentStudentHistoryStudentId);}
+function renderStatistics(){
+const el=document.getElementById("statisticsContent");if(!el)return;
+const selected=document.getElementById("statsClass")?.value||"all",from=document.getElementById("statsFrom")?.value||"",to=document.getElementById("statsTo")?.value||"";
+const filtered=checkouts.filter(c=>{const st=students.find(x=>String(x.id)===String(c.student_id));const cls=st?getClassName(st.class_id):"";const date=String(c["Check Out Date"]||"").slice(0,10);return (selected==="all"||cls===selected)&&(!from||date>=from)&&(!to||date<=to);});
+const counts=new Map(),genres=new Map(),classesCount=new Map(),months=new Map();
+filtered.forEach(c=>{const id=String(c.book_id);counts.set(id,(counts.get(id)||0)+1);const book=books.find(b=>String(b.id)===id);if(book)getBookGenres(book).forEach(g=>genres.set(g,(genres.get(g)||0)+1));const st=students.find(x=>String(x.id)===String(c.student_id));const cls=st?getClassName(st.class_id):"Unknown";classesCount.set(cls,(classesCount.get(cls)||0)+1);const month=String(c["Check Out Date"]||"").slice(0,7);if(month)months.set(month,(months.get(month)||0)+1);});
+const top=[...counts].sort((a,b)=>b[1]-a[1]).slice(0,10);const never=books.filter(b=>!checkouts.some(c=>String(c.book_id)===String(b.id)));const active=checkouts.filter(c=>!c["Return Date"]&&(selected==="all"||(()=>{const st=students.find(x=>String(x.id)===String(c.student_id));return st&&getClassName(st.class_id)===selected;})()));
+const list=items=>items.length?items.map(([label,count])=>'<div class="stats-row"><span>'+escapeLibraryHtml(label)+'</span><strong>'+count+'</strong></div>').join(""):'<p>No activity yet.</p>';
+el.innerHTML='<div class="stats-metrics"><div><strong>'+books.length+'</strong><span>Titles</span></div><div><strong>'+books.reduce((n,b)=>n+Number(b.Copies||0),0)+'</strong><span>Copies</span></div><div><strong>'+filtered.length+'</strong><span>Checkouts in Period</span></div><div><strong>'+active.length+'</strong><span>Currently Out</span></div></div><div class="stats-panels"><section><h3>Most Borrowed</h3>'+list(top.map(([id,n])=>[books.find(b=>String(b.id)===id)?.Title||"Unknown",n]))+'</section><section><h3>Genre Activity</h3>'+list([...genres].sort((a,b)=>b[1]-a[1]))+'</section><section><h3>Class Activity</h3>'+list([...classesCount].sort())+'</section><section><h3>Monthly Trends</h3>'+list([...months].sort())+'</section><section><h3>Never Borrowed ('+never.length+')</h3><div class="stats-never">'+never.map(b=>'<p>'+escapeLibraryHtml(b.Title)+'</p>').join("")+'</div></section></div>';
+}
 function showPage(pageId){
 
   document.querySelectorAll(
@@ -6411,6 +6434,7 @@ function showPage(pageId){
 
   if(pageId==="history")
     renderHistory();
+  if(pageId==="statistics")renderStatistics();
 }
 
 
@@ -6755,6 +6779,7 @@ document.getElementById(
 });
 
 document.getElementById("clearOnlineFiltersButton").addEventListener("click",()=>{
+  ["onlineAuthorFilter","onlineTypeFilter","onlineCompleteFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
   document.getElementById("onlineCategoryFilter").value="";
   document.getElementById("onlineSeriesFilter").value="";
   document.getElementById("onlineAvailabilityFilter").value="";
