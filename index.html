@@ -1448,7 +1448,7 @@ tr:hover td{background:#f6ebda}
 .details-rec strong{font-size:13px}
 .details-rec span{font-size:11px;color:#64748b}
 @media(max-width:540px){.details-hero{grid-template-columns:110px minmax(0,1fr);gap:13px}.details-recs-rail{gap:5px}.details-rec{padding:5px}.details-rec strong{font-size:10px}.details-rec span{font-size:9px}}
-</style><style>.book-details-modal{position:relative;padding-top:52px}.book-details-close{position:sticky;top:0;float:right;z-index:5;display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-42px -4px 4px 8px;border:1px solid #cbd5e1;border-radius:50%;background:#fff;color:#334155;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}.book-details-close:hover{background:#f1f5f9}</style><style>.details-series{margin:8px 0 14px;color:#334155;font-size:14px}</style></head>
+</style><style>.book-details-modal{position:relative;padding-top:52px}.book-details-close{position:sticky;top:0;float:right;z-index:5;display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-42px -4px 4px 8px;border:1px solid #cbd5e1;border-radius:50%;background:#fff;color:#334155;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}.book-details-close:hover{background:#f1f5f9}</style><style>.details-series{margin:8px 0 14px;color:#334155;font-size:14px}</style><style>.details-back-button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;color:#2563eb;font-weight:700;cursor:pointer;padding:5px 0;margin:0 0 18px}.details-back-button:hover{text-decoration:underline}</style></head>
 
 <body>
 
@@ -4368,8 +4368,13 @@ const fallback='<div class="details-cover-fallback">📚<small>Cover unavailable
 return '<div class="details-cover">'+(url?'<img src="'+escapeLibraryHtml(url)+'" alt="Cover of '+escapeLibraryHtml(book.Title)+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+fallback:fallback)+'</div>';
 }
 function scrollRecommendations(dir){const rail=document.getElementById("detailsRecommendationRail");if(rail)rail.scrollBy({left:dir*rail.clientWidth*.8,behavior:"smooth"});}
-function openBookDetails(id){
+let bookDetailsHistory=[];
+function goBackBookDetails(){if(!bookDetailsHistory.length)return;const previousId=bookDetailsHistory.pop();openBookDetails(previousId,true);}
+function openBookDetails(id,fromHistory=false){
 const book=books.find(b=>String(b.id)===String(id));if(!book)return;
+const modal=document.getElementById("bookDetailsModal");
+if(!fromHistory){if(modal.classList.contains("hidden"))bookDetailsHistory=[];else{const previous=modal.dataset.currentBookId;if(previous&&previous!==String(id))bookDetailsHistory.push(previous);}}
+modal.dataset.currentBookId=String(id);
 const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*3+(book.Series&&book.Series===b.Series?8:0)+(book.Author&&book.Author===b.Author?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
 const recs=matches.length?'<div class="details-recs-heading"><h3>You Might Also Like</h3></div><div id="detailsRecommendationRail" class="details-recs-rail">'+matches.map(x=>'<button type="button" class="details-rec" onclick="openBookDetails('+Number(x.book.id)+')">'+detailsCover(x.book)+'<strong>'+escapeLibraryHtml(x.book.Title)+'</strong><span>'+escapeLibraryHtml(x.book.Author||"")+'</span></button>').join("")+'</div>':'<h3>You Might Also Like</h3><p>No similar books found.</p>';
 const seriesName=String(book.Series||"").trim();
@@ -4381,7 +4386,7 @@ document.getElementById("bookDetailsContent").innerHTML='<div class="details-her
 document.getElementById("bookDetailsModal").classList.remove("hidden");
 document.getElementById("bookDetailsContent").closest(".modal").scrollTop=0;
 }
-function closeBookDetails(){document.getElementById("bookDetailsModal").classList.add("hidden");}
+function closeBookDetails(){const modal=document.getElementById("bookDetailsModal");modal.classList.add("hidden");modal.dataset.currentBookId="";bookDetailsHistory=[];}
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!document.getElementById("bookDetailsModal").classList.contains("hidden"))closeBookDetails();});
 
 function renderSeriesBrowser(){
