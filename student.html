@@ -1574,8 +1574,8 @@ if(statsError){
   el("dashboardMonthCheckouts").textContent=Number(stats?.monthly_checkouts||0);
   const bookById=id=>catalog.find(b=>String(b.id)===String(id));
   const safeCover=b=>b.cover?'<img class="dashboard-list-cover" src="'+esc(b.cover)+'" alt="">':'<div class="dashboard-popular-cover-fallback" aria-hidden="true">📖</div>';
-  const current=catalog.filter(b=>b.available<=0);
-  recentEl.innerHTML=current.length?current.map(b=>'<button class="dashboard-list-item" data-book="'+esc(b.id)+'">'+safeCover(b)+'<span><span class="dashboard-list-title">'+esc(b.title)+'</span><span class="dashboard-list-meta">Checked Out</span></span></button>').join(""):'<div class="dashboard-empty">No books are currently checked out.</div>';
+  const current=(stats?.currently_checked_out||[]).map(item=>({...item,book:bookById(item.book_id)})).filter(item=>item.book);
+  recentEl.innerHTML=current.length?current.map(item=>'<button class="dashboard-list-item" data-book="'+esc(item.book.id)+'">'+safeCover(item.book)+'<span><span class="dashboard-list-title">'+esc(item.book.title)+'</span><span class="dashboard-list-meta">'+Number(item.copies_out)+' currently checked out</span></span></button>').join(""):'<div class="dashboard-empty">No books are currently checked out.</div>';
   const popular=(stats?.popular||[]).map(item=>({...item,book:bookById(item.book_id)})).filter(item=>item.book);
   popularEl.innerHTML=popular.length?popular.map((item,index)=>'<button class="dashboard-list-item" data-book="'+esc(item.book.id)+'"><span class="dashboard-rank">#'+(index+1)+'</span>'+safeCover(item.book)+'<span class="dashboard-popular-info"><span class="dashboard-list-title">'+esc(item.book.title)+'</span><span class="dashboard-list-meta">'+Number(item.checkouts)+' checkout'+(Number(item.checkouts)===1?'':'s')+'</span></span></button>').join(""):'<div class="dashboard-empty">Popular books will appear after checkouts.</div>';
 }
