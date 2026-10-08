@@ -2203,7 +2203,7 @@ tr:hover td{background:#f6ebda}
 
       <!-- CATEGORY -->
 
-      <div class="form-group"><label for="newBookDescriptionInput">Description</label><textarea id="newBookDescriptionInput" rows="4" placeholder="Spoiler-free summary"></textarea></div><div class="form-group">
+      <div class="form-group"><label for="newBookReadingLevelInput">Reading Level (optional)</label><input id="newBookReadingLevelInput" placeholder="e.g. Grade 7, Lexile 700L"></div><div class="form-group"><label for="newBookDescriptionInput">Description</label><textarea id="newBookDescriptionInput" rows="4" placeholder="Spoiler-free summary"></textarea></div><div class="form-group">
 
         <label for="newBookCategoryInput">
           Category
@@ -3582,6 +3582,7 @@ async function insertNewBook(data){
           "Title":data.title,
           "Author":data.author,
           "Description":data.description||null,
+          "Reading Level":document.getElementById("newBookReadingLevelInput").value.trim()||null,
           "Category":data.category,
           "Genre":data.genre||null,
           "Genres":data.genres||[],
@@ -5039,7 +5040,7 @@ function resetBookModal(){
   document.getElementById(
     "newBookAuthorInput"
   ).value="";
-  document.getElementById("newBookDescriptionInput").value="";
+  document.getElementById("newBookDescriptionInput").value="";document.getElementById("newBookReadingLevelInput").value="";
 
   document.querySelectorAll("#newBookGenreInput input").forEach(input=>input.checked=false);
 
@@ -5141,7 +5142,7 @@ function openEditBook(bookId){
     "newBookAuthorInput"
   ).value=
     book.Author||"";
-  document.getElementById("newBookDescriptionInput").value=book.Description||"";
+  document.getElementById("newBookDescriptionInput").value=book.Description||"";document.getElementById("newBookReadingLevelInput").value=book["Reading Level"]||"";
 
   document.getElementById(
     "newBookCategoryInput"
@@ -5430,6 +5431,7 @@ async function saveEditedBook(){
       "Title":title,
       "Author":author,
       "Description":document.getElementById("newBookDescriptionInput").value.trim()||null,
+      "Reading Level":document.getElementById("newBookReadingLevelInput").value.trim()||null,
       "Category":category,
       "Genre":genre||null,
       "Genres":genres,
