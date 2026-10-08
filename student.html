@@ -1443,10 +1443,36 @@ tr:hover td{background:#f6ebda}
 <header><h1>📚 Classroom Library</h1><span class="student-view-note">Student browsing</span></header>
 <nav><button class="active" data-page="home">Homepage</button><button data-page="library">Library</button></nav>
 <main>
-<section class="page active" id="home">
-<div class="dashboard-hero"><div><h2>Classroom Library</h2><p>A cozy little corner for stories, discoveries, and your next great read.</p></div><button class="dashboard-action" id="exploreButton">📚 Browse the Library</button></div>
-<div class="stats"><div class="stat-card"><div class="number" id="totalBooks">—</div><div class="label">Total Books</div></div><div class="stat-card"><div class="number" id="availableBooks">—</div><div class="label">Available</div></div><div class="stat-card"><div class="number" id="checkedOutBooks">—</div><div class="label">Checked Out</div></div></div>
-<div class="dashboard-panel" style="margin-bottom:18px"><h3>Library Activity</h3><div class="dashboard-activity"><div class="dashboard-mini-stat"><div class="dashboard-mini-number" id="dashboardAvailablePercent">0%</div><div class="dashboard-mini-label">Library Available</div><div class="dashboard-progress"><div id="dashboardAvailableBar" class="dashboard-progress-bar" style="width:0%"></div></div></div><div class="dashboard-mini-stat"><div class="dashboard-mini-number" id="dashboardGenresCount">0</div><div class="dashboard-mini-label">Genres to Explore</div></div></div></div><div class="dashboard-grid"><div class="dashboard-panel"><h3>Browse by Genre</h3><div class="dashboard-list" id="homeGenres"></div></div><div class="dashboard-panel"><h3>Explore Our Books</h3><div class="dashboard-list" id="homeBooks"></div></div></div>
+<section id="home" class="page active">
+
+  <div class="dashboard-hero">
+    <div>
+      <h2>Classroom Library</h2>
+      <p>A cozy little corner for stories, discoveries, and your next great read.</p>
+    </div>
+    
+  </div>
+
+  <div class="stats">
+    <div class="stat-card dashboard-stat"><div class="dashboard-stat-icon">📚</div><div class="number" id="totalBooks">0</div><div class="label">Total Books</div></div>
+    <div class="stat-card dashboard-stat"><div class="dashboard-stat-icon">✓</div><div class="number" id="availableBooks">0</div><div class="label">Available</div></div>
+    <div class="stat-card dashboard-stat"><div class="dashboard-stat-icon">↗</div><div class="number" id="checkedOutBooks">0</div><div class="label">Checked Out</div></div>
+    <div class="label">Students</div></div>
+  </div>
+
+  <div class="dashboard-panel" style="margin-bottom:18px;"><h3>Library Activity</h3><div class="dashboard-activity"><div class="dashboard-mini-stat"><div class="dashboard-mini-number" id="dashboardCheckedOutCount">0</div><div class="dashboard-mini-label">Books Checked Out</div></div><div class="dashboard-mini-stat"><div class="dashboard-mini-number" id="dashboardAvailablePercent">0%</div><div class="dashboard-mini-label">Library Available</div><div class="dashboard-progress"><div id="dashboardAvailableBar" class="dashboard-progress-bar" style="width:0%"></div></div></div></div></div>
+
+  <div class="dashboard-grid">
+    <div class="dashboard-panel">
+      <h3>Currently Checked Out</h3>
+      <div id="dashboardCurrentCheckouts" class="dashboard-list"></div>
+    </div>
+    <div class="dashboard-panel">
+      <h3>Explore Our Books</h3>
+      <div id="dashboardFeaturedBooks" class="dashboard-list"></div>
+    </div>
+  </div>
+
 </section>
 <section class="page" id="library">
 <div class="library-header"><h2>Library</h2><div class="library-view-toggle"><button id="tableViewButton">☰ Table</button><button id="onlineLibraryViewButton" class="active">📚 Online Library</button></div></div>
@@ -1467,7 +1493,7 @@ const unique=arr=>[...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(
 const cover=b=>'<div class="online-book-cover-wrap">'+(b.cover?'<img class="online-book-cover" loading="lazy" src="'+esc(b.cover)+'" alt="Cover of '+esc(b.title)+'">':'<div class="online-book-no-cover"><div class="online-book-no-cover-icon">📖</div><span>'+esc(b.title)+'</span></div>')+'</div>';
 function showPage(page){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===page));document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===page))}
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
-el("exploreButton").onclick=()=>showPage("library");
+
 function filtered(){let q=el("search").value.toLowerCase().trim(),author=el("author").value,type=el("type").value,series=el("series").value,genre=el("genre").value,availability=el("availability").value;
 let arr=catalog.filter(b=>(!q||[b.title,b.author,b.series,...genres(b)].join(" ").toLowerCase().includes(q))&&(!author||b.author===author)&&(!type||(type==="series"?!!b.series:!b.series))&&(!series||b.series===series)&&(!genre||genres(b).includes(genre))&&(!availability||(availability==="available"?b.available>0:b.available<=0)));
 let sort=el("sort").value;arr.sort((a,b)=>sort==="za"?String(b.title).localeCompare(String(a.title)):sort==="author"?String(a.author||"").localeCompare(String(b.author||"")):String(a.title).localeCompare(String(b.title)));return arr}
@@ -1482,9 +1508,12 @@ document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.
 ["search","author","type","series","genre","availability","sort"].forEach(id=>el(id).addEventListener("input",()=>{selected="";render()}));
 function setView(v){view=v;el("onlineView").classList.toggle("hidden",v!=="online");el("tableView").classList.toggle("hidden",v!=="table");el("filters").classList.toggle("hidden",v!=="online");el("tableViewButton").classList.toggle("active",v==="table");el("onlineLibraryViewButton").classList.toggle("active",v==="online");render()}
 el("tableViewButton").onclick=()=>setView("table");el("onlineLibraryViewButton").onclick=()=>setView("online");
-(async()=>{let {data,error}=await client.rpc("student_catalog");if(error){el("count").textContent="Catalog unavailable. Please ask your teacher.";el("totalBooks").textContent="—";return}catalog=Array.isArray(data)?data:[];el("totalBooks").textContent=catalog.length;el("dashboardAvailablePercent").textContent=(catalog.length?Math.round(catalog.filter(b=>b.available>0).length/catalog.length*100):0)+"%";el("dashboardAvailableBar").style.width=(catalog.length?Math.round(catalog.filter(b=>b.available>0).length/catalog.length*100):0)+"%";el("dashboardGenresCount").textContent=unique(catalog.flatMap(genres)).length;el("availableBooks").textContent=catalog.filter(b=>b.available>0).length;el("checkedOutBooks").textContent=catalog.filter(b=>b.available<=0).length;
+(async()=>{let {data,error}=await client.rpc("student_catalog");if(error){el("count").textContent="Catalog unavailable. Please ask your teacher.";el("totalBooks").textContent="—";return}catalog=Array.isArray(data)?data:[];el("totalBooks").textContent=catalog.length;el("dashboardAvailablePercent").textContent=(catalog.length?Math.round(catalog.filter(b=>b.available>0).length/catalog.length*100):0)+"%";el("dashboardAvailableBar").style.width=(catalog.length?Math.round(catalog.filter(b=>b.available>0).length/catalog.length*100):0)+"%";el("dashboardCheckedOutCount").textContent=catalog.filter(b=>b.available<=0).length;el("availableBooks").textContent=catalog.filter(b=>b.available>0).length;el("checkedOutBooks").textContent=catalog.filter(b=>b.available<=0).length;
 for(let [id,values] of [["author",unique(catalog.map(b=>b.author))],["series",unique(catalog.map(b=>b.series))],["genre",unique(catalog.flatMap(genres))]])el(id).innerHTML+="" + values.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join("");
-let gs=unique(catalog.flatMap(genres));el("homeGenres").innerHTML=gs.slice(0,6).map(g=>'<button class="dashboard-list-item" data-home-genre="'+esc(g)+'">📖 <span class="dashboard-list-title">'+esc(g)+'</span></button>').join("")||'<p class="muted">Genres coming soon.</p>';
-el("homeBooks").innerHTML=catalog.slice(0,5).map(b=>'<button class="dashboard-list-item" data-book="'+esc(b.id)+'">'+(b.cover?'<img class="dashboard-list-cover" src="'+esc(b.cover)+'" alt="">':'📖')+'<span><span class="dashboard-list-title">'+esc(b.title)+'</span><span class="dashboard-list-meta">'+esc(b.author||"")+'</span></span></button>').join("");
-document.querySelectorAll("[data-home-genre]").forEach(b=>b.onclick=()=>{showPage("library");tab="books";selected="";el("genre").value=b.dataset.homeGenre;document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x.dataset.tab==="books"));render()});render()})();
+const currentlyOut=catalog.filter(b=>b.available<=0).slice(0,5);
+const featured=catalog.filter(b=>b.available>0).slice(0,5);
+const dashboardRow=b=>'<button class="dashboard-list-item" data-book="'+esc(b.id)+'">'+(b.cover?'<img class="dashboard-list-cover" src="'+esc(b.cover)+'" alt="">':'<span class="dashboard-list-cover">📖</span>')+'<span><span class="dashboard-list-title">'+esc(b.title)+'</span><span class="dashboard-list-meta">'+esc(b.author||"")+'</span></span></button>';
+el("dashboardCurrentCheckouts").innerHTML=currentlyOut.length?currentlyOut.map(dashboardRow).join(""):'<p class="muted">All titles are currently available.</p>';
+el("dashboardFeaturedBooks").innerHTML=featured.length?featured.map(dashboardRow).join(""):'<p class="muted">Explore the library for more books.</p>';
+render()})();
 </script></body></html>
