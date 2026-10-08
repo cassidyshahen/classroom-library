@@ -2001,6 +2001,7 @@ tr:hover td{background:#f6ebda}
 
     </div>
 
+    <div class="form-group"><label for="editDueDate">Due Date</label><input type="date" id="editDueDate"></div><div class="form-group"><button type="button" class="edit-button" id="editRenewButton" onclick="renewCheckoutFromEdit()">Renew for 14 More Days</button></div>
     <div class="form-group" id="editReturnDateGroup">
 
       <label for="editReturnDate">
@@ -5779,12 +5780,16 @@ function openEditCheckout(checkoutId){
       : "";
 
   updateEditReturnDateVisibility();
+  document.getElementById("editDueDate").value=checkoutDueDate(checkout);
+  document.getElementById("editRenewButton").classList.toggle("hidden",returned);
 
   document.getElementById(
     "editModal"
   ).classList.remove("hidden");
 }
 
+
+async function renewCheckoutFromEdit(){if(!editingCheckoutId)return;const id=editingCheckoutId;closeEditCheckout();await renewCheckout(id);}
 
 function closeEditCheckout(){
 
@@ -5851,6 +5856,7 @@ async function saveEditedCheckout(){
     document.getElementById(
       "editReturnDate"
     ).value;
+  const dueDate=document.getElementById("editDueDate").value;
 
   if(!checkoutDate){
 
@@ -5886,6 +5892,7 @@ async function saveEditedCheckout(){
 
     const updateData={
 
+      "Due Date":dueDate||null,
       "Check Out Date":
         `${checkoutDate}T12:00:00`,
 
@@ -5917,6 +5924,7 @@ async function saveEditedCheckout(){
     if(localCheckout){
       localCheckout["Check Out Date"]=updateData["Check Out Date"];
       localCheckout["Return Date"]=updateData["Return Date"];
+      localCheckout["Due Date"]=updateData["Due Date"];
     }
 
     closeEditCheckout();
@@ -6123,33 +6131,12 @@ function renderCheckedOut(){
           )}
         </td>
 
-        <td class="checkedout-actions"><div class="due-date-label">${checkoutDueLabel(checkout)}</div><button class="edit-button" onclick="changeCheckoutDueDate(${checkout.id})">Due Date</button><button class="edit-button" onclick="renewCheckout(${checkout.id})">Renew</button>
-
+        <td class="checkedout-actions">
+          <div class="due-date-label">${checkoutDueLabel(checkout)}</div>
           <div class="history-actions">
-
-            <button
-              class="edit-button"
-              onclick="openEditCheckout(${checkout.id})"
-            >
-              Edit
-            </button>
-
-            <button
-              class="return-button"
-              onclick="returnBook(${checkout.id})"
-            >
-              Return
-            </button>
-
-            <button
-              class="delete-button"
-              onclick="deleteCheckout(${checkout.id})"
-            >
-              Delete
-            </button>
-
+            <button type="button" class="return-button" onclick="returnBook(${checkout.id})">Return</button>
+            <button type="button" class="edit-button" onclick="openEditCheckout(${checkout.id})">Edit</button>
           </div>
-
         </td>
 
       `;
