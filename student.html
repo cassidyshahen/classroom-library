@@ -1464,7 +1464,7 @@ const el=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const genres=b=>Array.isArray(b.genres)&&b.genres.length?b.genres.filter(Boolean):b.genre?[b.genre]:[];
 const unique=arr=>[...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-const cover=b=>'<div class="online-book-cover-wrap">'+(b.cover?'<img class="online-book-cover" loading="lazy" src="'+esc(b.cover)+'" alt="Cover of '+esc(b.title)+'" onerror="this.replaceWith(document.createTextNode(\\'📖\\'))">':'<div class="online-book-no-cover"><div class="online-book-no-cover-icon">📖</div><span>'+esc(b.title)+'</span></div>')+'</div>';
+const cover=b=>'<div class="online-book-cover-wrap">'+(b.cover?'<img class="online-book-cover" loading="lazy" src="'+esc(b.cover)+'" alt="Cover of '+esc(b.title)+'">':'<div class="online-book-no-cover"><div class="online-book-no-cover-icon">📖</div><span>'+esc(b.title)+'</span></div>')+'</div>';
 function showPage(page){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===page));document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===page))}
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 el("exploreButton").onclick=()=>showPage("library");
