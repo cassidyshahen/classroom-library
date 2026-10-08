@@ -1481,7 +1481,7 @@ tr:hover td{background:#f6ebda}
   <button class="nav-button" data-page="booklist">Book List</button>
   <button class="nav-button" data-page="students">Students</button>
   <button class="nav-button" data-page="checkedout">Checked Out</button>
-  <button class="nav-button" data-page="history">History</button><button class="nav-button" data-page="statistics">Statistics</button>
+  <button class="nav-button" data-page="history">History</button><button class="nav-button" data-page="statistics">Statistics</button><button class="nav-button" data-page="reservations">Reservations</button><button class="nav-button" data-page="seriesTracker">Series Tracker</button><button class="nav-button" data-page="studentBrowse">Student Browse</button>
 </nav>
 
 <main>
@@ -1932,7 +1932,7 @@ tr:hover td{background:#f6ebda}
 </section>
 
 
-<section id="statistics" class="page"><h2>Library Statistics</h2><div class="online-library-filters"><label>Class <select id="statsClass" onchange="renderStatistics()"><option value="all">All Classes</option><option value="7S">7S</option><option value="7K">7K</option></select></label><label>From <input type="date" id="statsFrom" onchange="renderStatistics()"></label><label>To <input type="date" id="statsTo" onchange="renderStatistics()"></label></div><div id="statisticsContent"></div></section><section id="history" class="page">
+<section id="reservations" class="page"><h2>Reservations</h2><div id="v2Reservations"></div></section><section id="seriesTracker" class="page"><h2>Series Completion</h2><div id="v2Series"></div></section><section id="studentBrowse" class="page"><h2>Student Browsing Mode</h2><p>Read-only library catalog</p><a href="student.html" target="_blank" rel="noopener">Open separate student catalog ↗</a><input id="v2Search" placeholder="Search books" oninput="v2Browse()"><div id="v2Browse"></div></section><section id="statistics" class="page"><h2>Library Statistics</h2><div class="online-library-filters"><label>Class <select id="statsClass" onchange="renderStatistics()"><option value="all">All Classes</option><option value="7S">7S</option><option value="7K">7K</option></select></label><label>From <input type="date" id="statsFrom" onchange="renderStatistics()"></label><label>To <input type="date" id="statsTo" onchange="renderStatistics()"></label></div><div id="statisticsContent"></div></section><section id="history" class="page">
 
   <h2>Checkout History</h2>
 
@@ -2351,7 +2351,7 @@ let books=[];
 let students=[];
 let classes=[];
 let checkouts=[];
-let seriesCovers=[];
+let seriesCovers=[];let reservations=[];let reservationsReady=false;
 
 let selectedStudentClass="7S";
 let selectedHistoryClass="all";
@@ -3671,7 +3671,8 @@ async function loadData(){
       studentsResult,
       classesResult,
       checkoutsResult,
-      seriesResult
+      seriesResult,
+      reservationsResult
     ]=
       await Promise.all([
 
@@ -3702,7 +3703,8 @@ async function loadData(){
         supabaseClient
           .from("Series")
           .select("*")
-          .order("Name")
+          .order("Name"),
+        supabaseClient.from("Reservations").select("*").order("created_at")
       ]);
 
     if(booksResult.error)
@@ -3734,6 +3736,7 @@ async function loadData(){
 
     seriesCovers=
       seriesResult.data||[];
+    reservationsReady=!reservationsResult.error;reservations=reservationsResult.data||[];
 
     await removeRetiredGenres();
 
@@ -3744,7 +3747,7 @@ async function loadData(){
     renderStudents();
     renderCheckedOut();
     renderHistory();
-    renderStatistics();
+    renderStatistics();v2Render();
     updateSeriesOptions();
 
   }catch(error){
@@ -4375,7 +4378,7 @@ const book=books.find(b=>String(b.id)===String(id));if(!book)return;
 const modal=document.getElementById("bookDetailsModal");
 if(!fromHistory){if(modal.classList.contains("hidden"))bookDetailsHistory=[];else{const previous=modal.dataset.currentBookId;if(previous&&previous!==String(id))bookDetailsHistory.push(previous);}}
 modal.dataset.currentBookId=String(id);
-const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*3+(book.Series&&book.Series===b.Series?8:0)+(book.Author&&book.Author===b.Author?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*5+(book.Series&&book.Series===b.Series?9:0)+(book.Author&&book.Author===b.Author?5:0)+(book["Reading Level"]&&book["Reading Level"]===b["Reading Level"]?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
 const recs=matches.length?'<div class="details-recs-heading"><h3>You Might Also Like</h3></div><div id="detailsRecommendationRail" class="details-recs-rail">'+matches.map(x=>'<button type="button" class="details-rec" onclick="openBookDetails('+Number(x.book.id)+')">'+detailsCover(x.book)+'<strong>'+escapeLibraryHtml(x.book.Title)+'</strong><span>'+escapeLibraryHtml(x.book.Author||"")+'</span></button>').join("")+'</div>':'<h3>You Might Also Like</h3><p>No similar books found.</p>';
 const seriesName=String(book.Series||"").trim();
 const seriesNumber=book["Series #"];
@@ -6463,6 +6466,7 @@ function showPage(pageId){
   if(pageId==="history")
     renderHistory();
   if(pageId==="statistics")renderStatistics();
+  if(["reservations","seriesTracker","studentBrowse"].includes(pageId))v2Render();
 }
 
 
