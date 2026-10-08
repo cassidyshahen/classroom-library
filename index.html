@@ -1915,7 +1915,7 @@ tr:hover td{background:#f6ebda}
 </section>
 
 
-<section id="statistics" class="page"><h2>Library Statistics</h2><div id="statisticsContent"></div></section><section id="history" class="page">
+<section id="statistics" class="page"><h2>Library Statistics</h2><div class="online-library-filters"><label>Class <select id="statsClass" onchange="renderStatistics()"><option value="all">All Classes</option><option value="7S">7S</option><option value="7K">7K</option></select></label><label>From <input type="date" id="statsFrom" onchange="renderStatistics()"></label><label>To <input type="date" id="statsTo" onchange="renderStatistics()"></label></div><div id="statisticsContent"></div></section><section id="history" class="page">
 
   <h2>Checkout History</h2>
 
@@ -4994,6 +4994,7 @@ function resetBookModal(){
   document.getElementById(
     "newBookAuthorInput"
   ).value="";
+  document.getElementById("newBookDescriptionInput").value="";
 
   document.querySelectorAll("#newBookGenreInput input").forEach(input=>input.checked=false);
 
@@ -6368,7 +6369,16 @@ function checkoutDueDate(c){if(c["Due Date"])return String(c["Due Date"]).slice(
 function checkoutDueLabel(c){const date=checkoutDueDate(c);if(!date)return "No due date";const days=Math.ceil((new Date(date+"T23:59:59")-Date.now())/86400000);return (days<0?"Overdue: ":days<=3?"Due soon: ":"Due: ")+date;}
 async function changeCheckoutDueDate(id){const c=checkouts.find(x=>String(x.id)===String(id));if(!c||c["Return Date"])return;const date=prompt("Due date (YYYY-MM-DD)",checkoutDueDate(c));if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){alert("Use YYYY-MM-DD.");return;}const {error}=await supabaseClient.from("Checkouts").update({"Due Date":date}).eq("id",id);if(error){alert(error.message);return;}await loadData();if(currentStudentHistoryStudentId)showStudentHistory(currentStudentHistoryStudentId);}
 async function renewCheckout(id){const c=checkouts.find(x=>String(x.id)===String(id));if(!c||c["Return Date"])return;const d=new Date(checkoutDueDate(c)+"T12:00:00");if(isNaN(d))return;d.setDate(d.getDate()+14);const date=d.toISOString().slice(0,10);if(!confirm("Renew until "+date+"?"))return;const {error}=await supabaseClient.from("Checkouts").update({"Due Date":date,"Renewal Count":Number(c["Renewal Count"]||0)+1}).eq("id",id);if(error){alert(error.message);return;}await loadData();if(currentStudentHistoryStudentId)showStudentHistory(currentStudentHistoryStudentId);}
-function renderStatistics(){const el=document.getElementById("statisticsContent");if(!el)return;const counts=new Map();checkouts.forEach(c=>counts.set(String(c.book_id),(counts.get(String(c.book_id))||0)+1));const top=[...counts].sort((a,b)=>b[1]-a[1]).slice(0,10);const never=books.filter(b=>!counts.has(String(b.id)));el.innerHTML='<div class="stats-metrics"><div><strong>'+books.length+'</strong><span>Titles</span></div><div><strong>'+books.reduce((n,b)=>n+Number(b.Copies||0),0)+'</strong><span>Copies</span></div><div><strong>'+checkouts.length+'</strong><span>Total Checkouts</span></div><div><strong>'+checkouts.filter(c=>!c["Return Date"]).length+'</strong><span>Currently Out</span></div></div><h3>Most Borrowed</h3>'+top.map(([id,n])=>'<p>'+escapeLibraryHtml(books.find(b=>String(b.id)===id)?.Title||"Unknown")+' — '+n+'</p>').join("")+'<h3>Never Borrowed ('+never.length+')</h3><div class="stats-never">'+never.map(b=>'<p>'+escapeLibraryHtml(b.Title)+'</p>').join("")+'</div>';}
+function renderStatistics(){
+const el=document.getElementById("statisticsContent");if(!el)return;
+const selected=document.getElementById("statsClass")?.value||"all",from=document.getElementById("statsFrom")?.value||"",to=document.getElementById("statsTo")?.value||"";
+const filtered=checkouts.filter(c=>{const st=students.find(x=>String(x.id)===String(c.student_id));const cls=st?getClassName(st.class_id):"";const date=String(c["Check Out Date"]||"").slice(0,10);return (selected==="all"||cls===selected)&&(!from||date>=from)&&(!to||date<=to);});
+const counts=new Map(),genres=new Map(),classesCount=new Map(),months=new Map();
+filtered.forEach(c=>{const id=String(c.book_id);counts.set(id,(counts.get(id)||0)+1);const book=books.find(b=>String(b.id)===id);if(book)getBookGenres(book).forEach(g=>genres.set(g,(genres.get(g)||0)+1));const st=students.find(x=>String(x.id)===String(c.student_id));const cls=st?getClassName(st.class_id):"Unknown";classesCount.set(cls,(classesCount.get(cls)||0)+1);const month=String(c["Check Out Date"]||"").slice(0,7);if(month)months.set(month,(months.get(month)||0)+1);});
+const top=[...counts].sort((a,b)=>b[1]-a[1]).slice(0,10);const never=books.filter(b=>!checkouts.some(c=>String(c.book_id)===String(b.id)));const active=checkouts.filter(c=>!c["Return Date"]&&(selected==="all"||(()=>{const st=students.find(x=>String(x.id)===String(c.student_id));return st&&getClassName(st.class_id)===selected;})()));
+const list=items=>items.length?items.map(([label,count])=>'<div class="stats-row"><span>'+escapeLibraryHtml(label)+'</span><strong>'+count+'</strong></div>').join(""):'<p>No activity yet.</p>';
+el.innerHTML='<div class="stats-metrics"><div><strong>'+books.length+'</strong><span>Titles</span></div><div><strong>'+books.reduce((n,b)=>n+Number(b.Copies||0),0)+'</strong><span>Copies</span></div><div><strong>'+filtered.length+'</strong><span>Checkouts in Period</span></div><div><strong>'+active.length+'</strong><span>Currently Out</span></div></div><div class="stats-panels"><section><h3>Most Borrowed</h3>'+list(top.map(([id,n])=>[books.find(b=>String(b.id)===id)?.Title||"Unknown",n]))+'</section><section><h3>Genre Activity</h3>'+list([...genres].sort((a,b)=>b[1]-a[1]))+'</section><section><h3>Class Activity</h3>'+list([...classesCount].sort())+'</section><section><h3>Monthly Trends</h3>'+list([...months].sort())+'</section><section><h3>Never Borrowed ('+never.length+')</h3><div class="stats-never">'+never.map(b=>'<p>'+escapeLibraryHtml(b.Title)+'</p>').join("")+'</div></section></div>';
+}
 function showPage(pageId){
 
   document.querySelectorAll(
