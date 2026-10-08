@@ -1448,7 +1448,7 @@ tr:hover td{background:#f6ebda}
 .details-rec strong{font-size:13px}
 .details-rec span{font-size:11px;color:#64748b}
 @media(max-width:540px){.details-hero{grid-template-columns:110px minmax(0,1fr);gap:13px}.details-recs-rail{gap:5px}.details-rec{padding:5px}.details-rec strong{font-size:10px}.details-rec span{font-size:9px}}
-</style><style>.book-details-modal{position:relative;padding-top:52px}.book-details-close{position:sticky;top:0;float:right;z-index:5;display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-42px -4px 4px 8px;border:1px solid #cbd5e1;border-radius:50%;background:#fff;color:#334155;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}.book-details-close:hover{background:#f1f5f9}</style><style>.details-series{margin:8px 0 14px;color:#334155;font-size:14px}</style><style>.details-back-button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;color:#2563eb;font-weight:700;cursor:pointer;padding:5px 0;margin:0 0 18px}.details-back-button:hover{text-decoration:underline}</style></head>
+</style><style>.book-details-modal{position:relative;padding-top:52px}.book-details-close{position:sticky;top:0;float:right;z-index:5;display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-42px -4px 4px 8px;border:1px solid #cbd5e1;border-radius:50%;background:#fff;color:#334155;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}.book-details-close:hover{background:#f1f5f9}</style><style>.details-series{margin:8px 0 14px;color:#334155;font-size:14px}</style><style>.details-back-button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;color:#2563eb;font-weight:700;cursor:pointer;padding:5px 0;margin:0 0 18px}.details-back-button:hover{text-decoration:underline}</style><style>.v2-controls{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.v2-controls>*{padding:10px}.v2-panel{background:white;border:1px solid #ddd;border-radius:12px;padding:18px;margin:12px 0}.v2-bar{height:9px;background:#e2e8f0;border-radius:9px;overflow:hidden}.v2-bar div{height:100%;background:#3b82f6}#v2Browse{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}#v2Browse button{text-align:left;border:1px solid #ddd;background:white;padding:9px;border-radius:10px;cursor:pointer}#v2Browse strong,#v2Browse small{display:block}</style></head>
 
 <body>
 
@@ -1481,7 +1481,7 @@ tr:hover td{background:#f6ebda}
   <button class="nav-button" data-page="booklist">Book List</button>
   <button class="nav-button" data-page="students">Students</button>
   <button class="nav-button" data-page="checkedout">Checked Out</button>
-  <button class="nav-button" data-page="history">History</button><button class="nav-button" data-page="statistics">Statistics</button>
+  <button class="nav-button" data-page="history">History</button><button class="nav-button" data-page="statistics">Statistics</button><button class="nav-button" data-page="reservations">Reservations</button><button class="nav-button" data-page="seriesTracker">Series Tracker</button><button class="nav-button" data-page="studentBrowse">Student Browse</button>
 </nav>
 
 <main>
@@ -1932,7 +1932,7 @@ tr:hover td{background:#f6ebda}
 </section>
 
 
-<section id="statistics" class="page"><h2>Library Statistics</h2><div class="online-library-filters"><label>Class <select id="statsClass" onchange="renderStatistics()"><option value="all">All Classes</option><option value="7S">7S</option><option value="7K">7K</option></select></label><label>From <input type="date" id="statsFrom" onchange="renderStatistics()"></label><label>To <input type="date" id="statsTo" onchange="renderStatistics()"></label></div><div id="statisticsContent"></div></section><section id="history" class="page">
+<section id="reservations" class="page"><h2>Reservations</h2><div id="v2Reservations"></div></section><section id="seriesTracker" class="page"><h2>Series Completion</h2><div id="v2Series"></div></section><section id="studentBrowse" class="page"><h2>Student Browsing Mode</h2><p>Read-only library catalog</p><a href="student.html" target="_blank" rel="noopener">Open separate student catalog ↗</a><input id="v2Search" placeholder="Search books" oninput="v2Browse()"><div id="v2Browse"></div></section><div id="v2DetailsModal" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')"><div class="modal book-details-modal"><button class="book-details-close" onclick="document.getElementById('v2DetailsModal').classList.add('hidden')">×</button><div id="v2Details"></div></div></div><section id="statistics" class="page"><h2>Library Statistics</h2><div class="online-library-filters"><label>Class <select id="statsClass" onchange="renderStatistics()"><option value="all">All Classes</option><option value="7S">7S</option><option value="7K">7K</option></select></label><label>From <input type="date" id="statsFrom" onchange="renderStatistics()"></label><label>To <input type="date" id="statsTo" onchange="renderStatistics()"></label></div><div id="statisticsContent"></div></section><section id="history" class="page">
 
   <h2>Checkout History</h2>
 
@@ -2203,7 +2203,7 @@ tr:hover td{background:#f6ebda}
 
       <!-- CATEGORY -->
 
-      <div class="form-group"><label for="newBookDescriptionInput">Description</label><textarea id="newBookDescriptionInput" rows="4" placeholder="Spoiler-free summary"></textarea></div><div class="form-group">
+      <div class="form-group"><label for="newBookReadingLevelInput">Reading Level (optional)</label><input id="newBookReadingLevelInput" placeholder="e.g. Grade 7, Lexile 700L"></div><div class="form-group"><label for="newBookDescriptionInput">Description</label><textarea id="newBookDescriptionInput" rows="4" placeholder="Spoiler-free summary"></textarea></div><div class="form-group">
 
         <label for="newBookCategoryInput">
           Category
@@ -2351,7 +2351,7 @@ let books=[];
 let students=[];
 let classes=[];
 let checkouts=[];
-let seriesCovers=[];
+let seriesCovers=[];let reservations=[];let reservationsReady=false;
 
 let selectedStudentClass="7S";
 let selectedHistoryClass="all";
@@ -3582,6 +3582,7 @@ async function insertNewBook(data){
           "Title":data.title,
           "Author":data.author,
           "Description":data.description||null,
+          "Reading Level":document.getElementById("newBookReadingLevelInput").value.trim()||null,
           "Category":data.category,
           "Genre":data.genre||null,
           "Genres":data.genres||[],
@@ -3671,7 +3672,8 @@ async function loadData(){
       studentsResult,
       classesResult,
       checkoutsResult,
-      seriesResult
+      seriesResult,
+      reservationsResult
     ]=
       await Promise.all([
 
@@ -3702,7 +3704,8 @@ async function loadData(){
         supabaseClient
           .from("Series")
           .select("*")
-          .order("Name")
+          .order("Name"),
+        supabaseClient.from("Reservations").select("*").order("created_at")
       ]);
 
     if(booksResult.error)
@@ -3734,6 +3737,7 @@ async function loadData(){
 
     seriesCovers=
       seriesResult.data||[];
+    reservationsReady=!reservationsResult.error;reservations=reservationsResult.data||[];
 
     await removeRetiredGenres();
 
@@ -3744,7 +3748,7 @@ async function loadData(){
     renderStudents();
     renderCheckedOut();
     renderHistory();
-    renderStatistics();
+    renderStatistics();v2Render();
     updateSeriesOptions();
 
   }catch(error){
@@ -4375,7 +4379,7 @@ const book=books.find(b=>String(b.id)===String(id));if(!book)return;
 const modal=document.getElementById("bookDetailsModal");
 if(!fromHistory){if(modal.classList.contains("hidden"))bookDetailsHistory=[];else{const previous=modal.dataset.currentBookId;if(previous&&previous!==String(id))bookDetailsHistory.push(previous);}}
 modal.dataset.currentBookId=String(id);
-const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*3+(book.Series&&book.Series===b.Series?8:0)+(book.Author&&book.Author===b.Author?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*5+(book.Series&&book.Series===b.Series?9:0)+(book.Author&&book.Author===b.Author?5:0)+(book["Reading Level"]&&book["Reading Level"]===b["Reading Level"]?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
 const recs=matches.length?'<div class="details-recs-heading"><h3>You Might Also Like</h3></div><div id="detailsRecommendationRail" class="details-recs-rail">'+matches.map(x=>'<button type="button" class="details-rec" onclick="openBookDetails('+Number(x.book.id)+')">'+detailsCover(x.book)+'<strong>'+escapeLibraryHtml(x.book.Title)+'</strong><span>'+escapeLibraryHtml(x.book.Author||"")+'</span></button>').join("")+'</div>':'<h3>You Might Also Like</h3><p>No similar books found.</p>';
 const seriesName=String(book.Series||"").trim();
 const seriesNumber=book["Series #"];
@@ -5036,7 +5040,7 @@ function resetBookModal(){
   document.getElementById(
     "newBookAuthorInput"
   ).value="";
-  document.getElementById("newBookDescriptionInput").value="";
+  document.getElementById("newBookDescriptionInput").value="";document.getElementById("newBookReadingLevelInput").value="";
 
   document.querySelectorAll("#newBookGenreInput input").forEach(input=>input.checked=false);
 
@@ -5138,7 +5142,7 @@ function openEditBook(bookId){
     "newBookAuthorInput"
   ).value=
     book.Author||"";
-  document.getElementById("newBookDescriptionInput").value=book.Description||"";
+  document.getElementById("newBookDescriptionInput").value=book.Description||"";document.getElementById("newBookReadingLevelInput").value=book["Reading Level"]||"";
 
   document.getElementById(
     "newBookCategoryInput"
@@ -5427,6 +5431,7 @@ async function saveEditedBook(){
       "Title":title,
       "Author":author,
       "Description":document.getElementById("newBookDescriptionInput").value.trim()||null,
+      "Reading Level":document.getElementById("newBookReadingLevelInput").value.trim()||null,
       "Category":category,
       "Genre":genre||null,
       "Genres":genres,
@@ -6463,6 +6468,7 @@ function showPage(pageId){
   if(pageId==="history")
     renderHistory();
   if(pageId==="statistics")renderStatistics();
+  if(["reservations","seriesTracker","studentBrowse"].includes(pageId))v2Render();
 }
 
 
@@ -7146,6 +7152,7 @@ document.getElementById(
 );
 
 </script>
+<script src="library-v2.js"></script>
 
 </body>
 </html>
