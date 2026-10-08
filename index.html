@@ -1442,12 +1442,12 @@ tr:hover td{background:#f6ebda}
 .details-description{white-space:pre-wrap;line-height:1.55}
 .details-recs-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:25px}
 .details-recs-heading button{border:1px solid #cbd5e1;border-radius:50%;width:36px;height:36px;background:white;font-size:24px;cursor:pointer;margin-left:7px}
-.details-recs-rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px 2px 18px}
-.details-rec{flex:0 0 145px;scroll-snap-align:start;display:flex;flex-direction:column;gap:7px;text-align:left;padding:10px;background:white;border:1px solid #e2e8f0;border-radius:11px;cursor:pointer}
+.details-recs-rail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:12px 2px 18px}
+.details-rec{min-width:0;display:flex;flex-direction:column;gap:7px;text-align:left;padding:10px;background:white;border:1px solid #e2e8f0;border-radius:11px;cursor:pointer}
 .details-rec:hover{border-color:#64748b}
 .details-rec strong{font-size:13px}
 .details-rec span{font-size:11px;color:#64748b}
-@media(max-width:540px){.details-hero{grid-template-columns:110px minmax(0,1fr);gap:13px}.details-rec{flex-basis:125px}}
+@media(max-width:540px){.details-hero{grid-template-columns:110px minmax(0,1fr);gap:13px}.details-recs-rail{gap:5px}.details-rec{padding:5px}.details-rec strong{font-size:10px}.details-rec span{font-size:9px}}
 </style></head>
 
 <body>
@@ -4371,7 +4371,7 @@ function scrollRecommendations(dir){const rail=document.getElementById("detailsR
 function openBookDetails(id){
 const book=books.find(b=>String(b.id)===String(id));if(!book)return;
 const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*3+(book.Series&&book.Series===b.Series?8:0)+(book.Author&&book.Author===b.Author?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
-const recs=matches.length?'<div class="details-recs-heading"><h3>You Might Also Like</h3><div><button type="button" onclick="scrollRecommendations(-1)" aria-label="Scroll left">‹</button><button type="button" onclick="scrollRecommendations(1)" aria-label="Scroll right">›</button></div></div><div id="detailsRecommendationRail" class="details-recs-rail">'+matches.map(x=>'<button type="button" class="details-rec" onclick="openBookDetails('+Number(x.book.id)+')">'+detailsCover(x.book)+'<strong>'+escapeLibraryHtml(x.book.Title)+'</strong><span>'+escapeLibraryHtml(x.book.Author||"")+'</span></button>').join("")+'</div>':'<h3>You Might Also Like</h3><p>No similar books found.</p>';
+const recs=matches.length?'<div class="details-recs-heading"><h3>You Might Also Like</h3></div><div id="detailsRecommendationRail" class="details-recs-rail">'+matches.map(x=>'<button type="button" class="details-rec" onclick="openBookDetails('+Number(x.book.id)+')">'+detailsCover(x.book)+'<strong>'+escapeLibraryHtml(x.book.Title)+'</strong><span>'+escapeLibraryHtml(x.book.Author||"")+'</span></button>').join("")+'</div>':'<h3>You Might Also Like</h3><p>No similar books found.</p>';
 document.getElementById("bookDetailsContent").innerHTML='<div class="details-hero">'+detailsCover(book)+'<div><h2>'+escapeLibraryHtml(book.Title)+'</h2><p>by '+escapeLibraryHtml(book.Author||"Unknown author")+'</p><p><strong>Available: '+getAvailableCopies(book)+' of '+Number(book.Copies||0)+'</strong></p><h3>About This Book</h3><p class="details-description">'+escapeLibraryHtml(book.Description||"No description yet.")+'</p><button class="edit-button" onclick="closeBookDetails();openEditBook('+Number(book.id)+')">Edit Book</button></div></div>'+recs;
 document.getElementById("bookDetailsModal").classList.remove("hidden");
 document.getElementById("bookDetailsContent").closest(".modal").scrollTop=0;
