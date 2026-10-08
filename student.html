@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Browse Our Classroom Library</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#17243a;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:linear-gradient(115deg,#1d3557,#385e88);color:white;padding:35px max(20px,calc((100vw - 1160px)/2))}
+header h1{margin:0 0 7px;font-size:clamp(27px,5vw,40px)}header p{margin:0;opacity:.9}
+main{max-width:1160px;margin:0 auto;padding:25px 18px}.controls{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+input,select{border:1px solid #cbd5e1;border-radius:10px;padding:12px;font:inherit;background:white}input{flex:2;min-width:220px}select{flex:1;min-width:145px}
+#count{color:#64748b;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:18px}
+.book{border:1px solid #e2e8f0;background:white;border-radius:14px;overflow:hidden;cursor:pointer;text-align:left;padding:0;box-shadow:0 3px 10px #0f172a0d;color:inherit}
+.book:hover,.book:focus-visible{outline:2px solid #5d82bd}.cover{height:220px;background:#e6ecf5;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:34px}
+.cover img{height:100%;width:100%;object-fit:contain}.info{padding:12px}.info strong{display:block;line-height:1.35}.info small{display:block;color:#64748b;margin-top:5px}
+.avail{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#166534}.out{color:#a13d3d}
+dialog{border:0;border-radius:16px;max-width:660px;width:calc(100% - 30px);box-shadow:0 20px 80px #0f172a55;padding:24px}dialog::backdrop{background:#0f172a99}
+.dialog-head{display:flex;justify-content:space-between;gap:15px}.dialog-head button{align-self:start;border:0;background:#edf2f7;border-radius:50%;width:38px;height:38px;font-size:23px;cursor:pointer}
+.detail{display:grid;grid-template-columns:145px 1fr;gap:18px;margin-top:18px}.detail .cover{height:220px;border-radius:9px;overflow:hidden}.detail p{line-height:1.5;white-space:pre-wrap}
+@media(max-width:480px){.detail{grid-template-columns:100px 1fr}.detail .cover{height:155px}}
+</style></head><body>
+<header><h1>📚 Explore Our Classroom Library</h1><p>Discover your next great read. Browse books and check availability.</p></header>
+<main><div class="controls"><input id="search" placeholder="Search titles, authors, and series…" aria-label="Search books"><select id="genre" aria-label="Genre"><option value="">All genres</option></select><select id="availability" aria-label="Availability"><option value="">All books</option><option value="available">Available now</option></select></div><div id="count" role="status">Loading books…</div><div class="grid" id="grid"></div></main>
+<dialog id="detailDialog"><div class="dialog-head"><h2 id="detailTitle"></h2><button id="closeDetail" aria-label="Close details">×</button></div><div id="detailContent"></div></dialog>
+<script>
+const client=supabase.createClient("https://wwkcacypzjoojonmfaui.supabase.co","sb_publishable_6sl4TXTKcrE7vPG-BcEh3A_GfkmnCkM");
+let catalog=[];
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function genres(b){return Array.isArray(b.genres)&&b.genres.length?b.genres.filter(Boolean):b.genre?[b.genre]:[]}
+function cover(b){const url=String(b.cover||"").trim();return '<div class="cover">'+(url?'<img loading="lazy" src="'+esc(url)+'" alt="Cover of '+esc(b.title)+'" onerror="this.replaceWith(document.createTextNode(\'📖\'))">':'📖')+'</div>'}
+function render(){
+const query=document.getElementById("search").value.toLowerCase().trim(),genre=document.getElementById("genre").value,avail=document.getElementById("availability").value;
+const found=catalog.filter(b=>(!query||[b.title,b.author,b.series,...genres(b)].join(" ").toLowerCase().includes(query))&&(!genre||genres(b).includes(genre))&&(!avail||b.available>0));
+document.getElementById("count").textContent=found.length+" books";
+document.getElementById("grid").innerHTML=found.map(b=>'<button class="book" data-book="'+esc(b.id)+'">'+cover(b)+'<div class="info"><strong>'+esc(b.title)+'</strong><small>'+esc(b.author)+'</small><span class="avail '+(b.available>0?'':'out')+'">'+(b.available>0?'Available':'Checked out')+'</span></div></button>').join("");
+}
+function openBook(id){const b=catalog.find(x=>String(x.id)===String(id));if(!b)return;document.getElementById("detailTitle").textContent=b.title;document.getElementById("detailContent").innerHTML='<div class="detail">'+cover(b)+'<div><strong>'+esc(b.author||"")+'</strong><p>'+(b.series?'Series: '+esc(b.series)+(b.series_number?' · Book '+esc(b.series_number):'')+'\n':'')+'Genres: '+esc(genres(b).join(", ")||"Not listed")+'\n'+(b.reading_level?'Reading level: '+esc(b.reading_level)+'\n':'')+'Availability: '+(b.available>0?'Available':'Checked out')+'</p><p>'+esc(b.description||"No description yet.")+'</p></div></div>';document.getElementById("detailDialog").showModal()}
+document.getElementById("grid").addEventListener("click",e=>{const card=e.target.closest("[data-book]");if(card)openBook(card.dataset.book)});
+document.getElementById("closeDetail").onclick=()=>document.getElementById("detailDialog").close();
+["search","genre","availability"].forEach(id=>document.getElementById(id).addEventListener("input",render));
+(async()=>{const {data,error}=await client.rpc("student_catalog");if(error){document.getElementById("count").textContent="The student catalog is not available yet. Please ask your teacher.";return}catalog=Array.isArray(data)?data:[];const all=[...new Set(catalog.flatMap(genres))].sort();document.getElementById("genre").innerHTML='<option value="">All genres</option>'+all.map(g=>'<option value="'+esc(g)+'">'+esc(g)+'</option>').join("");render()})();
+</script></body></html>
