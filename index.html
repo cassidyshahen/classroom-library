@@ -1430,7 +1430,7 @@ tr:hover td{background:#f6ebda}
   #onlineLibraryGrid .online-book-author,#seriesBooksGrid .online-book-author{font-size:10px}
   #onlineLibraryGrid .online-book-genre,#seriesBooksGrid .online-book-genre{font-size:9px;padding:3px 5px}
 }
-.checkout-student-link-row{cursor:pointer}.checkout-student-link-row:hover{background:#f1f5f9}.checkout-student-link-row .checkedout-student{text-decoration:underline;text-underline-offset:3px}.student-card-checkout{padding:16px;margin:16px 0 22px;border:1px solid #d9c7a9;background:#fffaf1;border-radius:12px}.student-card-checkout-controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}.student-card-checkout-controls select{flex:1;min-width:220px;padding:10px;border:1px solid #cbd5e1;border-radius:8px}.student-card-checkout-controls button{padding:10px 20px;background:#35664b;color:white;border:0;border-radius:8px;cursor:pointer}.student-card-checkout-controls button:disabled{opacity:.55;cursor:wait}#studentCardCheckoutMessage{margin-top:8px;font-size:14px}</style>
+.checkout-student-link-row{cursor:pointer}.checkout-student-link-row:hover{background:#f1f5f9}.checkout-student-link-row .checkedout-student{text-decoration:underline;text-underline-offset:3px}.student-card-checkout{padding:16px;margin:16px 0 22px;border:1px solid #d9c7a9;background:#fffaf1;border-radius:12px}.student-card-checkout-controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}.student-card-checkout-controls select{flex:1;min-width:220px;padding:10px;border:1px solid #cbd5e1;border-radius:8px}.student-card-checkout-controls button{padding:10px 20px;background:#35664b;color:white;border:0;border-radius:8px;cursor:pointer}.student-card-checkout-controls button:disabled{opacity:.55;cursor:wait}#studentCardCheckoutMessage{margin-top:8px;font-size:14px}.student-card-navigation button{padding:9px 13px;border:1px solid #cbd5e1;border-radius:8px;background:white;cursor:pointer}.student-card-navigation button:disabled{opacity:.4;cursor:default}.dashboard-list-item[onclick]:hover{background:#f1f5f9}</style>
 <style>.library-recommendation{display:block;width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;text-align:left;background:#f8fafc}.due-date-label{font-size:12px;margin-bottom:6px}.stats-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stats-metrics>div{padding:18px;border:1px solid #ddd;border-radius:10px}.stats-metrics strong{display:block;font-size:24px}.stats-never{max-height:350px;overflow:auto}</style><style>.stats-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.stats-panels section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}.stats-row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #e2e8f0;padding:8px 0}.stats-never{max-height:300px;overflow:auto}.stats-metrics{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}</style><style>
 .book-details-modal{width:min(920px,96vw);max-width:920px;max-height:90vh;overflow-y:auto}
 .details-hero{display:grid;grid-template-columns:minmax(130px,200px) minmax(0,1fr);gap:24px}
@@ -1548,7 +1548,7 @@ tr:hover td{background:#f6ebda}
 
     <div class="form-group">
 
-      <label for="studentSelect">Student</label>
+      <label for="studentSelect">Student</label><input id="checkoutStudentSearch" type="search" placeholder="Search student number or use dropdown" oninput="filterCheckoutStudents()" style="width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px">
 
       <select id="studentSelect" disabled>
         <option value="">Select a student...</option>
@@ -1577,7 +1577,7 @@ tr:hover td{background:#f6ebda}
 
     </div>
 
-    <button id="checkoutButton" class="primary-button" disabled>
+    <label style="display:block;margin:12px 0"><input type="checkbox" id="keepCheckoutStudent" checked> Keep student selected for another checkout</label><button id="checkoutButton" class="primary-button" disabled>
       Check Out
     </button>
 
@@ -1862,7 +1862,7 @@ tr:hover td{background:#f6ebda}
     </div>
     <div class="library-card-divider"></div>
 
-    <div class="library-card-summary">
+    <div class="student-card-navigation" style="display:flex;justify-content:space-between;gap:12px;margin:12px 0"><button type="button" id="previousStudentCard" onclick="navigateStudentCard(-1)">← Previous</button><button type="button" id="nextStudentCard" onclick="navigateStudentCard(1)">Next →</button></div><div class="library-card-summary">
       <div class="library-card-summary-item"><strong id="studentCurrentCount">0</strong><span>Currently Out</span></div>
       <div class="library-card-summary-item"><strong id="studentReadCount">0</strong><span>Books Returned</span></div>
       <div class="library-card-summary-item"><strong id="studentTotalCount">0</strong><span>Total Checkouts</span></div>
@@ -3826,7 +3826,7 @@ function updateDashboard(){
     recent.innerHTML=items.length ? items.map(item=>{
       const book=books.find(b=>String(b.id)===String(item.book_id));
       const cover=String(book?.["Cover URL"]||"").trim();
-      return '<div class="dashboard-list-item">'+(cover?'<img class="dashboard-list-cover" src="'+cover+'" alt="">':'<div class="dashboard-list-cover"></div>')+'<div><div class="dashboard-list-title">'+(book?.Title||"Unknown Book")+'</div><div class="dashboard-list-meta">'+formatDate(item["Check Out Date"])+'</div></div></div>';
+      return '<div class="dashboard-list-item" style="cursor:pointer" title="Open student library card" onclick="showStudentHistory('+Number(item.student_id)+')">'+(cover?'<img class="dashboard-list-cover" src="'+cover+'" alt="">':'<div class="dashboard-list-cover"></div>')+'<div><div class="dashboard-list-title">'+(book?.Title||"Unknown Book")+'</div><div class="dashboard-list-meta">'+formatDate(item["Check Out Date"])+'</div></div></div>';
     }).join("") : '<div class="dashboard-empty">No checkouts yet.</div>';
   }
 
@@ -4163,6 +4163,7 @@ async function checkoutBook(){
       "checkoutButton"
     );
 
+  if(!duplicateCheckoutWarning(studentId,book))return;
   button.disabled=true;
   button.textContent=
     "Checking Out...";
@@ -4193,34 +4194,24 @@ async function checkoutBook(){
     if(error)
       throw error;
 
-    showMessage(
-      "checkoutMessage",
-      "Book successfully checked out!",
-      "success"
-    );
-
-    document.getElementById(
-      "classSelect"
-    ).value="";
-
-    document.querySelectorAll(".checkout-class-tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.checkoutClass==="7S"));
-
-    document.getElementById(
-      "studentSelect"
-    ).innerHTML=
-      '<option value="">Select a student...</option>';
-
-    document.getElementById(
-      "studentSelect"
-    ).disabled=true;
-
+    const student=getStudent(studentId);
+    const keep=document.getElementById("keepCheckoutStudent").checked;
+    const confirmation=book.Title+" → Student #"+student.student_number+" ("+getClassName(student.class_id)+") — checked out!";
     clearBookSelection();
-
-    document.getElementById(
-      "bookSelect"
-    ).disabled=true;
-
+    document.getElementById("bookSelect").value="";
     await loadData();
+    document.getElementById("checkoutStudentSearch").value="";
+    if(keep){
+      document.getElementById("classSelect").value=student.class_id;
+      document.querySelectorAll(".checkout-class-tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.checkoutClass.toLowerCase()===String(getClassName(student.class_id)).toLowerCase()));
+      populateStudents();
+      document.getElementById("studentSelect").value=String(studentId);
+      document.getElementById("bookSelect").disabled=false;
+    }else{
+      document.getElementById("studentSelect").value="";
+    }
+    showMessage("checkoutMessage",confirmation+(keep?" Select another book to continue.":""),"success");
+
 
   }catch(error){
 
@@ -4301,7 +4292,9 @@ async function returnBook(checkoutId, button=null, updateLibraryCard=false){
     if(error)
       throw error;
 
+    const returningStudentId=checkouts.find(c=>String(c.id)===String(checkoutId))?.student_id;
     await loadData();
+    if(returningStudentId&&document.getElementById("studentHistory").classList.contains("active"))showStudentHistory(returningStudentId);
 
   }catch(error){
 
@@ -5727,6 +5720,12 @@ function showStudentHistory(studentId){
   if(!student)return;
 
   currentStudentHistoryStudentId=studentId;
+  const classmates=students.filter(s=>String(s.class_id)===String(student.class_id)).sort((a,b)=>Number(a.student_number)-Number(b.student_number));
+  const position=classmates.findIndex(s=>String(s.id)===String(studentId));
+  const prev=document.getElementById("previousStudentCard"),next=document.getElementById("nextStudentCard");
+  prev.disabled=position<=0;next.disabled=position>=classmates.length-1;
+  prev.textContent=position>0?"← Student #"+classmates[position-1].student_number:"← Previous";
+  next.textContent=position<classmates.length-1?"Student #"+classmates[position+1].student_number+" →":"Next →";
   const cardBookSelect=document.getElementById("studentCardBookSelect");
   if(cardBookSelect){
     cardBookSelect.replaceChildren(new Option("Select an available book...",""),
@@ -5792,6 +5791,27 @@ function showStudentHistory(studentId){
 }
 
 
+function navigateStudentCard(step){
+  const student=getStudent(currentStudentHistoryStudentId);
+  if(!student)return;
+  const classmates=students.filter(s=>String(s.class_id)===String(student.class_id)).sort((a,b)=>Number(a.student_number)-Number(b.student_number));
+  const i=classmates.findIndex(s=>String(s.id)===String(student.id));
+  if(classmates[i+step])showStudentHistory(classmates[i+step].id);
+}
+function duplicateCheckoutWarning(studentId,book){
+  return !checkouts.some(c=>String(c.student_id)===String(studentId)&&String(c.book_id)===String(book.id)&&!c["Return Date"])||confirm("This student already has "+book.Title+" checked out. Check out another copy anyway?");
+}
+function filterCheckoutStudents(){
+  const select=document.getElementById("studentSelect");
+  const query=document.getElementById("checkoutStudentSearch").value.trim().toLowerCase();
+  const classId=document.getElementById("classSelect").value;
+  const selected=select.value;
+  const matches=students.filter(s=>(!classId||String(s.class_id)===String(classId))&&(!query||String(s.student_number).includes(query)||("student "+s.student_number).includes(query))).sort((a,b)=>Number(a.student_number)-Number(b.student_number));
+  select.replaceChildren(new Option("Select a student...",""),...matches.map(s=>new Option((classId?"":getClassName(s.class_id)+" — ")+"Student #"+s.student_number,String(s.id))));
+  if(matches.some(s=>String(s.id)===String(selected)))select.value=selected;
+  select.disabled=!matches.length;
+  updateCheckoutButton();
+}
 async function checkoutFromStudentCard(){
   const studentId=currentStudentHistoryStudentId;
   const select=document.getElementById("studentCardBookSelect");
@@ -5800,6 +5820,7 @@ async function checkoutFromStudentCard(){
   const book=books.find(b=>String(b.id)===String(select.value));
   if(!studentId||!getStudent(studentId)||!book){message.textContent="Choose a book first.";return;}
   if(getAvailableCopies(book)<1){message.textContent="That book is no longer available.";return;}
+  if(!duplicateCheckoutWarning(studentId,book))return;
   button.disabled=true;
   button.textContent="Checking Out...";
   message.textContent="";
@@ -5813,7 +5834,7 @@ async function checkoutFromStudentCard(){
     if(error)throw error;
     await loadData();
     showStudentHistory(studentId);
-    document.getElementById("studentCardCheckoutMessage").textContent="Book successfully checked out!";
+    document.getElementById("studentCardCheckoutMessage").textContent=book.Title+" → Student #"+getStudent(studentId).student_number+" ("+getClassName(getStudent(studentId).class_id)+") — checked out!";
   }catch(error){
     console.error("Student card checkout error:",error);
     message.textContent="Could not check out the book. Please try again.";
@@ -6486,7 +6507,7 @@ function showPage(pageId){
   );
 
   if(pageId==="library"){
-    setLibraryView("online");
+    setLibraryView(localStorage.getItem("classroomLibraryView")||"online");
   }
 
   const page=
