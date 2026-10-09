@@ -1606,7 +1606,7 @@ tr:hover td{background:#f6ebda}
 <button type="button" class="online-browse-tab" data-qr-tab="popular" onclick="setQuickReadTab('popular')">Browse Most Popular</button>
 <button type="button" class="online-browse-tab" data-qr-tab="series" onclick="setQuickReadTab('series')">Browse by Series</button>
 <button type="button" class="online-browse-tab" data-qr-tab="genre" onclick="setQuickReadTab('genre')">Browse by Genre</button>
-</div><div id="qrBrowseChoices" class="qr-browse-choices hidden"></div><div class="qr-toolbar"><span id="qrSummary">0 classroom selections</span><button id="qrUndo" class="clear-filter-button" type="button" onclick="undoQuickRead()" disabled>↶ Undo Last Quick Read</button></div>
+</div><div id="qrBrowseChoices" class="qr-browse-choices hidden"></div><div class="qr-toolbar"><span id="qrSummary">0 classroom selections</span><button id="qrUndo" class="clear-filter-button" type="button" onclick="undoQuickRead()" disabled>↶ Undo Quick Read</button></div>
  <div id="qrGrid" class="online-library-grid"></div>
  </section>
 <section id="library" class="page">
@@ -2378,7 +2378,7 @@ const LOGIN_DURATION=
 const LOGIN_TIME_KEY=
   "classroomLibraryLoginTime";
 
-let quickReads=[];let quickReadsReady=false;let lastQuickReadId=null;let quickReadBusy=false;
+let quickReads=[];let quickReadsReady=false;let quickReadUndoStack=[];let quickReadBusy=false;
 let books=[];
 let students=[];
 let classes=[];
@@ -6598,7 +6598,7 @@ function renderQuickReads(){
  else if(sort==="recent"){const dates=new Map();quickReads.forEach((r,i)=>{if(!dates.has(String(r.book_id)))dates.set(String(r.book_id),i)});list.sort((a,b)=>(dates.get(String(a.id))??Infinity)-(dates.get(String(b.id))??Infinity)||String(a.Title||"").localeCompare(String(b.Title||"")));}
  else list.sort((a,b)=>String(a.Title||"").localeCompare(String(b.Title||"")));
  const summary=document.getElementById("qrSummary");if(summary)summary.textContent=quickReads.length+" classroom selections recorded · "+list.length+" titles shown";
- const undo=document.getElementById("qrUndo");if(undo)undo.disabled=!quickReadsReady||!lastQuickReadId||quickReadBusy;
+ const undo=document.getElementById("qrUndo");if(undo)undo.disabled=!quickReadsReady||!quickReadUndoStack.length||quickReadBusy;
  grid.innerHTML=list.length?list.map(book=>{
   const id=Number(book.id),url=String(book["Cover URL"]||book.CoverURL||"").trim(),title=escapeLibraryHtml(book.Title||"Untitled"),author=escapeLibraryHtml(book.Author||""),count=counts.get(String(book.id))||0;
   const cover=url?'<img class="online-book-cover" src="'+escapeLibraryHtml(url)+'" alt="'+title+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="online-book-no-cover" style="display:none"><div class="online-book-no-cover-icon">📖</div><div>'+title+'</div></div>':'<div class="online-book-no-cover"><div class="online-book-no-cover-icon">📖</div><div>'+title+'</div></div>';
@@ -6613,19 +6613,19 @@ async function recordQuickRead(bookId){
  quickReadBusy=false;
  const notice=document.getElementById("qrNotice");
  if(error){if(notice)notice.textContent="Could not record Quick Read: "+error.message;renderQuickReads();return;}
- quickReads.unshift(data);lastQuickReadId=data.id;
+ quickReads.unshift(data);quickReadUndoStack.push(data.id);
  const book=books.find(b=>String(b.id)===String(bookId));
  if(notice)notice.textContent="✓ Recorded: "+(book?.Title||"Book")+" · Undo Last Quick Read is available.";
  renderQuickReads();if(document.getElementById("statistics")?.classList.contains("active"))renderStatistics();
 }
 async function undoQuickRead(){
- if(quickReadBusy||!lastQuickReadId||!quickReadsReady)return;
- quickReadBusy=true;renderQuickReads();const id=lastQuickReadId;
+ if(quickReadBusy||!quickReadUndoStack.length||!quickReadsReady)return;
+ quickReadBusy=true;renderQuickReads();const id=quickReadUndoStack[quickReadUndoStack.length-1];
  const {error}=await supabaseClient.from("QuickReads").delete().eq("id",id);
  quickReadBusy=false;const notice=document.getElementById("qrNotice");
  if(error){if(notice)notice.textContent="Could not undo: "+error.message;renderQuickReads();return;}
- quickReads=quickReads.filter(r=>String(r.id)!==String(id));lastQuickReadId=null;
- if(notice)notice.textContent="↶ Last Quick Read removed.";
+ quickReads=quickReads.filter(r=>String(r.id)!==String(id));quickReadUndoStack.pop();
+ if(notice)notice.textContent="↶ Last Quick Read removed."+(quickReadUndoStack.length?" "+quickReadUndoStack.length+" more can be undone.":"");
  renderQuickReads();if(document.getElementById("statistics")?.classList.contains("active"))renderStatistics();
 }
 
