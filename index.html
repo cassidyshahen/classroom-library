@@ -1609,7 +1609,7 @@ tr:hover td{background:#f6ebda}
 
     <div class="form-group">
 
-      <label for="studentSelect">Student</label><input id="checkoutStudentSearch" type="search" placeholder="Search student number or use dropdown" oninput="filterCheckoutStudents()" style="width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px">
+      <label for="studentSelect">Student</label>
 
       <select id="studentSelect" disabled>
         <option value="">Select a student...</option>
@@ -4287,7 +4287,6 @@ async function checkoutBook(){
     clearBookSelection();
     document.getElementById("bookSelect").value="";
     await loadData();
-    document.getElementById("checkoutStudentSearch").value="";
     if(keep){
       document.getElementById("classSelect").value=student.class_id;
       document.querySelectorAll(".checkout-class-tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.checkoutClass.toLowerCase()===String(getClassName(student.class_id)).toLowerCase()));
@@ -5888,17 +5887,7 @@ function navigateStudentCard(step){
 function duplicateCheckoutWarning(studentId,book){
   return !checkouts.some(c=>String(c.student_id)===String(studentId)&&String(c.book_id)===String(book.id)&&!c["Return Date"])||confirm("This student already has "+book.Title+" checked out. Check out another copy anyway?");
 }
-function filterCheckoutStudents(){
-  const select=document.getElementById("studentSelect");
-  const query=document.getElementById("checkoutStudentSearch").value.trim().toLowerCase();
-  const classId=document.getElementById("classSelect").value;
-  const selected=select.value;
-  const matches=students.filter(s=>(!classId||String(s.class_id)===String(classId))&&(!query||String(s.student_number).includes(query)||("student "+s.student_number).includes(query))).sort((a,b)=>Number(a.student_number)-Number(b.student_number));
-  select.replaceChildren(new Option("Select a student...",""),...matches.map(s=>new Option((classId?"":getClassName(s.class_id)+" — ")+"Student #"+s.student_number,String(s.id))));
-  if(matches.some(s=>String(s.id)===String(selected)))select.value=selected;
-  select.disabled=!matches.length;
-  updateCheckoutButton();
-}
+
 async function checkoutFromStudentCard(){
   const studentId=currentStudentHistoryStudentId;
   const select=document.getElementById("studentCardBookSelect");
