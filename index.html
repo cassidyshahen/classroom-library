@@ -1606,7 +1606,7 @@ tr:hover td{background:#f6ebda}
 <button type="button" class="online-browse-tab" data-qr-tab="popular" onclick="setQuickReadTab('popular')">Browse Most Popular</button>
 <button type="button" class="online-browse-tab" data-qr-tab="series" onclick="setQuickReadTab('series')">Browse by Series</button>
 <button type="button" class="online-browse-tab" data-qr-tab="genre" onclick="setQuickReadTab('genre')">Browse by Genre</button>
-</div><div id="qrBrowseChoices" class="qr-browse-choices hidden"></div><div class="qr-toolbar"><span id="qrSummary">0 classroom selections</span><button id="qrUndo" class="clear-filter-button" type="button" onclick="undoQuickRead()" disabled>↶ Undo Quick Read</button></div>
+</div><div id="qrBrowseChoices" class="qr-browse-choices hidden"></div><div class="qr-toolbar"><span id="qrSummary">0 classroom selections</span><button id="qrUndo" class="clear-filter-button" type="button" onclick="confirmUndoQuickRead()" disabled>↶ Undo Quick Read</button></div>
  <div id="qrGrid" class="online-library-grid"></div>
  </section>
 <section id="library" class="page">
@@ -6617,6 +6617,16 @@ async function recordQuickRead(bookId){
  const book=books.find(b=>String(b.id)===String(bookId));
  if(notice)notice.textContent="✓ Recorded: "+(book?.Title||"Book")+" · Undo Last Quick Read is available.";
  renderQuickReads();if(document.getElementById("statistics")?.classList.contains("active"))renderStatistics();
+}
+function confirmUndoQuickRead(){
+ if(quickReadBusy||!quickReadUndoStack.length||!quickReadsReady)return;
+ const id=quickReadUndoStack[quickReadUndoStack.length-1];
+ const entry=quickReads.find(r=>String(r.id)===String(id));
+ const book=books.find(b=>String(b.id)===String(entry?.book_id));
+ const title=book?.Title||"the most recent book";
+ if(window.confirm('Undo the last Quick Read for "'+title+'"?\\n\\nAre you sure?')){
+   undoQuickRead();
+ }
 }
 async function undoQuickRead(){
  if(quickReadBusy||!quickReadUndoStack.length||!quickReadsReady)return;
