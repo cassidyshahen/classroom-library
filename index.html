@@ -1606,7 +1606,7 @@ tr:hover td{background:#f6ebda}
 <button type="button" class="online-browse-tab" data-qr-tab="popular" onclick="setQuickReadTab('popular')">Browse Most Popular</button>
 <button type="button" class="online-browse-tab" data-qr-tab="series" onclick="setQuickReadTab('series')">Browse by Series</button>
 <button type="button" class="online-browse-tab" data-qr-tab="genre" onclick="setQuickReadTab('genre')">Browse by Genre</button>
-</div><div id="qrSeriesControls" class="qr-series-controls hidden"><div class="series-sort-controls"><label for="qrSeriesSort">Sort series:</label><select id="qrSeriesSort" onchange="renderQuickReads()"><option value="status">Complete / Incomplete</option><option value="az">A–Z</option><option value="za">Z–A</option><option value="count-desc"># of Books: High to Low</option><option value="count-asc"># of Books: Low to High</option></select></div><div class="qr-status-filters"><button type="button" class="qr-status-filter active" data-status="all" onclick="setQuickReadSeriesStatus('all')">All Sets</button><button type="button" class="qr-status-filter" data-status="complete" onclick="setQuickReadSeriesStatus('complete')">✓ Complete Set</button><button type="button" class="qr-status-filter" data-status="incomplete" onclick="setQuickReadSeriesStatus('incomplete')">• Incomplete Set</button></div></div><div id="qrBrowseChoices" class="hidden"></div><div id="qrBrowseHeader" class="series-browser-header hidden"><button type="button" class="series-back-button" onclick="backQuickReadBrowse()">← All <span id="qrBrowseKind">Series</span></button><div><h3 id="qrBrowseTitle"></h3><div id="qrBrowseCount" class="series-book-count"></div></div></div><div class="qr-toolbar"><span id="qrSummary">0 classroom selections</span><button id="qrUndo" class="clear-filter-button" type="button" onclick="confirmUndoQuickRead()" disabled>↶ Undo Quick Read</button></div>
+</div><div id="qrSeriesControls" class="qr-series-controls hidden"><div class="series-sort-controls"><label for="qrSeriesSort">Sort series:</label><select id="qrSeriesSort" onchange="renderQuickReads()"><option value="status">Complete / Incomplete</option><option value="az">A–Z</option><option value="za">Z–A</option><option value="count-desc"># of Books: High to Low</option><option value="count-asc"># of Books: Low to High</option></select></div></div><div id="qrBrowseChoices" class="hidden"></div><div id="qrBrowseHeader" class="series-browser-header hidden"><button type="button" class="series-back-button" onclick="backQuickReadBrowse()">← All <span id="qrBrowseKind">Series</span></button><div><h3 id="qrBrowseTitle"></h3><div id="qrBrowseCount" class="series-book-count"></div></div></div><div class="qr-toolbar"><span id="qrSummary">0 classroom selections</span><button id="qrUndo" class="clear-filter-button" type="button" onclick="confirmUndoQuickRead()" disabled>↶ Undo Quick Read</button></div>
  <div id="qrGrid" class="online-library-grid"></div>
  </section>
 <section id="library" class="page">
@@ -6562,13 +6562,12 @@ function clearQuickReadFilters(){
  for(const id of ["qrSearch","qrAuthor","qrGenre","qrSeries","qrCategory","qrType"])document.getElementById(id).value="";
  document.getElementById("qrSort").value="title";renderQuickReads();
 }
-let quickReadTab="all";let quickReadSelection="";let quickReadSeriesStatus="all";
+let quickReadTab="all";let quickReadSelection="";
 function setQuickReadTab(tab){
  quickReadTab=tab;quickReadSelection="";
  document.querySelectorAll("[data-qr-tab]").forEach(b=>b.classList.toggle("active",b.dataset.qrTab===tab));
  renderQuickReads();
 }
-function setQuickReadSeriesStatus(status){quickReadSeriesStatus=status;renderQuickReads();}
 function backQuickReadBrowse(){quickReadSelection="";renderQuickReads();}
 function renderQuickReads(){
  const grid=document.getElementById("qrGrid");if(!grid)return;
@@ -6588,7 +6587,6 @@ function renderQuickReads(){
 
  const seriesControls=document.getElementById("qrSeriesControls");
  if(seriesControls)seriesControls.classList.toggle("hidden",quickReadTab!=="series"||!!quickReadSelection);
- document.querySelectorAll(".qr-status-filter").forEach(btn=>btn.classList.toggle("active",btn.dataset.status===quickReadSeriesStatus));
  const choices=document.getElementById("qrBrowseChoices"),header=document.getElementById("qrBrowseHeader");
  const browseKind=quickReadTab==="series"?"Series":quickReadTab==="genre"?"Genres":null;
  if(choices&&header){
@@ -6605,7 +6603,6 @@ function renderQuickReads(){
     const isComplete=name=>!!seriesCovers.find(c=>String(c.Name||"").trim()===name)?.Complete;
     const sortValue=document.getElementById("qrSeriesSort")?.value||"status";
     const names=[...new Set(books.map(b=>String(b.Series||"").trim()).filter(Boolean))]
-      .filter(name=>quickReadSeriesStatus==="all"||(quickReadSeriesStatus==="complete"?isComplete(name):!isComplete(name)))
       .sort((a,b)=>{
        if(sortValue==="status")return Number(isComplete(b))-Number(isComplete(a))||a.localeCompare(b);
        if(sortValue==="za")return b.localeCompare(a);
