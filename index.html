@@ -1481,7 +1481,7 @@ tr:hover td{background:#f6ebda}
   <button class="nav-button" data-page="booklist">Book List</button>
   <button class="nav-button" data-page="students">Students</button>
   <button class="nav-button" data-page="checkedout">Checked Out</button>
-  <button class="nav-button" data-page="history">History</button><button class="nav-button" data-page="statistics">Statistics</button><button class="nav-button" data-page="reservations">Reservations</button><button class="nav-button" data-page="seriesTracker">Series Tracker</button><button class="nav-button" data-page="studentBrowse">Student Browse</button>
+  <button class="nav-button" data-page="history">History</button><button class="nav-button" data-page="statistics">Statistics</button>
 </nav>
 
 <main>
@@ -1940,7 +1940,7 @@ tr:hover td{background:#f6ebda}
 </section>
 
 
-<section id="reservations" class="page"><h2>Reservations</h2><div id="v2Reservations"></div></section><section id="seriesTracker" class="page"><h2>Series Completion</h2><div id="v2Series"></div></section><section id="studentBrowse" class="page"><h2>Student Browsing Mode</h2><p>Read-only library catalog</p><a href="student.html" target="_blank" rel="noopener">Open separate student catalog ↗</a><input id="v2Search" placeholder="Search books" oninput="v2Browse()"><div id="v2Browse"></div></section><div id="v2DetailsModal" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')"><div class="modal book-details-modal"><button class="book-details-close" onclick="document.getElementById('v2DetailsModal').classList.add('hidden')">×</button><div id="v2Details"></div></div></div><section id="statistics" class="page"><h2>Library Statistics</h2><div class="online-library-filters"><label>Class <select id="statsClass" onchange="renderStatistics()"><option value="all">All Classes</option><option value="7S">7S</option><option value="7K">7K</option></select></label><label>From <input type="date" id="statsFrom" onchange="renderStatistics()"></label><label>To <input type="date" id="statsTo" onchange="renderStatistics()"></label></div><div id="statisticsContent"></div></section><section id="history" class="page">
+<div id="v2DetailsModal" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')"><div class="modal book-details-modal"><button class="book-details-close" onclick="document.getElementById('v2DetailsModal').classList.add('hidden')">×</button><div id="v2Details"></div></div></div><section id="statistics" class="page"><h2>Library Statistics</h2><div class="online-library-filters"><label>Class <select id="statsClass" onchange="renderStatistics()"><option value="all">All Classes</option><option value="7S">7S</option><option value="7K">7K</option></select></label><label>From <input type="date" id="statsFrom" onchange="renderStatistics()"></label><label>To <input type="date" id="statsTo" onchange="renderStatistics()"></label></div><div id="statisticsContent"></div></section><section id="history" class="page">
 
   <h2>Checkout History</h2>
 
@@ -3756,7 +3756,7 @@ async function loadData(){
     renderStudents();
     renderCheckedOut();
     renderHistory();
-    renderStatistics();v2Render();
+    renderStatistics();
     updateSeriesOptions();
 
   }catch(error){
@@ -6544,7 +6544,6 @@ function showPage(pageId){
   if(pageId==="history")
     renderHistory();
   if(pageId==="statistics")renderStatistics();
-  if(["reservations","seriesTracker","studentBrowse"].includes(pageId))v2Render();
 }
 
 
