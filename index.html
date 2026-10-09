@@ -1498,6 +1498,16 @@ tr:hover td{background:#f6ebda}
  #quickreads #qrBrowseChoices.series-options-grid{gap:8px}
 }
 </style>
+<style>
+#quickreads .qr-search-wrap{position:relative;z-index:20}
+#quickreads .qr-search-suggestions{top:calc(100% + 4px);max-height:min(340px,48vh);padding:4px;overflow-y:auto;z-index:100}
+#quickreads .qr-search-option{display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;padding:12px 13px;min-height:52px;text-align:left;border:0;border-bottom:1px solid #eef2f7;background:#fff;color:#172033;cursor:pointer;font:inherit}
+#quickreads .qr-search-option:hover,#quickreads .qr-search-option:focus{background:#eff6ff;outline:none}
+#quickreads .qr-search-option-title{font-size:14px;font-weight:700}
+#quickreads .qr-search-option small{font-size:12px;color:#64748b}
+#quickreads .qr-search-suggestions.hidden{display:none}
+@media(max-width:700px){#quickreads .qr-search-suggestions{max-height:45vh}#quickreads .qr-search-option{min-height:56px;padding:13px}}
+</style>
 </head>
 
 <body>
@@ -1641,7 +1651,7 @@ tr:hover td{background:#f6ebda}
  <div class="library-header"><h2>Quick Reads</h2><div class="library-actions"><span class="qr-intro">Record classroom selections · No checkout required</span></div></div>
  <div id="qrSetup" class="qr-setup hidden">Quick Reads needs its database table first. Run <strong>migrations/quick_reads.sql</strong> in your Supabase SQL Editor, then refresh this page.</div>
  <div id="qrNotice" class="qr-notice" role="status" aria-live="polite"></div>
- <div class="search-box"><input id="qrSearch" type="search" placeholder="Search by title, author, series, or genre..." oninput="renderQuickReads()"></div>
+ <div class="search-box qr-search-wrap"><input id="qrSearch" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="qrSearchSuggestions" placeholder="Search by title, author, series, or genre..." oninput="renderQuickReads();renderQuickReadSuggestions()" onfocus="renderQuickReadSuggestions()" onkeydown="quickReadSearchKeydown(event)"><div id="qrSearchSuggestions" class="book-dropdown-list qr-search-suggestions hidden" role="listbox"></div></div>
  <button type="button" id="qrMobileFiltersToggle" class="qr-mobile-filter-toggle" aria-expanded="false" aria-controls="qrLibraryFilters" onclick="toggleQuickReadMobileFilters()">⚙ Filters &amp; Sort <span id="qrFilterChevron">▾</span></button>
  <div class="online-library-filters" id="qrLibraryFilters">
  <div class="online-filter-group"><label>Author <select id="qrAuthor" onchange="renderQuickReads()"><option value="">All Authors</option></select></label></div>
@@ -6619,6 +6629,43 @@ function setQuickReadTab(tab){
  document.querySelectorAll("[data-qr-tab]").forEach(b=>b.classList.toggle("active",b.dataset.qrTab===tab));
  renderQuickReads();
 }
+function closeQuickReadSuggestions(){
+ const list=document.getElementById("qrSearchSuggestions"),input=document.getElementById("qrSearch");
+ if(list)list.classList.add("hidden");
+ if(input)input.setAttribute("aria-expanded","false");
+}
+function renderQuickReadSuggestions(){
+ const input=document.getElementById("qrSearch"),list=document.getElementById("qrSearchSuggestions");
+ if(!input||!list)return;
+ const term=input.value.trim().toLowerCase();
+ if(!term){closeQuickReadSuggestions();return;}
+ const matches=books.filter(b=>String(b.Title||"").toLowerCase().includes(term)).sort((a,b)=>{
+  const at=String(a.Title||"").toLowerCase(),bt=String(b.Title||"").toLowerCase();
+  return Number(!at.startsWith(term))-Number(!bt.startsWith(term))||at.localeCompare(bt);
+ }).slice(0,8);
+ list.innerHTML=matches.length?matches.map(b=>'<button type="button" role="option" class="qr-search-option" data-book-id="'+b.id+'"><span class="qr-search-option-title">'+escapeLibraryHtml(String(b.Title||""))+'</span><small>'+escapeLibraryHtml(String(b.Author||""))+'</small></button>').join(""):'<div class="book-dropdown-empty">No matching book titles</div>';
+ list.querySelectorAll("button[data-book-id]").forEach(btn=>btn.addEventListener("click",()=>{
+  const book=books.find(b=>String(b.id)===btn.dataset.bookId);
+  if(!book)return;
+  input.value=String(book.Title||"");
+  closeQuickReadSuggestions();
+  setQuickReadTab("all");
+  renderQuickReads();
+  input.blur();
+ }));
+ list.classList.remove("hidden");input.setAttribute("aria-expanded","true");
+}
+function quickReadSearchKeydown(event){
+ if(event.key==="Escape"){closeQuickReadSuggestions();return;}
+ if(event.key==="Enter"){
+  const first=document.querySelector("#qrSearchSuggestions:not(.hidden) button[data-book-id]");
+  if(first){event.preventDefault();first.click();}
+ }
+}
+document.addEventListener("pointerdown",event=>{
+ const wrap=document.querySelector(".qr-search-wrap");
+ if(wrap&&!wrap.contains(event.target))closeQuickReadSuggestions();
+});
 function toggleQuickReadMobileFilters(){
  const panel=document.getElementById("qrLibraryFilters"),button=document.getElementById("qrMobileFiltersToggle"),chevron=document.getElementById("qrFilterChevron");
  if(!panel||!button)return;
