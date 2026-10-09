@@ -6487,36 +6487,6 @@ filtered.forEach(c=>{const id=String(c.book_id);counts.set(id,(counts.get(id)||0
 const top=[...counts].sort((a,b)=>b[1]-a[1]).slice(0,10);const never=books.filter(b=>!checkouts.some(c=>String(c.book_id)===String(b.id)));const active=checkouts.filter(c=>!c["Return Date"]&&(selected==="all"||(()=>{const st=students.find(x=>String(x.id)===String(c.student_id));return st&&getClassName(st.class_id)===selected;})()));
 const list=items=>items.length?items.map(([label,count])=>'<div class="stats-row"><span>'+escapeLibraryHtml(label)+'</span><strong>'+count+'</strong></div>').join(""):'<p>No activity yet.</p>';
 el.innerHTML='<div class="stats-metrics"><div><strong>'+books.length+'</strong><span>Titles</span></div><div><strong>'+books.reduce((n,b)=>n+Number(b.Copies||0),0)+'</strong><span>Copies</span></div><div><strong>'+filtered.length+'</strong><span>Checkouts in Period</span></div><div><strong>'+active.length+'</strong><span>Currently Out</span></div></div><div class="stats-panels"><section><h3>Most Borrowed</h3>'+list(top.map(([id,n])=>[books.find(b=>String(b.id)===id)?.Title||"Unknown",n]))+'</section><section><h3>Genre Activity</h3>'+list([...genres].sort((a,b)=>b[1]-a[1]))+'</section><section><h3>Class Activity</h3>'+list([...classesCount].sort())+'</section><section><h3>Monthly Trends</h3>'+list([...months].sort())+'</section><section><h3>Never Borrowed ('+never.length+')</h3><div class="stats-never">'+never.map(b=>'<p>'+escapeLibraryHtml(b.Title)+'</p>').join("")+'</div></section></div>';
-renderAdditionalStatistics(filtered,selected,from,to);
-}
-
-function renderAdditionalStatistics(filtered,selected,from,to){
- const root=document.getElementById("statisticsContent");if(!root)return;
- const bookMap=new Map(books.map(b=>[String(b.id),b])),studentMap=new Map(students.map(st=>[String(st.id),st]));
- const className=c=>{const st=studentMap.get(String(c.student_id));return st?getClassName(st.class_id):"";};
- const rank=fn=>{const counts=new Map();filtered.forEach(c=>{[...new Set(fn(bookMap.get(String(c.book_id))))].forEach(label=>{if(label)counts.set(label,(counts.get(label)||0)+1);});});return [...counts].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));};
- const genres=rank(b=>b?getBookGenres(b).map(g=>String(g).trim()).filter(Boolean):[]);
- const series=rank(b=>b&&String(b.Series||"").trim()?[String(b.Series).trim()]:[]);
- const authors=rank(b=>b&&String(b.Author||"").trim()?[String(b.Author).trim()]:[]);
- const rankings=items=>{const max=Math.max(1,...items.map(i=>i[1]));return items.length?items.slice(0,8).map(([label,n],i)=>'<div class="stats-rank-item"><div class="stats-rank-label"><span><small>'+(i+1)+'.</small> '+escapeLibraryHtml(label)+'</span><strong>'+n+'</strong></div><div class="stats-rank-track"><div style="width:"+(n/max*100)+'%"></div></div></div>').join(""):'<p class="stats-empty">No matching checkouts yet.</p>';};
- const classRows=["7S","7K"].map(name=>{const rows=filtered.filter(c=>className(c)===name);const count=students.filter(st=>getClassName(st.class_id)===name).length;return {name,loans:rows.length,borrowers:new Set(rows.map(c=>String(c.student_id))).size,count};});
- const classMax=Math.max(1,...classRows.map(r=>r.loans));
- const comparison=classRows.map(r=>'<div class="stats-class-box"><div class="stats-rank-label"><strong>'+r.name+'</strong><strong>'+r.loans+' checkouts</strong></div><div class="stats-rank-track"><div style="width:"+(r.loans/classMax*100)+'%"></div></div><p>'+r.borrowers+' of '+r.count+' students borrowed · '+(r.count?(r.loans/r.count).toFixed(1):"0")+' checkouts/student</p></div>').join("");
- const durations=filtered.map(c=>{const a=String(c["Check Out Date"]||"").slice(0,10),b=String(c["Return Date"]||"").slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(a)||!/^\d{4}-\d{2}-\d{2}$/.test(b))return null;return Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/86400000);}).filter(v=>v!==null&&Number.isFinite(v)&&v>=0);
- const average=durations.length?(durations.reduce((a,b)=>a+b,0)/durations.length).toFixed(1):null;
- const monthCounts=new Map();filtered.forEach(c=>{const key=String(c["Check Out Date"]||"").slice(0,7);if(/^\d{4}-\d{2}$/.test(key))monthCounts.set(key,(monthCounts.get(key)||0)+1);});
- const found=[...monthCounts.keys()].sort();const begin=from?from.slice(0,7):(found[0]||new Date().toISOString().slice(0,7)),finish=to?to.slice(0,7):(found[found.length-1]||new Date().toISOString().slice(0,7));
- const months=[];let [year,month]=begin.split("-").map(Number);
- for(let i=0;i<60;i++){const key=year+"-"+String(month).padStart(2,"0");if(key>finish)break;months.push(key);month++;if(month===13){month=1;year++;}}
- if(!months.length)months.push(new Date().toISOString().slice(0,7));
- const values=months.map(m=>monthCounts.get(m)||0),max=Math.max(1,...values),w=740,h=230,left=42,top=18,plotW=675,plotH=160;
- const px=i=>left+(months.length===1?plotW/2:i*plotW/(months.length-1)),py=n=>top+plotH-(n/max)*plotH;
- const grid=[0,1,2,3,4].map(i=>{const y=py(max*i/4);return '<line x1="'+left+'" x2="'+(left+plotW)+'" y1="'+y+'" y2="'+y+'" stroke="#e2e8f0"/><text x="'+(left-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="#64748b">'+Math.round(max*i/4)+'</text>';}).join("");
- const step=Math.max(1,Math.ceil(months.length/8));
- const labels=months.map((m,i)=>(i%step===0||i===months.length-1)?'<text x="'+px(i)+'" y="213" text-anchor="middle" font-size="11" fill="#64748b">'+new Date(m+"-01T12:00:00").toLocaleDateString("en-US",{month:"short",year:"2-digit"})+'</text>':"").join("");
- const graph='<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto" role="img" aria-label="Monthly checkouts: '+escapeLibraryHtml(months.map((m,i)=>m+': '+values[i]).join(", "))+'">'+grid+'<polyline fill="none" stroke="#2f7663" stroke-width="3" stroke-linejoin="round" points="'+values.map((n,i)=>px(i)+","+py(n)).join(" ")+'"/>'+values.map((n,i)=>'<circle cx="'+px(i)+'" cy="'+py(n)+'" r="4" fill="#2f7663"><title>'+months[i]+': '+n+' checkouts</title></circle>').join("")+labels+'</svg>';
- const panel=(title,description,body)=>'<section class="stats-insight-card"><h3>'+title+'</h3><p class="stats-insight-subtitle">'+description+'</p>'+body+'</section>';
- root.insertAdjacentHTML("beforeend",'<div class="stats-insights-heading"><h2>Reading Insights</h2><p>Using recorded checkout data and your selected class/date filters.</p></div><div class="stats-insights-grid">'+panel("Monthly Checkout Graph","Checkouts over time",graph)+panel("7S vs. 7K Comparison","Borrowing activity by class",comparison)+panel("Most Popular Genres","Books with multiple genres count toward each genre",rankings(genres))+panel("Most Popular Series","Total checkouts across series titles",rankings(series))+panel("Most Popular Authors","Checkouts by author",rankings(authors))+panel("Average Checkout Duration","Time between checkout and return",average===null?'<p class="stats-empty">No completed checkouts in this selection.</p>':'<div class="stats-duration">'+average+' <small>days</small></div><p class="stats-empty">Based on '+durations.length+' returned checkouts.</p>')+'</div>');
 }
 function showPage(pageId){
 
