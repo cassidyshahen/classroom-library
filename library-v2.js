@@ -30,5 +30,5 @@ const rows=checkouts.filter(c=>{const st=getStudent(c.student_id),d=String(c["Ch
 const authors=new Map(),classesCount=new Map(),durations=[];let overdue=0;
 rows.forEach(c=>{const b=books.find(x=>String(x.id)===String(c.book_id));if(b?.Author)authors.set(b.Author,(authors.get(b.Author)||0)+1);const st=getStudent(c.student_id),name=st?getClassName(st.class_id):"Unknown";classesCount.set(name,(classesCount.get(name)||0)+1);if(c["Return Date"]){const d=(new Date(c["Return Date"])-new Date(c["Check Out Date"]))/86400000;if(Number.isFinite(d)&&d>=0)durations.push(d)}else if(checkoutDueDate(c)<getTodayEastern())overdue++});
 const avg=durations.length?(durations.reduce((a,b)=>a+b,0)/durations.length).toFixed(1):"—";
-el.insertAdjacentHTML("beforeend",'<div class="v2-stats"><div class="v2-panel"><h3>Popular Authors</h3>'+[...authors].sort((a,b)=>b[1]-a[1]).slice(0,10).map(([a,n])=>'<p>'+escapeLibraryHtml(a)+': '+n+'</p>').join("")+'</div></div>');
+
 };
