@@ -6639,11 +6639,12 @@ function renderQuickReadSuggestions(){
  if(!input||!list)return;
  const term=input.value.trim().toLowerCase();
  if(!term){closeQuickReadSuggestions();return;}
- const matches=books.filter(b=>String(b.Title||"").toLowerCase().includes(term)).sort((a,b)=>{
+ const matches=books.filter(b=>[b.Title,b.Author,b.Series,b.Category,...getBookGenres(b)].some(v=>String(v||"").toLowerCase().includes(term))).sort((a,b)=>{
   const at=String(a.Title||"").toLowerCase(),bt=String(b.Title||"").toLowerCase();
-  return Number(!at.startsWith(term))-Number(!bt.startsWith(term))||at.localeCompare(bt);
- }).slice(0,8);
- list.innerHTML=matches.length?matches.map(b=>'<button type="button" role="option" class="qr-search-option" data-book-id="'+b.id+'"><span class="qr-search-option-title">'+escapeLibraryHtml(String(b.Title||""))+'</span><small>'+escapeLibraryHtml(String(b.Author||""))+'</small></button>').join(""):'<div class="book-dropdown-empty">No matching book titles</div>';
+  const rank=book=>{const title=String(book.Title||"").toLowerCase(),series=String(book.Series||"").toLowerCase();return title.startsWith(term)?0:title.includes(term)?1:series.startsWith(term)?2:series.includes(term)?3:4;};
+  return rank(a)-rank(b)||at.localeCompare(bt);
+ }).slice(0,12);
+ list.innerHTML=matches.length?matches.map(b=>'<button type="button" role="option" class="qr-search-option" data-book-id="'+b.id+'"><span class="qr-search-option-title">'+escapeLibraryHtml(String(b.Title||""))+'</span><small>'+escapeLibraryHtml([b.Author,b.Series].filter(Boolean).join(' · '))+'</small></button>').join(""):'<div class="book-dropdown-empty">No matching book titles</div>';
  list.querySelectorAll("button[data-book-id]").forEach(btn=>btn.addEventListener("click",()=>{
   const book=books.find(b=>String(b.id)===btn.dataset.bookId);
   if(!book)return;
