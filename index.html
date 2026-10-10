@@ -1513,6 +1513,13 @@ tr:hover td{background:#f6ebda}
 #studentHistory .student-book-link:hover{color:#1e40af}
 #studentHistory .student-book-link:focus-visible{outline:2px solid #2563eb;outline-offset:3px;border-radius:3px}
 </style>
+<style>
+.students-quickreads-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:11px 16px;background:#2563eb;border:1px solid #1d4ed8;border-radius:10px;color:#fff;font:inherit;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.15)}
+.students-quickreads-button:hover{background:#1d4ed8}
+.students-quickreads-button:focus-visible{outline:3px solid #93c5fd;outline-offset:3px}
+.student-card-quick-link{display:flex;justify-content:flex-end;margin:-42px 0 14px}
+@media(max-width:650px){.students-quick-link{width:100%}.students-quickreads-button{width:100%}.student-card-quick-link{margin:0 0 14px}.students-page-header{flex-wrap:wrap}}
+</style>
 </head>
 
 <body>
@@ -1866,7 +1873,7 @@ tr:hover td{background:#f6ebda}
 
   <div class="students-page-header">
     <div><div class="students-eyebrow">CLASSROOM ROSTER</div><h2>Students</h2><p>Choose a student to open their Library Card.</p></div>
-    <div class="students-header-icon" aria-hidden="true">🎓</div>
+    <div class="students-quick-link"><button type="button" class="students-quickreads-button" onclick="showPage('quickreads')">📖 Go to Quick Reads →</button></div><div class="students-header-icon" aria-hidden="true">🎓</div>
   </div>
 
   <div class="students-toolbar">
@@ -1939,6 +1946,8 @@ tr:hover td{background:#f6ebda}
   >
     ← Back to Students
   </button>
+
+  <div class="student-card-quick-link"><button type="button" class="students-quickreads-button" onclick="showPage('quickreads')">📖 Go to Quick Reads →</button></div>
 
   <div class="student-library-card">
     <div class="student-library-card-top">
