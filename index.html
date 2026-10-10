@@ -1508,6 +1508,11 @@ tr:hover td{background:#f6ebda}
 #quickreads .qr-search-suggestions.hidden{display:none}
 @media(max-width:700px){#quickreads .qr-search-suggestions{max-height:45vh}#quickreads .qr-search-option{min-height:56px;padding:13px}}
 </style>
+<style>
+#studentHistory .student-book-link{display:inline;text-align:left;border:0;background:none;padding:5px 0;color:#1d4ed8;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+#studentHistory .student-book-link:hover{color:#1e40af}
+#studentHistory .student-book-link:focus-visible{outline:2px solid #2563eb;outline-offset:3px;border-radius:3px}
+</style>
 </head>
 
 <body>
@@ -5800,6 +5805,19 @@ function renderStudents(){
    STUDENT HISTORY
 ============================================================ */
 
+function openStudentBookInLibrary(bookId){
+ const book=books.find(b=>String(b.id)===String(bookId));
+ if(!book)return;
+ showPage("library");
+ setLibraryView("online");
+ setOnlineBrowseMode("books");
+ const search=document.getElementById("librarySearch");
+ if(search){search.value=String(book.Title||"");}
+ renderLibrary();
+ openBookDetails(book.id);
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
 function showStudentHistory(studentId){
 
   const student=getStudent(studentId);
@@ -5845,7 +5863,7 @@ function showStudentHistory(studentId){
       const book=books.find(b=>String(b.id)===String(checkout.book_id));
       return `
         <tr>
-          <td>${book?book.Title:"Unknown Book"}</td>
+          <td>${book?`<button type="button" class="student-book-link" onclick="openStudentBookInLibrary(${Number(book.id)})">${escapeLibraryHtml(book.Title)}</button>`:"Unknown Book"}</td>
           <td>${formatDate(checkout["Check Out Date"])}</td>
           <td>${checkoutDueLabel(checkout)}</td>
           <td>
@@ -5865,7 +5883,7 @@ function showStudentHistory(studentId){
       const book=books.find(b=>String(b.id)===String(checkout.book_id));
       return `
         <tr>
-          <td>${book?book.Title:"Unknown Book"}</td>
+          <td>${book?`<button type="button" class="student-book-link" onclick="openStudentBookInLibrary(${Number(book.id)})">${escapeLibraryHtml(book.Title)}</button>`:"Unknown Book"}</td>
           <td>${formatDate(checkout["Check Out Date"])}</td>
           <td>${formatDate(checkout["Return Date"])}</td>
           <td><div class="history-actions"><button class="edit-button" onclick="openEditCheckout(${checkout.id})">Edit</button></div></td>
