@@ -4493,21 +4493,35 @@ const candidates=books.filter(b=>String(b.id)!==String(id)).map(b=>{
 }).sort((a,b)=>b.score-a.score||String(a.book.Title||"").localeCompare(String(b.book.Title||"")));
 const matches=[];
 const seriesCounts=new Map();
+const sourceNumber=Number(book["Series #"]);
+const hasSourceNumber=book["Series #"]!==null&&book["Series #"]!==undefined&&String(book["Series #"]).trim()!==""&&Number.isFinite(sourceNumber);
+const sameSeriesCandidates=candidates.filter(x=>x.sameSeries).sort((a,b)=>{
+ const an=Number(a.book["Series #"]),bn=Number(b.book["Series #"]);
+ const av=a.book["Series #"]!==null&&a.book["Series #"]!==undefined&&String(a.book["Series #"]).trim()!==""&&Number.isFinite(an);
+ const bv=b.book["Series #"]!==null&&b.book["Series #"]!==undefined&&String(b.book["Series #"]).trim()!==""&&Number.isFinite(bn);
+ if(hasSourceNumber){
+  if(av!==bv)return av?-1:1;
+  if(av&&bv)return Math.abs(an-sourceNumber)-Math.abs(bn-sourceNumber)||an-bn;
+ }
+ if(av!==bv)return av?-1:1;
+ if(av&&bv)return an-bn;
+ return String(a.book.Title||"").localeCompare(String(b.book.Title||""));
+});
+// Reserve up to two recommendations for neighboring books in the same series.
+for(const candidate of sameSeriesCandidates.slice(0,2))matches.push(candidate);
 for(const candidate of candidates){
  if(matches.length>=5)break;
- if(candidate.sameSeries)continue;
+ if(candidate.sameSeries||candidate.score<=0)continue;
  const series=String(candidate.book.Series||"").trim().toLowerCase();
  if(series&&(seriesCounts.get(series)||0)>=2)continue;
- if(candidate.score<=0)continue;
  matches.push(candidate);
  if(series)seriesCounts.set(series,(seriesCounts.get(series)||0)+1);
 }
 if(matches.length<5){
  for(const candidate of candidates){
   if(matches.length>=5)break;
-  if(matches.some(x=>String(x.book.id)===String(candidate.book.id)))continue;
+  if(candidate.sameSeries||matches.some(x=>String(x.book.id)===String(candidate.book.id)))continue;
   const series=String(candidate.book.Series||"").trim().toLowerCase();
-  if(candidate.sameSeries&&matches.some(x=>x.sameSeries))continue;
   if(series&&(seriesCounts.get(series)||0)>=2)continue;
   matches.push(candidate);
   if(series)seriesCounts.set(series,(seriesCounts.get(series)||0)+1);
