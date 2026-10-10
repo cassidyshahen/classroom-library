@@ -4481,7 +4481,38 @@ const book=books.find(b=>String(b.id)===String(id));if(!book)return;
 const modal=document.getElementById("bookDetailsModal");
 if(!fromHistory){if(modal.classList.contains("hidden"))bookDetailsHistory=[];else{const previous=modal.dataset.currentBookId;if(previous&&previous!==String(id))bookDetailsHistory.push(previous);}}
 modal.dataset.currentBookId=String(id);
-const matches=books.filter(b=>String(b.id)!==String(id)).map(b=>({book:b,score:getBookGenres(book).filter(g=>getBookGenres(b).includes(g)).length*5+(book.Series&&book.Series===b.Series?9:0)+(book.Author&&book.Author===b.Author?5:0)+(book["Reading Level"]&&book["Reading Level"]===b["Reading Level"]?4:0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+const sourceGenres=getBookGenres(book);
+const sourceSeries=String(book.Series||"").trim().toLowerCase();
+const candidates=books.filter(b=>String(b.id)!==String(id)).map(b=>{
+ const genres=getBookGenres(b);
+ const overlap=sourceGenres.filter(g=>genres.includes(g)).length;
+ const sameSeries=Boolean(sourceSeries&&String(b.Series||"").trim().toLowerCase()===sourceSeries);
+ const sameAuthor=Boolean(book.Author&&book.Author===b.Author);
+ const sameLevel=Boolean(book["Reading Level"]&&book["Reading Level"]===b["Reading Level"]);
+ return {book:b,sameSeries,score:overlap*10+(sameAuthor?3:0)+(sameLevel?2:0)+(sameSeries?1:0)};
+}).sort((a,b)=>b.score-a.score||String(a.book.Title||"").localeCompare(String(b.book.Title||"")));
+const matches=[];
+const seriesCounts=new Map();
+for(const candidate of candidates){
+ if(matches.length>=5)break;
+ if(candidate.sameSeries)continue;
+ const series=String(candidate.book.Series||"").trim().toLowerCase();
+ if(series&&(seriesCounts.get(series)||0)>=2)continue;
+ if(candidate.score<=0)continue;
+ matches.push(candidate);
+ if(series)seriesCounts.set(series,(seriesCounts.get(series)||0)+1);
+}
+if(matches.length<5){
+ for(const candidate of candidates){
+  if(matches.length>=5)break;
+  if(matches.some(x=>String(x.book.id)===String(candidate.book.id)))continue;
+  const series=String(candidate.book.Series||"").trim().toLowerCase();
+  if(candidate.sameSeries&&matches.some(x=>x.sameSeries))continue;
+  if(series&&(seriesCounts.get(series)||0)>=2)continue;
+  matches.push(candidate);
+  if(series)seriesCounts.set(series,(seriesCounts.get(series)||0)+1);
+ }
+}
 const recs=matches.length?'<div class="details-recs-heading"><h3>You Might Also Like</h3></div><div id="detailsRecommendationRail" class="details-recs-rail">'+matches.map(x=>'<button type="button" class="details-rec" onclick="openBookDetails('+Number(x.book.id)+')">'+detailsCover(x.book)+'<strong>'+escapeLibraryHtml(x.book.Title)+'</strong><span>'+escapeLibraryHtml(x.book.Author||"")+'</span></button>').join("")+'</div>':'<h3>You Might Also Like</h3><p>No similar books found.</p>';
 const seriesName=String(book.Series||"").trim();
 const seriesNumber=book["Series #"];
