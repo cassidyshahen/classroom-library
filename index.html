@@ -1520,6 +1520,26 @@ tr:hover td{background:#f6ebda}
 .student-card-quick-link{display:flex;justify-content:flex-end;margin:-42px 0 14px}
 @media(max-width:650px){.students-quick-link{width:100%}.students-quickreads-button{width:100%}.student-card-quick-link{margin:0 0 14px}.students-page-header{flex-wrap:wrap}}
 </style>
+<style>
+.qr-activity{margin:12px 0 18px}
+.qr-period-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:17px}
+.qr-period-stats>div{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:13px;text-align:center;display:flex;flex-direction:column;gap:5px}
+.qr-period-stats strong{font-size:26px;color:#1d4ed8}.qr-period-stats span{font-size:12px;color:#64748b;font-weight:700}
+.qr-recent-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}
+.qr-recent-heading h3{margin:0;font-size:16px}.qr-recent-heading span{font-size:12px;color:#64748b}
+.qr-recent-list{display:flex;gap:9px;overflow-x:auto;padding:2px 1px 9px;scroll-snap-type:x proximity}
+.qr-recent-book{flex:0 0 175px;display:flex;flex-direction:column;gap:6px;text-align:left;background:#fff;border:1px solid #dbe3ef;border-radius:10px;padding:12px;cursor:pointer;scroll-snap-align:start}
+.qr-recent-book strong{font-size:13px;line-height:1.3}.qr-recent-book small{color:#64748b}.qr-recent-book span{color:#1d4ed8;font-size:12px;font-weight:800;margin-top:auto}
+.qr-recent-book:hover{border-color:#2563eb;background:#f8fbff}.qr-recent-book:disabled{opacity:.6;cursor:wait}
+.qr-recent-empty{font-size:13px;color:#64748b}
+#quickreads .qr-suggestion-row{display:flex;align-items:stretch;border-bottom:1px solid #eef2f7}
+#quickreads .qr-suggestion-row .qr-search-option{flex:1;min-width:0;border-bottom:0}
+#quickreads .qr-suggestion-add{flex:0 0 auto;align-self:center;margin:5px;padding:9px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:7px;color:#1d4ed8;font-size:12px;font-weight:800;cursor:pointer}
+#quickreads .qr-suggestion-add:disabled{opacity:.5;cursor:not-allowed}
+.qr-popularity-badge{display:inline-block;align-self:flex-start;margin:6px 0;padding:4px 7px;border-radius:6px;background:#fef3c7;color:#92400e;font-size:11px;font-weight:800}
+.qr-week-badge{background:#fee2e2;color:#991b1b}
+@media(max-width:600px){.qr-recent-heading{align-items:flex-start;flex-direction:column}.qr-period-stats strong{font-size:22px}.qr-recent-book{flex-basis:155px}#quickreads .qr-suggestion-add{padding:9px 6px;font-size:11px}}
+</style>
 </head>
 
 <body>
@@ -1664,7 +1684,12 @@ tr:hover td{background:#f6ebda}
  <div class="library-header"><h2>Quick Reads</h2><div class="library-actions"><span class="qr-intro">Record classroom selections · No checkout required</span></div></div>
  <div id="qrSetup" class="qr-setup hidden">Quick Reads needs its database table first. Run <strong>migrations/quick_reads.sql</strong> in your Supabase SQL Editor, then refresh this page.</div>
  <div id="qrNotice" class="qr-notice" role="status" aria-live="polite"></div>
- <div class="search-box qr-search-wrap"><input id="qrSearch" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="qrSearchSuggestions" placeholder="Search by title, author, series, or genre..." oninput="renderQuickReads();renderQuickReadSuggestions()" onfocus="renderQuickReadSuggestions()" onkeydown="quickReadSearchKeydown(event)"><div id="qrSearchSuggestions" class="book-dropdown-list qr-search-suggestions hidden" role="listbox"></div></div>
+ <div class="qr-activity">
+ <div class="qr-period-stats"><div><strong id="qrTodayCount">0</strong><span>Today</span></div><div><strong id="qrWeekCount">0</strong><span>This Week</span></div><div><strong id="qrMonthCount">0</strong><span>This Month</span></div></div>
+ <div class="qr-recent-heading"><h3>Recently Selected</h3><span>Last 10 selections · tap to record again</span></div>
+ <div id="qrRecentList" class="qr-recent-list"></div>
+</div>
+<div class="search-box qr-search-wrap"><input id="qrSearch" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="qrSearchSuggestions" placeholder="Search by title, author, series, or genre..." oninput="renderQuickReads();renderQuickReadSuggestions()" onfocus="renderQuickReadSuggestions()" onkeydown="quickReadSearchKeydown(event)"><div id="qrSearchSuggestions" class="book-dropdown-list qr-search-suggestions hidden" role="listbox"></div></div>
  <button type="button" id="qrMobileFiltersToggle" class="qr-mobile-filter-toggle" aria-expanded="false" aria-controls="qrLibraryFilters" onclick="toggleQuickReadMobileFilters()">⚙ Filters &amp; Sort <span id="qrFilterChevron">▾</span></button>
  <div class="online-library-filters" id="qrLibraryFilters">
  <div class="online-filter-group"><label>Author <select id="qrAuthor" onchange="renderQuickReads()"><option value="">All Authors</option></select></label></div>
@@ -6639,9 +6664,10 @@ const list=items=>items.length?items.map(([label,count])=>'<div class="stats-row
 el.innerHTML='<div class="stats-metrics"><div><strong>'+books.length+'</strong><span>Titles</span></div><div><strong>'+books.reduce((n,b)=>n+Number(b.Copies||0),0)+'</strong><span>Copies</span></div><div><strong>'+filtered.length+'</strong><span>Checkouts in Period</span></div><div><strong>'+active.length+'</strong><span>Currently Out</span></div></div><div class="stats-panels"><section><h3>Most Borrowed</h3>'+list(top.map(([id,n])=>[books.find(b=>String(b.id)===id)?.Title||"Unknown",n]))+'</section><section><h3>Never Borrowed ('+never.length+')</h3><div class="stats-never">'+never.map(b=>'<p>'+escapeLibraryHtml(b.Title)+'</p>').join("")+'</div></section></div>';
 renderExtraStats(filtered);
  const quickCount=quickReads.length;
+ const period=quickReadPeriodCounts();
  const qrTop=[...quickReadCounts()].sort((a,b)=>b[1]-a[1]).slice(0,10);
  const qrNames=qrTop.map(([id,n])=>[books.find(b=>String(b.id)===id)?.Title||"Unknown",n]);
- el.insertAdjacentHTML("beforeend",'<div class="stats-panels"><section><h3>Most Selected in Class</h3>'+(quickReadsReady?list(qrNames):'<p>Set up Quick Reads to track classroom selections.</p>')+'</section><section><h3>Classroom Selections</h3><strong class="qr-stat-total">'+quickCount+'</strong><p>Recorded Quick Reads, separate from checkouts.</p></section></div>');
+ el.insertAdjacentHTML("beforeend",'<div class="stats-metrics qr-stats-metrics"><div><strong>'+period.today+'</strong><span>Quick Reads Today</span></div><div><strong>'+period.week+'</strong><span>This Week</span></div><div><strong>'+period.month+'</strong><span>This Month</span></div></div><div class="stats-panels"><section><h3>Most Selected in Class</h3>'+(quickReadsReady?list(qrNames):'<p>Set up Quick Reads to track classroom selections.</p>')+'</section><section><h3>Classroom Selections</h3><strong class="qr-stat-total">'+quickCount+'</strong><p>Recorded Quick Reads, separate from checkouts.</p></section></div>');
 }
 
 function renderExtraStats(filtered){
@@ -6706,7 +6732,7 @@ function renderQuickReadSuggestions(){
   const rank=book=>{const title=String(book.Title||"").toLowerCase(),series=String(book.Series||"").toLowerCase();return title.startsWith(term)?0:title.includes(term)?1:series.startsWith(term)?2:series.includes(term)?3:4;};
   return rank(a)-rank(b)||at.localeCompare(bt);
  }).slice(0,12);
- list.innerHTML=matches.length?matches.map(b=>'<button type="button" role="option" class="qr-search-option" data-book-id="'+b.id+'"><span class="qr-search-option-title">'+escapeLibraryHtml(String(b.Title||""))+'</span><small>'+escapeLibraryHtml([b.Author,b.Series].filter(Boolean).join(' · '))+'</small></button>').join(""):'<div class="book-dropdown-empty">No matching book titles</div>';
+ list.innerHTML=matches.length?matches.map(b=>'<div class="qr-suggestion-row"><button type="button" role="option" class="qr-search-option" data-book-id="'+b.id+'"><span class="qr-search-option-title">'+escapeLibraryHtml(String(b.Title||""))+'</span><small>'+escapeLibraryHtml([b.Author,b.Series].filter(Boolean).join(' · '))+'</small></button><button type="button" class="qr-suggestion-add" data-add-book-id="'+b.id+'" '+(!quickReadsReady||quickReadBusy?'disabled':'')+' aria-label="Record Quick Read for '+escapeLibraryHtml(String(b.Title||""))+'">+ Quick Read</button></div>').join(""):'<div class="book-dropdown-empty">No matching books</div>';
  list.querySelectorAll("button[data-book-id]").forEach(btn=>btn.addEventListener("click",()=>{
   const book=books.find(b=>String(b.id)===btn.dataset.bookId);
   if(!book)return;
@@ -6716,6 +6742,13 @@ function renderQuickReadSuggestions(){
   renderQuickReads();
   input.blur();
  }));
+ list.querySelectorAll("button[data-add-book-id]").forEach(btn=>btn.addEventListener("click",()=>{
+  if(!quickReadsReady||quickReadBusy)return;
+  closeQuickReadSuggestions();
+  input.blur();
+  recordQuickRead(Number(btn.dataset.addBookId));
+ }));
+
  list.classList.remove("hidden");input.setAttribute("aria-expanded","true");
 }
 function quickReadSearchKeydown(event){
@@ -6737,9 +6770,47 @@ function toggleQuickReadMobileFilters(){
  if(chevron)chevron.textContent=open?"▴":"▾";
 }
 function backQuickReadBrowse(){quickReadSelection="";renderQuickReads();}
+function quickReadDateKey(value){
+ const date=new Date(value);
+ if(!Number.isFinite(date.getTime()))return "";
+ return new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(date);
+}
+function quickReadPeriodCounts(){
+ const now=new Date();
+ const today=quickReadDateKey(now);
+ const month=today.slice(0,7);
+ const weekday=new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",weekday:"short"}).format(now);
+ const weekStart=new Date(now.getTime()-({Sun:6,Mon:0,Tue:1,Wed:2,Thu:3,Fri:4,Sat:5}[weekday]||0)*86400000);
+ const start=quickReadDateKey(weekStart);
+ return {today:quickReads.filter(r=>quickReadDateKey(r.recorded_at)===today).length,week:quickReads.filter(r=>quickReadDateKey(r.recorded_at)>=start).length,month:quickReads.filter(r=>quickReadDateKey(r.recorded_at).slice(0,7)===month).length,start};
+}
+function renderQuickReadActivity(){
+ const stats=quickReadPeriodCounts();
+ for(const [id,value] of [["qrTodayCount",stats.today],["qrWeekCount",stats.week],["qrMonthCount",stats.month]]){
+  const node=document.getElementById(id);if(node)node.textContent=value;
+ }
+ const recent=document.getElementById("qrRecentList");if(!recent)return;
+ const entries=[...quickReads].sort((a,b)=>new Date(b.recorded_at)-new Date(a.recorded_at)).slice(0,10);
+ recent.innerHTML=entries.length?entries.map(r=>{
+  const book=books.find(b=>String(b.id)===String(r.book_id));
+  if(!book)return "";
+  return '<button type="button" class="qr-recent-book" data-book-id="'+Number(book.id)+'" '+(!quickReadsReady||quickReadBusy?'disabled':'')+' title="Record another Quick Read"><strong>'+escapeLibraryHtml(book.Title||"Untitled")+'</strong><small>'+escapeLibraryHtml(new Date(r.recorded_at).toLocaleString("en-US",{timeZone:"America/New_York",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}))+'</small><span>+ Quick Read</span></button>';
+ }).join(""):'<p class="qr-recent-empty">No selections recorded yet.</p>';
+ recent.querySelectorAll("button[data-book-id]").forEach(button=>button.addEventListener("click",()=>recordQuickRead(Number(button.dataset.bookId))));
+}
+function quickReadBadgeFor(book,counts,weeklyCounts){
+ const total=counts.get(String(book.id))||0;
+ const weekly=weeklyCounts.get(String(book.id))||0;
+ const maxTotal=Math.max(0,...counts.values());
+ const maxWeek=Math.max(0,...weeklyCounts.values());
+ if(total>0&&total===maxTotal)return '<span class="qr-popularity-badge">🏆 Most Read</span>';
+ if(weekly>0&&weekly===maxWeek)return '<span class="qr-popularity-badge qr-week-badge">🔥 Popular This Week</span>';
+ return "";
+}
 function renderQuickReads(){
  const grid=document.getElementById("qrGrid");if(!grid)return;
  populateQuickReadFilters();
+ renderQuickReadActivity();
  const counts=quickReadCounts(),search=(document.getElementById("qrSearch")?.value||"").trim().toLowerCase();
  const field=id=>document.getElementById(id)?.value||"";
  let list=books.filter(b=>{
@@ -6751,6 +6822,8 @@ function renderQuickReads(){
   if(field("qrType")&&String(b.Category||"")!==field("qrType"))return false;
   return true;
  });
+ const weekStart=quickReadPeriodCounts().start;
+ const weeklyCounts=new Map();quickReads.forEach(r=>{if(quickReadDateKey(r.recorded_at)>=weekStart){const id=String(r.book_id);weeklyCounts.set(id,(weeklyCounts.get(id)||0)+1);}});
  const sort=quickReadTab==="popular"?"popular":field("qrSort");
 
  const seriesControls=document.getElementById("qrSeriesControls");
@@ -6808,7 +6881,7 @@ function renderQuickReads(){
  grid.innerHTML=list.length?list.map(book=>{
   const id=Number(book.id),url=String(book["Cover URL"]||book.CoverURL||"").trim(),title=escapeLibraryHtml(book.Title||"Untitled"),author=escapeLibraryHtml(book.Author||""),count=counts.get(String(book.id))||0;
   const cover=url?'<img class="online-book-cover" src="'+escapeLibraryHtml(url)+'" alt="'+title+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="online-book-no-cover" style="display:none"><div class="online-book-no-cover-icon">📖</div><div>'+title+'</div></div>':'<div class="online-book-no-cover"><div class="online-book-no-cover-icon">📖</div><div>'+title+'</div></div>';
-  return '<div class="online-book-card"><button type="button" class="online-book-cover-wrap qr-cover-button qr-add" data-book-id="'+id+'" aria-label="Record Quick Read for '+title+'" title="Record Quick Read" '+(!quickReadsReady||quickReadBusy?"disabled":"")+' >'+cover+'</button><div class="online-book-info"><div class="online-book-title">'+title+'</div><div class="online-book-author">'+author+'</div><div class="online-book-genres">'+getBookGenres(book).map(g=>'<span class="online-book-genre">'+escapeLibraryHtml(g)+'</span>').join("")+'</div><div class="online-book-bottom"><div class="qr-count">'+count+' classroom selections</div><button type="button" class="online-checkout-button qr-add" data-book-id="'+id+'" '+(!quickReadsReady||quickReadBusy?"disabled":"")+'>+ Quick Read</button></div></div></div>';
+  return '<div class="online-book-card"><button type="button" class="online-book-cover-wrap qr-cover-button qr-add" data-book-id="'+id+'" aria-label="Record Quick Read for '+title+'" title="Record Quick Read" '+(!quickReadsReady||quickReadBusy?"disabled":"")+' >'+cover+'</button><div class="online-book-info"><div class="online-book-title">'+title+'</div>'+quickReadBadgeFor(book,counts,weeklyCounts)+'<div class="online-book-author">'+author+'</div><div class="online-book-genres">'+getBookGenres(book).map(g=>'<span class="online-book-genre">'+escapeLibraryHtml(g)+'</span>').join("")+'</div><div class="online-book-bottom"><div class="qr-count">'+count+' classroom selections</div><button type="button" class="online-checkout-button qr-add" data-book-id="'+id+'" '+(!quickReadsReady||quickReadBusy?"disabled":"")+'>+ Quick Read</button></div></div></div>';
  }).join(""):'<div class="online-library-empty">No books match your filters.</div>';
  grid.querySelectorAll(".qr-add").forEach(button=>button.addEventListener("click",()=>recordQuickRead(Number(button.dataset.bookId))));
 }
