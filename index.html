@@ -1560,6 +1560,39 @@ tr:hover td{background:#f6ebda}
 .qr-trends-footnote{margin:10px 0 0;color:#64748b;font-size:11px}
 @media(max-width:700px){.qr-trends-panel{padding:12px}.qr-trends-header{align-items:flex-start}.qr-trends-tabs{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.qr-trends-summary{gap:6px}.qr-trends-summary>div{padding:9px}.qr-trends-summary strong{font-size:19px}.qr-trends-summary span{font-size:10px}.qr-trends-chart{gap:4px}.qr-trend-column{min-width:24px}.qr-trend-column span{font-size:9px}}
 </style>
+<style>
+#discover .discover-intro{margin:7px 0 0;color:#64748b}
+.discover-search-panel{position:relative;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px;margin:15px 0 20px}
+.discover-search-panel label{display:block;font-size:13px;font-weight:800;color:#334155;margin-bottom:9px}
+#discoverSearch{width:100%;min-height:46px;border:1px solid #cbd5e1;border-radius:9px;padding:12px;font:inherit}
+.discover-search-results{display:grid;gap:3px;max-height:300px;overflow-y:auto;margin-top:7px}
+.discover-search-results button{display:flex;flex-direction:column;text-align:left;gap:3px;padding:10px 12px;border:0;border-radius:8px;background:#f8fafc;cursor:pointer}
+.discover-search-results button:hover{background:#dbeafe}.discover-search-results small{color:#64748b}
+.discover-empty{padding:28px 18px;text-align:center;color:#64748b;background:#fff;border:1px dashed #cbd5e1;border-radius:12px}
+.discover-selected{display:flex;gap:18px;align-items:center;background:linear-gradient(120deg,#eff6ff,#fff);border:1px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:22px}
+.discover-selected-cover{width:100px;flex:0 0 100px;height:145px;border-radius:8px;overflow:hidden;background:#e2e8f0}
+.discover-selected-cover img,.discover-card-cover img{width:100%;height:100%;object-fit:cover}
+.discover-cover-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px}
+.discover-eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#2563eb}
+.discover-selected h3{font-size:22px;margin:5px 0}.discover-selected p{margin:0 0 10px;color:#64748b}
+.discover-tags,.discover-reasons{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.discover-tags span,.discover-reasons span{font-size:11px;background:#e0e7ff;color:#3730a3;border-radius:6px;padding:4px 7px}
+.discover-detail-link{border:0;background:transparent;color:#1d4ed8;font-weight:800;cursor:pointer;padding:7px 0}
+.discover-results-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.discover-results-heading h3{margin:0}.discover-results-heading span{font-size:12px;color:#64748b}
+.discover-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.discover-card{min-width:0;display:flex;flex-direction:column;overflow:hidden;background:#fff;border:1px solid #e2e8f0;border-radius:12px}
+.discover-card-cover{height:190px;background:#f1f5f9;border:0;padding:0;cursor:pointer;overflow:hidden}
+.discover-card-cover img{object-fit:contain}
+.discover-card-body{display:flex;flex-direction:column;align-items:flex-start;gap:7px;flex:1;padding:12px}
+.discover-card-body strong{font-size:14px;line-height:1.35}.discover-card-body small{color:#64748b}
+.discover-reasons span{background:#f1f5f9;color:#475569}
+.discover-availability{font-size:12px;color:#b45309;font-weight:700;margin-top:auto}
+.discover-availability.is-available{color:#15803d}
+.discover-card-body>button{width:100%;min-height:40px;background:#2563eb;color:#fff;border:0;border-radius:8px;font-weight:800;cursor:pointer}
+@media(max-width:850px){.discover-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.discover-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.discover-card-cover{height:155px}.discover-card-body{padding:9px}.discover-card-body strong{font-size:12px}.discover-selected{gap:12px;padding:12px}.discover-selected-cover{width:78px;flex-basis:78px;height:116px}.discover-selected h3{font-size:17px}.discover-results-heading{display:block}.discover-results-heading span{display:block;margin-top:5px}.discover-reasons span{font-size:10px}}
+</style>
 </head>
 
 <body>
@@ -1591,6 +1624,7 @@ tr:hover td{background:#f6ebda}
   <button class="nav-button" data-page="checkout">Check Out</button>
   <button class="nav-button" data-page="library">Library</button>
   <button class="nav-button" data-page="quickreads">Quick Reads</button>
+  <button class="nav-button" data-page="discover">Discover Books</button>
   <button class="nav-button" data-page="booklist">Book List</button>
   <button class="nav-button" data-page="students">Students</button>
   <button class="nav-button" data-page="checkedout">Checked Out</button>
@@ -1609,6 +1643,7 @@ tr:hover td{background:#f6ebda}
     <div class="dashboard-quick-actions">
       <button class="dashboard-action primary" type="button" onclick="showPage('checkout')">+ Check Out a Book</button>
       <button class="dashboard-action" type="button" onclick="showPage('quickreads')">📖 Quick Reads</button>
+      <button class="dashboard-action" type="button" onclick="showPage('discover')">✨ If You Liked This Book…</button>
       <button class="dashboard-action" type="button" onclick="showPage('checkedout')">↩ Return a Book</button>
       <button class="dashboard-action" type="button" onclick="showPage('library');openAddBook()">+ Add a Book</button>
     </div>
@@ -1699,6 +1734,13 @@ tr:hover td{background:#f6ebda}
 
 </section>
 
+
+<section id="discover" class="page">
+ <div class="library-header"><div><h2>✨ If You Liked This Book…</h2><p class="discover-intro">Pick a book you enjoyed to find similar books already in your classroom library.</p></div></div>
+ <div class="discover-search-panel"><label for="discoverSearch">Find a book you liked</label><input id="discoverSearch" type="search" autocomplete="off" placeholder="Search titles, authors, or series…" oninput="renderDiscoverSearch()" aria-label="Search for a book to get recommendations">
+ <div id="discoverSearchResults" class="discover-search-results"></div></div>
+ <div id="discoverContent" aria-live="polite"><div class="discover-empty">📚 Search for a book above to discover what to read next.</div></div>
+</section>
 
 <section id="quickreads" class="page">
  <div class="library-header"><h2>Quick Reads</h2><div class="library-actions"><span class="qr-intro">Record classroom selections · No checkout required</span></div></div>
@@ -6889,6 +6931,62 @@ function quickReadBadgeFor(book,counts,weeklyCounts){
  if(weekly>0&&weekly===maxWeek)return '<span class="qr-popularity-badge qr-week-badge">🔥 Popular This Week</span>';
  return "";
 }
+let discoverSelectedBookId=null;
+function discoverCover(book){
+ const url=String(book["Cover URL"]||book.CoverURL||"").trim();
+ return url?'<img src="'+escapeLibraryHtml(url)+'" alt="Cover of '+escapeLibraryHtml(book.Title||"Book")+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><span class="discover-cover-fallback" style="display:none">📚</span>':'<span class="discover-cover-fallback">📚</span>';
+}
+function renderDiscoverSearch(){
+ const input=document.getElementById("discoverSearch"),results=document.getElementById("discoverSearchResults");
+ if(!input||!results)return;
+ const term=input.value.trim().toLowerCase();
+ if(!term){results.innerHTML="";return;}
+ const matches=books.filter(b=>[b.Title,b.Author,b.Series].some(v=>String(v||"").toLowerCase().includes(term))).sort((a,b)=>{
+  const rank=x=>String(x.Title||"").toLowerCase().startsWith(term)?0:String(x.Title||"").toLowerCase().includes(term)?1:2;
+  return rank(a)-rank(b)||String(a.Title||"").localeCompare(String(b.Title||""));
+ }).slice(0,12);
+ results.innerHTML=matches.length?matches.map(b=>'<button type="button" data-id="'+Number(b.id)+'"><strong>'+escapeLibraryHtml(b.Title||"Untitled")+'</strong><small>'+escapeLibraryHtml([b.Author,b.Series].filter(Boolean).join(" · "))+'</small></button>').join(""):'<p>No matching books found.</p>';
+ results.querySelectorAll("button[data-id]").forEach(btn=>btn.addEventListener("click",()=>selectDiscoverBook(btn.dataset.id)));
+}
+function selectDiscoverBook(id){
+ const book=books.find(b=>String(b.id)===String(id));if(!book)return;
+ discoverSelectedBookId=String(id);
+ const search=document.getElementById("discoverSearch");if(search)search.value=String(book.Title||"");
+ const results=document.getElementById("discoverSearchResults");if(results)results.innerHTML="";
+ renderDiscoverRecommendations();
+}
+function renderDiscoverRecommendations(){
+ const target=document.getElementById("discoverContent");if(!target)return;
+ const book=books.find(b=>String(b.id)===String(discoverSelectedBookId));
+ if(!book){target.innerHTML='<div class="discover-empty">📚 Search for a book above to discover what to read next.</div>';return;}
+ const genres=getBookGenres(book).map(g=>String(g).toLowerCase());
+ const sourceSeries=String(book.Series||"").trim().toLowerCase();
+ const author=String(book.Author||"").trim().toLowerCase();
+ const level=String(book["Reading Level"]||"").trim().toLowerCase();
+ const candidates=books.filter(b=>String(b.id)!==String(book.id)&&(!sourceSeries||String(b.Series||"").trim().toLowerCase()!==sourceSeries)).map(b=>{
+  const shared=getBookGenres(b).filter(g=>genres.includes(String(g).toLowerCase()));
+  const sameAuthor=!!author&&String(b.Author||"").trim().toLowerCase()===author;
+  const sameLevel=!!level&&String(b["Reading Level"]||"").trim().toLowerCase()===level;
+  return {book:b,shared,score:shared.length*10+(sameAuthor?5:0)+(sameLevel?2:0),sameAuthor,sameLevel};
+ }).sort((a,b)=>b.score-a.score||String(a.book.Title||"").localeCompare(String(b.book.Title||"")));
+ const picks=[],seriesCount=new Map();
+ for(const item of candidates){
+  if(picks.length>=8)break;
+  if(item.score<=0)continue;
+  const series=String(item.book.Series||"").trim().toLowerCase();
+  if(series&&(seriesCount.get(series)||0)>=2)continue;
+  picks.push(item);if(series)seriesCount.set(series,(seriesCount.get(series)||0)+1);
+ }
+ const selected='<div class="discover-selected"><div class="discover-selected-cover">'+discoverCover(book)+'</div><div><span class="discover-eyebrow">Because you liked</span><h3>'+escapeLibraryHtml(book.Title||"Untitled")+'</h3><p>'+escapeLibraryHtml(book.Author||"")+'</p><div class="discover-tags">'+getBookGenres(book).map(g=>'<span>'+escapeLibraryHtml(g)+'</span>').join("")+'</div><button type="button" class="discover-detail-link" onclick="openBookDetails('+Number(book.id)+')">View book details →</button></div></div>';
+ const cards=picks.length?'<div class="discover-results-heading"><h3>Try These Books Next</h3><span>'+picks.length+' recommendations from your library</span></div><div class="discover-grid">'+picks.map(item=>{
+  const b=item.book;
+  const reasons=[...item.shared.map(g=>"Same genre: "+g),...(item.sameAuthor?["Same author"]:[]),...(item.sameLevel?["Similar reading level"]:[])].slice(0,2);
+  const available=getAvailableCopies(b);
+  return '<article class="discover-card"><button type="button" class="discover-card-cover" onclick="openBookDetails('+Number(b.id)+')" aria-label="View details for '+escapeLibraryHtml(b.Title||"Book")+'">'+discoverCover(b)+'</button><div class="discover-card-body"><strong>'+escapeLibraryHtml(b.Title||"Untitled")+'</strong><small>'+escapeLibraryHtml(b.Author||"")+'</small><div class="discover-reasons">'+reasons.map(reason=>'<span>'+escapeLibraryHtml(reason)+'</span>').join("")+'</div><div class="discover-availability '+(available>0?'is-available':'')+'">'+(available>0?available+' available':'Currently checked out')+'</div><button type="button" onclick="openBookDetails('+Number(b.id)+')">View Details →</button></div></article>';
+ }).join("")+'</div>':'<div class="discover-empty">No similar titles found yet. Try a different book or add genre information to your library.</div>';
+ target.innerHTML=selected+cards;
+}
+
 function renderQuickReads(){
  const grid=document.getElementById("qrGrid");if(!grid)return;
  populateQuickReadFilters();
@@ -7040,6 +7138,7 @@ function showPage(pageId){
     activeButton.classList.add("active");
 
   if(pageId==="quickreads")renderQuickReads();
+  if(pageId==="discover"){renderDiscoverSearch();renderDiscoverRecommendations();}
   if(pageId==="checkout")
     populateBooks();
 
