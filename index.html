@@ -1540,6 +1540,26 @@ tr:hover td{background:#f6ebda}
 .qr-week-badge{background:#fee2e2;color:#991b1b}
 @media(max-width:600px){.qr-recent-heading{align-items:flex-start;flex-direction:column}.qr-period-stats strong{font-size:22px}.qr-recent-book{flex-basis:155px}#quickreads .qr-suggestion-add{padding:9px 6px;font-size:11px}}
 </style>
+<style>
+.qr-trends-panel{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;margin:15px 0 20px;box-shadow:0 2px 10px rgba(15,23,42,.035)}
+.qr-trends-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.qr-trends-header h3{margin:0;font-size:18px;color:#1e293b}
+.qr-trends-header p{margin:4px 0 0;font-size:13px;color:#64748b}
+.qr-trends-tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px}
+.qr-trends-tabs button{border:0;background:transparent;color:#475569;border-radius:7px;padding:9px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;min-height:38px}
+.qr-trends-tabs button.active{background:#2563eb;color:#fff;box-shadow:0 1px 4px #0002}
+.qr-trends-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0}
+.qr-trends-summary>div{background:#f8fafc;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.qr-trends-summary strong{font-size:22px;color:#1d4ed8}.qr-trends-summary span{font-size:12px;color:#64748b}
+.qr-trends-chart{display:flex;align-items:stretch;gap:5px;height:205px;border-bottom:1px solid #cbd5e1;padding:0 0 5px;overflow-x:auto}
+.qr-trend-column{flex:1 0 0;min-width:26px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px}
+.qr-trend-column strong{font-size:11px;color:#475569;font-variant-numeric:tabular-nums}
+.qr-trend-bar-track{height:145px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.qr-trend-bar{width:min(100%,32px);border-radius:5px 5px 0 0;background:linear-gradient(180deg,#60a5fa,#2563eb);transition:height .2s}
+.qr-trend-column span{font-size:10px;color:#64748b;white-space:nowrap}
+.qr-trends-footnote{margin:10px 0 0;color:#64748b;font-size:11px}
+@media(max-width:700px){.qr-trends-panel{padding:12px}.qr-trends-header{align-items:flex-start}.qr-trends-tabs{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.qr-trends-summary{gap:6px}.qr-trends-summary>div{padding:9px}.qr-trends-summary strong{font-size:19px}.qr-trends-summary span{font-size:10px}.qr-trends-chart{gap:4px}.qr-trend-column{min-width:24px}.qr-trend-column span{font-size:9px}}
+</style>
 </head>
 
 <body>
@@ -1684,6 +1704,10 @@ tr:hover td{background:#f6ebda}
  <div class="library-header"><h2>Quick Reads</h2><div class="library-actions"><span class="qr-intro">Record classroom selections · No checkout required</span></div></div>
  <div id="qrSetup" class="qr-setup hidden">Quick Reads needs its database table first. Run <strong>migrations/quick_reads.sql</strong> in your Supabase SQL Editor, then refresh this page.</div>
  <div id="qrNotice" class="qr-notice" role="status" aria-live="polite"></div>
+ <section class="qr-trends-panel" aria-label="Quick Reads trends">
+ <div class="qr-trends-header"><div><h3>📈 Quick Reads Trends</h3><p>Classroom selections over time</p></div><div class="qr-trends-tabs" role="group" aria-label="Trend period"><button type="button" data-qr-trend="day" onclick="setQuickReadTrendPeriod('day')">Daily</button><button type="button" data-qr-trend="week" onclick="setQuickReadTrendPeriod('week')">Weekly</button><button type="button" data-qr-trend="month" onclick="setQuickReadTrendPeriod('month')">Monthly</button></div></div>
+ <div id="qrTrendsChart"></div>
+ </section>
  <div class="qr-activity">
  <div class="qr-period-stats"><div><strong id="qrTodayCount">0</strong><span>Today</span></div><div><strong id="qrWeekCount">0</strong><span>This Week</span></div><div><strong id="qrMonthCount">0</strong><span>This Month</span></div></div>
  <div class="qr-recent-heading"><h3>Recently Selected</h3><span>Last 10 selections · tap to record again</span></div>
@@ -6663,6 +6687,8 @@ const top=[...counts].sort((a,b)=>b[1]-a[1]).slice(0,10);const never=books.filte
 const list=items=>items.length?items.map(([label,count])=>'<div class="stats-row"><span>'+escapeLibraryHtml(label)+'</span><strong>'+count+'</strong></div>').join(""):'<p>No activity yet.</p>';
 el.innerHTML='<div class="stats-metrics"><div><strong>'+books.length+'</strong><span>Titles</span></div><div><strong>'+books.reduce((n,b)=>n+Number(b.Copies||0),0)+'</strong><span>Copies</span></div><div><strong>'+filtered.length+'</strong><span>Checkouts in Period</span></div><div><strong>'+active.length+'</strong><span>Currently Out</span></div></div><div class="stats-panels"><section><h3>Most Borrowed</h3>'+list(top.map(([id,n])=>[books.find(b=>String(b.id)===id)?.Title||"Unknown",n]))+'</section><section><h3>Never Borrowed ('+never.length+')</h3><div class="stats-never">'+never.map(b=>'<p>'+escapeLibraryHtml(b.Title)+'</p>').join("")+'</div></section></div>';
 renderExtraStats(filtered);
+ el.insertAdjacentHTML("beforeend",'<section class="qr-trends-panel qr-stats-trends"><div class="qr-trends-header"><div><h3>📈 Quick Reads Trends</h3><p>Classroom selections over time</p></div><div class="qr-trends-tabs" role="group" aria-label="Trend period"><button type="button" data-qr-trend="day" onclick="setQuickReadTrendPeriod(\'day\')">Daily</button><button type="button" data-qr-trend="week" onclick="setQuickReadTrendPeriod(\'week\')">Weekly</button><button type="button" data-qr-trend="month" onclick="setQuickReadTrendPeriod(\'month\')">Monthly</button></div></div><div id="qrStatsTrendsChart"></div></section>');
+ renderQuickReadTrends();
  const quickCount=quickReads.length;
  const period=quickReadPeriodCounts();
  const qrTop=[...quickReadCounts()].sort((a,b)=>b[1]-a[1]).slice(0,10);
@@ -6770,6 +6796,60 @@ function toggleQuickReadMobileFilters(){
  if(chevron)chevron.textContent=open?"▴":"▾";
 }
 function backQuickReadBrowse(){quickReadSelection="";renderQuickReads();}
+let quickReadTrendPeriod="day";
+function setQuickReadTrendPeriod(period){
+ if(!["day","week","month"].includes(period))return;
+ quickReadTrendPeriod=period;
+ renderQuickReadTrends();
+}
+function quickReadTrendBuckets(){
+ const today=quickReadDateKey(new Date());
+ const [year,month,day]=today.split("-").map(Number);
+ const todayUTC=Date.UTC(year,month-1,day);
+ const weekday=(new Date(todayUTC).getUTCDay()+6)%7;
+ const unit=quickReadTrendPeriod;
+ const total=unit==="day"?14:unit==="week"?8:6;
+ const result=[];
+ for(let i=total-1;i>=0;i--){
+  let start,end,label;
+  if(unit==="day"){
+   start=new Date(todayUTC-i*86400000);end=new Date(start.getTime()+86400000);
+   label=new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",timeZone:"UTC"}).format(start);
+  }else if(unit==="week"){
+   start=new Date(todayUTC-(weekday+i*7)*86400000);end=new Date(start.getTime()+7*86400000);
+   label=new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",timeZone:"UTC"}).format(start);
+  }else{
+   start=new Date(Date.UTC(year,month-1-i,1));end=new Date(Date.UTC(year,month-i,1));
+   label=new Intl.DateTimeFormat("en-US",{month:"short",year:"2-digit",timeZone:"UTC"}).format(start);
+  }
+  const key=date=>date.toISOString().slice(0,10);
+  result.push({start:key(start),end:key(end),label,count:0});
+ }
+ quickReads.forEach(r=>{
+  const date=quickReadDateKey(r.recorded_at);
+  const bucket=result.find(b=>date>=b.start&&date<b.end);
+  if(bucket)bucket.count++;
+ });
+ return result;
+}
+function renderQuickReadTrends(){
+ const buckets=quickReadTrendBuckets();
+ const max=Math.max(1,...buckets.map(b=>b.count));
+ const sum=buckets.reduce((n,b)=>n+b.count,0);
+ const active=buckets.filter(b=>b.count>0).length;
+ const peak=buckets.reduce((best,b)=>b.count>best.count?b:best,buckets[0]);
+ const period=quickReadTrendPeriod;
+ const label=period==="day"?"days":period==="week"?"weeks":"months";
+ for(const id of ["qrTrendsChart","qrStatsTrendsChart"]){
+  const el=document.getElementById(id);if(!el)continue;
+  el.innerHTML='<div class="qr-trends-summary"><div><strong>'+sum+'</strong><span>Total selections</span></div><div><strong>'+active+'</strong><span>Active '+label+'</span></div><div><strong>'+peak.count+'</strong><span>Peak '+label.slice(0,-1)+'</span></div></div><div class="qr-trends-chart" role="img" aria-label="Quick Reads '+label+' chart: '+buckets.map(b=>b.label+', '+b.count).join('; ')+'">'+buckets.map(b=>'<div class="qr-trend-column" title="'+escapeLibraryHtml(b.label)+': '+b.count+' selections"><strong>'+b.count+'</strong><div class="qr-trend-bar-track"><div class="qr-trend-bar" style="height:'+Math.max(b.count?5:0,Math.round(b.count/max*100))+'%"></div></div><span>'+escapeLibraryHtml(b.label)+'</span></div>').join("")+'</div><p class="qr-trends-footnote">Based on recorded Quick Reads · Connecticut time · '+(period==="week"?"weeks start Monday":"includes periods with zero selections")+'</p>';
+ }
+ document.querySelectorAll("[data-qr-trend]").forEach(button=>{
+  const active=button.dataset.qrTrend===period;
+  button.classList.toggle("active",active);
+  button.setAttribute("aria-pressed",String(active));
+ });
+}
 function quickReadDateKey(value){
  const date=new Date(value);
  if(!Number.isFinite(date.getTime()))return "";
@@ -6813,6 +6893,7 @@ function renderQuickReads(){
  const grid=document.getElementById("qrGrid");if(!grid)return;
  populateQuickReadFilters();
  renderQuickReadActivity();
+ renderQuickReadTrends();
  const counts=quickReadCounts(),search=(document.getElementById("qrSearch")?.value||"").trim().toLowerCase();
  const field=id=>document.getElementById(id)?.value||"";
  let list=books.filter(b=>{
